@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "170939903290",
+    "project_id": "barberapp-d8c95",
+    "storage_bucket": "barberapp-d8c95.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170939903290:android:2ee3a4c94b44246faa3403",
+        "android_client_info": {
+          "package_name": "com.flutterthialand.barber"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "170939903290-ods8u2q8j57jq8m81n2me409ou07dq33.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNVICaZNhZkz2kD45radNDZ5IVf0Rn2hE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "170939903290-ods8u2q8j57jq8m81n2me409ou07dq33.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
