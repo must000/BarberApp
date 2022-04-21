@@ -19,6 +19,8 @@ class _IndexPageState extends State<IndexPage> {
     final user = FirebaseAuth.instance.currentUser!;
     return Scaffold(
         appBar: AppBar(
+
+          
           actions: [
             StreamBuilder(
               stream: FirebaseAuth.instance.authStateChanges(),

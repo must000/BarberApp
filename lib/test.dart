@@ -11,13 +11,13 @@ class MyApp extends StatefulWidget {
 
   @override
   State<MyApp> createState() => _MyAppState();
-}
+} 
 
 class _MyAppState extends State<MyApp> {
   Map<String, dynamic>? _userData;
   AccessToken? _accessToken;
   bool _checking = true;
-
+  
   @override
   void initState() {
     // TODO: implement initState
