@@ -1,3 +1,4 @@
+import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,9 @@ class _LoginState extends State<Login> {
                         Container(
                           width: size * 0.3,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, Rount_CN.routeRegisterUser);
+                            },
                             child: const Text("ลูกค้า"),
                           ),
                         ),

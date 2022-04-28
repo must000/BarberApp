@@ -1,14 +1,16 @@
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/pages/login.dart';
+import 'package:barber/pages/registeruser.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 final Map<String, WidgetBuilder> map = {
-  '/Login': (BuildContext context) => Login(),
-  '/index': (BuildContext context) => IndexPage(),
+  '/Login': (BuildContext context) => const Login(),
+  '/index': (BuildContext context) => const IndexPage(),
+  '/registerUser': (BuildContext context) => const RegisterUser(),
 };
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
