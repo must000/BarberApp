@@ -1,3 +1,4 @@
+import 'package:barber/pages/barber_user.dart';
 import 'package:flutter/material.dart';
 
 class BarberModel1 extends StatelessWidget {
@@ -18,7 +19,9 @@ class BarberModel1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> BarberUser(nameBarber: nameBarber) ));
+      },
       child: Stack(children: [
         Container(
           decoration: BoxDecoration(border: Border.all()),
