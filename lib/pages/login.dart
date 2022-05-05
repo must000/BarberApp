@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
                               Provider.of<MyProviders>(context, listen: false);
                           provider
                               .googleLogin()
-                              .then((value) => Navigator.pop(context));
+                              .then((value) => Navigator.pushNamedAndRemoveUntil(context, Rount_CN.routeIndex, (route) => false));
                         },
                         icon: const FaIcon(FontAwesomeIcons.google),
                         label: const Text('Google'),
