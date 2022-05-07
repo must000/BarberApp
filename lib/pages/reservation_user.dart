@@ -1,3 +1,4 @@
+import 'package:barber/pages/reservation_detail_user.dart';
 import 'package:flutter/material.dart';
 
 class ReservationUser extends StatefulWidget {
@@ -24,11 +25,19 @@ class _ReservationUserState extends State<ReservationUser> {
       ),
       body: ListView.builder(
         itemCount: 20,
-        itemBuilder: (context, index) => const Card(
-          child: ListTile(
-            leading: Icon(Icons.search),
-            title: Text("ชื่อร้าน ราคา"),
-            subtitle: Text("เวลา 17-00.19.00"),
+        itemBuilder: (context, index) => InkWell(
+          onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ReservationDetailUser(),
+                          ),
+                        ),
+          child: const Card(
+            child: ListTile(
+              leading: Icon(Icons.search),
+              title: Text("ชื่อร้าน ราคา"),
+              subtitle: Text("เวลา 17-00.19.00"),
+            ),
           ),
         ),
       ),

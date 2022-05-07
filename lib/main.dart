@@ -12,7 +12,7 @@ final Map<String, WidgetBuilder> map = {
   '/Login': (BuildContext context) => const Login(),
   '/index': (BuildContext context) => const IndexPage(),
   '/registerUser': (BuildContext context) => const RegisterUser(),
-  '/barberserch': (BuildContext context) => const BarberSerchUser(),
+  '/barberserch': (BuildContext context) => const BarberSerchUser(typeBarber: true,),
 };
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

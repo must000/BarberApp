@@ -1,4 +1,6 @@
 import 'package:barber/Constant/route_cn.dart';
+import 'package:barber/pages/album_barber_user.dart';
+import 'package:barber/pages/comment_barber_user.dart';
 import 'package:barber/pages/detail_barber_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +13,7 @@ class BarberUser extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<BarberUser> createState() =>
-      _BarberUserState(nameBarber: nameBarber);
+  State<BarberUser> createState() => _BarberUserState(nameBarber: nameBarber);
 }
 
 class _BarberUserState extends State<BarberUser> {
@@ -61,7 +62,13 @@ class _BarberUserState extends State<BarberUser> {
                     width: size * 0.33,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> DetailBarberUser(nameBarber: nameBarber) ));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DetailBarberUser(nameBarber: nameBarber),
+                          ),
+                        );
                       },
                       child: const Text("ข้อมูลร้าน"),
                     ),
@@ -69,14 +76,28 @@ class _BarberUserState extends State<BarberUser> {
                   Container(
                     width: size * 0.33,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AlbumBarberUser(),
+                          ),
+                        );
+                      },
                       child: const Text("ผลงาน"),
                     ),
                   ),
                   Container(
                     width: size * 0.33,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CommentBarberUser(),
+                          ),
+                        );
+                      },
                       child: const Text("คะแนนและรีวิว"),
                     ),
                   ),

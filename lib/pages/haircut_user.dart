@@ -87,14 +87,16 @@ class _HairCutUserState extends State<HairCutUser> {
           SizedBox(
             child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> BarberSerchUser()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const BarberSerchUser(typeBarber: true,)));
                 }, child: const Text("ร้านตัดผมชาย")),
             width: size * 0.4,
             height: 50,
           ),
           SizedBox(
             child: ElevatedButton(
-                onPressed: () {}, child: const Text("ร้านเสริมสวย")),
+                onPressed: () {
+                   Navigator.push(context, MaterialPageRoute(builder: (context)=> const BarberSerchUser(typeBarber: false,)));
+                }, child: const Text("ร้านเสริมสวย")),
             width: size * 0.4,
             height: 50,
           )
