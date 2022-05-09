@@ -47,11 +47,11 @@ class _OtherUserState extends State<OtherUser> {
                     },
                   ),
                   logout(context),
-              //     TextButton(
-              // onPressed: () {
-              //   Navigator.pushNamed(context, Rount_CN.routeLogin);
-              // },
-              // child: const Text("Login"))
+                  TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Rount_CN.routeLogin);
+              },
+              child: const Text("Login"))
                 ],
               ),
               Container(

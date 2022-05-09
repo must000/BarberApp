@@ -1,3 +1,6 @@
+import 'package:barber/Constant/route_cn.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class RegisterUser extends StatefulWidget {
@@ -9,15 +12,17 @@ class RegisterUser extends StatefulWidget {
 
 class _RegisterUserState extends State<RegisterUser> {
   final formKey = GlobalKey<FormState>();
+   TextEditingController nameController = TextEditingController();
   TextEditingController userController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  PhoneAuthCredential? phoneCredential;
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Text("สมัครสมาชิก"),
+        title: const Text("สมัครสมาชิก"),
       ),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -36,12 +41,34 @@ class _RegisterUserState extends State<RegisterUser> {
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return "กรุณากรอกชื่อยูสเซอร์";
+                        return "กรุณากรอกชื่อ";
+                      } else {}
+                    },
+                    controller: nameController,
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      labelText: "Name",
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                      top: 15, left: size * 0.08, right: size * 0.08),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "กรุณากรอกEmail";
                       } else {}
                     },
                     controller: userController,
+                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: "Username",
+                      labelText: "Email",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -98,7 +125,9 @@ class _RegisterUserState extends State<RegisterUser> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "กรุณากรอกรหัสผ่าน";
-                      } else {}
+                      } else if (value != passwordController.text) {
+                        return "กรุณากรอกรหัสผ่านให้ตรงกัน";
+                      }
                     },
                     decoration: InputDecoration(
                       labelText: "Confirm Password",
@@ -110,13 +139,13 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                     width: size * 0.5,
                     height: 80,
                     child: ElevatedButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
-                            print('success $userController $phoneController $passwordController');
+                            registerFirebase();
                           }
                         },
                         child: const Text(
@@ -129,5 +158,18 @@ class _RegisterUserState extends State<RegisterUser> {
         ),
       ),
     );
+  }
+
+  Future<Null> registerFirebase() async {
+    await Firebase.initializeApp().then((value) async {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: userController.text, password: passwordController.text)
+          .then((value) async {
+        await value.user!.updateDisplayName(nameController.text);
+        print("สมัครแล้ว $value");
+        Navigator.pop(context);
+      });
+    });
   }
 }

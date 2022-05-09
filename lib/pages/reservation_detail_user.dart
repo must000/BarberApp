@@ -30,10 +30,10 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
                   width: size * 0.6,
                   child: ListView.builder(
                     shrinkWrap: true, //    <-- Set this to true
-                    physics: ScrollPhysics(),
+                    physics: const ScrollPhysics(),
                     itemBuilder: (context, index) {
                       return Row(
-                        children: [Text("ตัดผม"), Text("50 บาท")],
+                        children: const [Text("ตัดผม"), Text("50 บาท")],
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       );
                     },
