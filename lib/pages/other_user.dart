@@ -13,7 +13,6 @@ class OtherUser extends StatefulWidget {
 }
 
 class _OtherUserState extends State<OtherUser> {
-  
   @override
   Widget build(BuildContext context) {
     late final user = FirebaseAuth.instance.currentUser;
@@ -36,8 +35,10 @@ class _OtherUserState extends State<OtherUser> {
                         return user?.displayName == null
                             ? const Text("")
                             : Text(
-                            user!.displayName!,
-                            style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0),fontSize: 15),
+                                user!.displayName!,
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 15),
                               );
                       } else if (snapshot.hasError) {
                         return Text("error");
@@ -48,10 +49,10 @@ class _OtherUserState extends State<OtherUser> {
                   ),
                   logout(context),
                   TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, Rount_CN.routeLogin);
-              },
-              child: const Text("Login"))
+                      onPressed: () {
+                        Navigator.pushNamed(context, Rount_CN.routeLogin);
+                      },
+                      child: const Text("Login"))
                 ],
               ),
               Container(
@@ -63,14 +64,21 @@ class _OtherUserState extends State<OtherUser> {
                 child: const Text("ตั้งค่าข้อมูลผู้ใช้"),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  final provider =
+                      Provider.of<MyProviders>(context, listen: false);
+                  provider.logout();
+                      Navigator.pushNamed(context, Rount_CN.routeLogin);
+                },
                 child: const Text("ต้องการเปิดร้านทำผม"),
               ),
               const SizedBox(
                 height: 70,
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, Rount_CN.routeContactAdminUser);
+                },
                 child: const Text("ขอความช่วยเหลือ"),
               ),
               TextButton(

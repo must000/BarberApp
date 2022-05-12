@@ -1,5 +1,7 @@
 import 'package:barber/Constant/route_cn.dart';
+import 'package:barber/pages/about_developer.dart';
 import 'package:barber/pages/barberserch_user.dart';
+import 'package:barber/pages/contact_admin_user.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/pages/login.dart';
 import 'package:barber/pages/registeruser.dart';
@@ -10,9 +12,12 @@ import 'package:provider/provider.dart';
 
 final Map<String, WidgetBuilder> map = {
   '/Login': (BuildContext context) => const Login(),
-  '/index': (BuildContext context) => const IndexPage(),
+  '/index': (BuildContext context) => IndexPage(),
   '/registerUser': (BuildContext context) => const RegisterUser(),
-  '/barberserch': (BuildContext context) => const BarberSerchUser(typeBarber: true,),
+  '/barberserch': (BuildContext context) =>
+      const BarberSerchUser(typeBarber: true),
+  '/contectAdminUser': (BuildContext context) => const ContactAdminUser(),
+  '/aboutDevloper': (BuildContext context) => const AboutDeveloper(),
 };
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +33,6 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyProviders(),
       child: MaterialApp(
-
         theme: ThemeData(primaryColor: Colors.black),
         routes: map,
         initialRoute: Rount_CN.routeIndex,

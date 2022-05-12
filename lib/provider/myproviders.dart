@@ -34,4 +34,8 @@ class MyProviders extends ChangeNotifier {
      await googleSignIn.disconnect();
       FirebaseAuth.instance.signOut();
   }
+
+  Future facebookLogin() async{
+ final LoginResult result = await FacebookAuth.instance.login();
+  }
 }

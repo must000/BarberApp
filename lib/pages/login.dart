@@ -1,5 +1,8 @@
 import 'package:barber/Constant/route_cn.dart';
+import 'package:barber/pages/index.dart';
 import 'package:barber/provider/myproviders.dart';
+import 'package:barber/utils/dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +21,43 @@ class _LoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  var loading = false;
+  void _loginwithfacebook() async {
+    setState(() {
+      loading = true;
+    });
+    try {
+      final facebookLoginResult = await FacebookAuth.instance.login();
+      final userData = await FacebookAuth.instance.getUserData();
+      final facebookAuthCredential = FacebookAuthProvider.credential(
+          facebookLoginResult.accessToken!.token);
+      await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+      Navigator.pushNamedAndRemoveUntil(
+          context, Rount_CN.routeIndex, (route) => false);
+    } on FirebaseAuthException catch (e) {
+      var title = '';
+      switch (e.code) {
+        case 'account-exists-with-different-credential':
+          title = 'This account exists with a different sign in provider';
+          break;
+        case 'invalid-credential':
+          title = 'Unknown error has occurred';
+          break;
+        case 'user-disabled':
+          title = 'The user you tried to log intp is disabled';
+          break;
+        case 'user-not-found':
+          title = 'The user you tried to log into was not found';
+          break;
+      }
+      normalDialog(context, title);
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +141,16 @@ class _LoginState extends State<Login> {
                           Container(
                             width: size * 0.3,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => IndexPage(
+                                        isbarber: true,
+                                      ),
+                                    ),
+                                    (route) => false);
+                              },
                               child: const Text("ช่างตัดผม"),
                             ),
                           )
@@ -125,7 +174,7 @@ class _LoginState extends State<Login> {
                         child: ElevatedButton.icon(
                           icon: const FaIcon(FontAwesomeIcons.facebook),
                           onPressed: () {
-                            //  loginWithFacebook(context);
+                            _loginwithfacebook();
                           },
                           label: const Text('Facebook'),
                         ),
@@ -149,9 +198,7 @@ class _LoginState extends State<Login> {
               email: emailController.text, password: passwordController.text)
           .then((value) => Navigator.pushNamedAndRemoveUntil(
               context, Rount_CN.routeIndex, (route) => false))
-          .catchError((value) => Dialog(
-                child: Text(value),
-              ));
+          .catchError((value) => normalDialog(context, value.message));
     });
   }
 

@@ -1,6 +1,7 @@
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/album_barber_user.dart';
 import 'package:barber/pages/comment_barber_user.dart';
+import 'package:barber/pages/confirmreserve_user.dart';
 import 'package:barber/pages/detail_barber_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class BarberUser extends StatefulWidget {
 class _BarberUserState extends State<BarberUser> {
   String nameBarber;
   _BarberUserState({required this.nameBarber});
-
+  int x = 0;
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -115,17 +116,46 @@ class _BarberUserState extends State<BarberUser> {
         ),
         ListView.builder(
           shrinkWrap: true, //    <-- Set this to true
-          physics: ScrollPhysics(),
-          itemBuilder: (context, index) => const Card(
-            child: ListTile(
-              title: Text("ชื่อรายการ"),
-              subtitle: Text("รายละเอียด"),
-              trailing: Text('30 นาที / 60 บาท'),
+          physics: const ScrollPhysics(),
+          itemBuilder: (context, index) => Card(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  x++;
+                });
+              },
+              child: const ListTile(
+                title: Text("ชื่อรายการ"),
+                subtitle: Text("รายละเอียด"),
+                trailing: Text('30 นาที / 60 บาท'),
+              ),
             ),
           ),
           itemCount: 10,
         )
       ]),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.redAccent,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ConfirmReserveUser(),
+                ));
+          },
+          child: Container(
+            height: 75,
+            child: ListTile(
+              title: Text(
+                "$x รายการ 100 บาท",
+                style: const TextStyle(color: Colors.black),
+              ),
+              subtitle: const Text("60 นาที"),
+            ),
+          ),
+        ),
+      ),
     );
   }
 

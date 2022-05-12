@@ -1,4 +1,5 @@
 import 'package:barber/Constant/route_cn.dart';
+import 'package:barber/utils/dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class RegisterUser extends StatefulWidget {
 
 class _RegisterUserState extends State<RegisterUser> {
   final formKey = GlobalKey<FormState>();
-   TextEditingController nameController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   TextEditingController userController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -69,27 +70,6 @@ class _RegisterUserState extends State<RegisterUser> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       labelText: "Email",
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(
-                      vertical: 8, horizontal: size * 0.08),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "กรุณากรอกหมายเลขโทรศัพท์";
-                      } else {}
-                    },
-                    controller: phoneController,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      labelText: "phone number",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -166,9 +146,12 @@ class _RegisterUserState extends State<RegisterUser> {
           .createUserWithEmailAndPassword(
               email: userController.text, password: passwordController.text)
           .then((value) async {
-        await value.user!.updateDisplayName(nameController.text);
+        await value.user!.updateDisplayName(nameController.text).then(
+              (value) => Navigator.pop(context),
+            );
         print("สมัครแล้ว $value");
-        Navigator.pop(context);
+      }).catchError((value) {
+        normalDialog(context, value.message);
       });
     });
   }
