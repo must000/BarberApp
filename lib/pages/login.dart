@@ -1,5 +1,6 @@
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/index.dart';
+import 'package:barber/pages/registerbarber.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -142,14 +143,12 @@ class _LoginState extends State<Login> {
                             width: size * 0.3,
                             child: ElevatedButton(
                               onPressed: () {
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => IndexPage(
-                                        isbarber: true,
-                                      ),
-                                    ),
-                                    (route) => false);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RegisterBarber()),
+                                );
                               },
                               child: const Text("ช่างตัดผม"),
                             ),
