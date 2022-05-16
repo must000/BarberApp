@@ -151,7 +151,7 @@ class _RegisterUserState extends State<RegisterUser> {
             );
         print("สมัครแล้ว $value");
       }).catchError((value) {
-        normalDialog(context, value.message);
+        MyDialog().normalDialog(context, value.message);
       });
     });
   }

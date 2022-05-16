@@ -39,7 +39,7 @@ class _BarberUserState extends State<BarberUser> {
             Expanded(
               flex: 2,
               child: Container(
-                margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 height: size * 0.45,
                 width: size * 0.6,
                 child: Image.network(

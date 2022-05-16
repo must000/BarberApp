@@ -52,7 +52,7 @@ class _LoginState extends State<Login> {
           title = 'The user you tried to log into was not found';
           break;
       }
-      normalDialog(context, title);
+      // normalDialog(context, title);
     } finally {
       setState(() {
         loading = false;
@@ -197,7 +197,7 @@ class _LoginState extends State<Login> {
               email: emailController.text, password: passwordController.text)
           .then((value) => Navigator.pushNamedAndRemoveUntil(
               context, Rount_CN.routeIndex, (route) => false))
-          .catchError((value) => normalDialog(context, value.message));
+          .catchError((value) {MyDialog().normalDialog(context, value.message);} );
     });
   }
 
