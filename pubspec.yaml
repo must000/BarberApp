@@ -42,6 +42,8 @@ dependencies:
   provider: ^6.0.2
   flutter_facebook_auth: ^4.2.1
   image_picker: ^0.8.1+2
+  google_maps_flutter: ^2.1.5
+  geolocator: ^8.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
