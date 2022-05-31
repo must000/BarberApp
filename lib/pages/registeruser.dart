@@ -88,6 +88,7 @@ class _RegisterUserState extends State<RegisterUser> {
                         return "กรุณากรอกรหัสผ่าน";
                       } else {}
                     },
+                    obscureText: true,
                     decoration: InputDecoration(
                       labelText: "Password",
                       enabledBorder: OutlineInputBorder(
@@ -102,6 +103,7 @@ class _RegisterUserState extends State<RegisterUser> {
                   margin: EdgeInsets.symmetric(
                       vertical: 8, horizontal: size * 0.08),
                   child: TextFormField(
+                    obscureText: true,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "กรุณากรอกรหัสผ่าน";

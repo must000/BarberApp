@@ -5,10 +5,14 @@ import 'package:barber/pages/locationpage.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:barber/utils/show_progress.dart';
 import 'package:barber/widgets/barbermodel1.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:longdo_maps_api3_flutter/longdo_maps_api3_flutter.dart';
 
 class RegisterBarber extends StatefulWidget {
   const RegisterBarber({Key? key}) : super(key: key);
@@ -21,6 +25,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
   TimeOfDay _timeopen = TimeOfDay(hour: 0, minute: 0);
   TimeOfDay _timeclose = TimeOfDay(hour: 0, minute: 0);
   String? groupTypeBarber;
+  Map<String, bool> groupDayOpen = {};
   bool su = false,
       mo = false,
       tu = false,
@@ -35,65 +40,83 @@ class _RegisterBarberState extends State<RegisterBarber> {
   double? lat, lng;
   final ImagePicker imgpicker = ImagePicker();
   List<XFile>? imagefiles;
+  bool _animation = true;
+  Position? userLocation;
+  final formKey = GlobalKey<FormState>();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController lastnameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController nameShopController = TextEditingController();
+  TextEditingController recommentShopController = TextEditingController();
+  TextEditingController detailLocationController = TextEditingController();
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    chechpermission();
+    proceedfinelatlng();
   }
 
-  Future<Null> chechpermission() async {
-    bool locationService;
-    LocationPermission locationPermission;
-    locationService = await Geolocator.isLocationServiceEnabled();
-    if (locationService) {
-      print("location open");
-      locationPermission = await Geolocator.checkPermission();
-      if (locationPermission == LocationPermission.denied) {
-        locationPermission = await Geolocator.requestPermission();
-        if (locationPermission == LocationPermission.deniedForever) {
-          MyDialog().alertLocation(
-              context, "ไม่อนุญาตแชร์ Locationn", "โปรดแชร์ location");
-        } else {
-          findLatLng();
-        }
+  Future<Null> proceedfinelatlng() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        print('Location permissions are denied');
+      } else if (permission == LocationPermission.deniedForever) {
+        print("'Location permissions are permanently denied");
       } else {
-        if (locationPermission == LocationPermission.deniedForever) {
-          MyDialog().alertLocation(
-              context, "ไม่อนุญาตแชร์ Locationn", "โปรดแชร์ location");
-        } else {
-          findLatLng();
-        }
+        print("GPS Location service is granted");
       }
     } else {
-      MyDialog().alertLocation(
-          context, "Location service close", "please open locaation service");
+      findLatLng();
     }
   }
 
   Future<Null> findLatLng() async {
     print("findLatlan ==> Work");
-    Position? position = await findPosition();
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    print("${position.longitude}is a position");
+    print(position.latitude);
     setState(() {
-      lat = position!.latitude;
+      lat = position.latitude;
       lng = position.longitude;
       print("lat = $lat" + "lng = $lng");
     });
   }
 
-  Future<Position?> findPosition() async {
-    Position position;
-    try {
-      position = await Geolocator.getCurrentPosition();
-      return position;
-    } catch (e) {
-      return null;
-    }
+  proceedMoveLongdoMap(double lat, double lng) async {
+    await map.currentState?.call(
+      "location",
+      [
+        {
+          "lon": lng,
+          "lat": lat,
+        },
+        _animation
+      ],
+    );
   }
+
+  final map = GlobalKey<LongdoMapState>();
+  final GlobalKey<ScaffoldMessengerState> messenger =
+      GlobalKey<ScaffoldMessengerState>();
 
   @override
   Widget build(BuildContext context) {
+    Future<Null> proceedZoomLongdoMap() async {
+      await map.currentState?.call("zoom", [
+        double.parse("13"),
+        _animation,
+      ]);
+    }
+
     double size = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -102,10 +125,12 @@ class _RegisterBarberState extends State<RegisterBarber> {
           behavior: HitTestBehavior.opaque,
           onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
           child: Form(
+            key: formKey,
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   inputname(size),
+                  inputlastname(size),
                   inputEmail(size),
                   inputPassword(size),
                   inputRePassword(size),
@@ -118,40 +143,16 @@ class _RegisterBarberState extends State<RegisterBarber> {
                   inputTimeOpenAndTimeClose(),
                   const Text("วันที่เปิด"),
                   checkboxDayOpen(),
-                  inputLocation(size),
+                  mapLocation(size),
+                  buttonMovePosition(),
                   inputDistrict(),
                   inputSubDistrict(),
                   inputDetailLocation(size),
-                  TextButton(
-                      onPressed: (() => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LocationPage(),
-                          ))),
-                      child: Text("location")),
                   imgPhotoShop(size, context),
-                  photoShopFront == null
-                      ? const Text('')
-                      : TextButton(
-                          onPressed: () {
-                            normalDialog(context);
-                          },
-                          child: const Text('เปลี่ยนรูปภาพ')),
+                  buttonChangeImgPhotoShop(context),
                   const Text("อัลบั้มของร้าน"),
                   inputAlbum(),
-                  imagefiles != null
-                      ? Wrap(
-                          children: imagefiles!.map((imageone) {
-                            return Card(
-                              child: SizedBox(
-                                height: 100,
-                                width: 100,
-                                child: Image.file(File(imageone.path)),
-                              ),
-                            );
-                          }).toList(),
-                        )
-                      : Container(),
+                  albumShop(),
                   buttonRegister(),
                 ],
               ),
@@ -162,15 +163,221 @@ class _RegisterBarberState extends State<RegisterBarber> {
     );
   }
 
+  Container albumShop() {
+    return Container(
+      child: imagefiles != null
+          ? Wrap(
+              children: imagefiles!.map((imageone) {
+                return Card(
+                  child: SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: Image.file(File(imageone.path)),
+                  ),
+                );
+              }).toList(),
+            )
+          : Container(),
+    );
+  }
+
+  Container buttonChangeImgPhotoShop(BuildContext context) {
+    return Container(
+      child: photoShopFront == null
+          ? const Text('')
+          : TextButton(
+              onPressed: () {
+                normalDialog(context);
+              },
+              child: const Text('เปลี่ยนรูปภาพ')),
+    );
+  }
+
+  InkWell buttonMovePosition() {
+    return InkWell(
+      child: const ListTile(
+        title: Text("My position"),
+        leading: Icon(Icons.wrong_location),
+      ),
+      onTap: () {
+        proceedMoveLongdoMap(lat!, lng!);
+      },
+    );
+  }
+
+  Widget mapLocation(double size) {
+    return Stack(
+      children: [
+        Container(
+          child: LongdoMapWidget(
+            apiKey: "192d687fea50c69265ac0c95e88f2599",
+            key: map,
+            bundleId: "com.flutterthialand.barber",
+          ),
+          width: size * 0.9,
+          height: 400,
+        ),
+        Container(
+          height: 400,
+          child: const Center(
+            child: Icon(Icons.pin_drop_outlined),
+          ),
+        ),
+      ],
+    );
+  }
+
   ElevatedButton buttonRegister() {
     return ElevatedButton(
-      onPressed: () {
-        print(groupTypeBarber);
-        print("$_timeopen and $_timeclose");
-        print("lat = $lat lng = $lng");
+      onPressed: () async {
+        var location = await map.currentState?.call("location");
+        groupDayOpen = {
+          'su': su,
+          'mo': mo,
+          'tu': tu,
+          'we': we,
+          'th': th,
+          'fr': fr,
+          'sa': sa
+        };
+        print("location =>> $location");
+        var latx = cutlat(location);
+        var lonx = cutlon(location);
+        if (formKey.currentState!.validate()) {
+          if (groupTypeBarber == null) {
+            MyDialog().normalDialog(context, "กรุณาเลือกประเภทของร้าน");
+          } else if (subDistrict == null) {
+            MyDialog().normalDialog(context, "กรุณาเลือกตำบลที่ร้านอยู่");
+          } else if (photoShopFront == null) {
+            MyDialog().normalDialog(context, "กรุณาเพิ่มรูปหน้าร้าน");
+          } else {
+            registerData(
+              nameController.text.trim(),
+              lastnameController.text.trim(),
+              emailController.text.trim(),
+              passwordController.text,
+              phoneController.text,
+              groupTypeBarber!,
+              nameShopController.text,
+              recommentShopController.text,
+              _timeopen,
+              _timeclose,
+              groupDayOpen,
+              latx,
+              lonx,
+              subDistrict,
+              district,
+              detailLocationController.text,
+            );
+          }
+        }
       },
       child: const Text('ลงทะเบียนร้าน'),
     );
+  }
+
+  cutlon(location) {
+    String lon;
+    var psLat = location.indexOf('lat');
+    lon = location.substring(7, psLat - 2);
+    return lon;
+  }
+
+  cutlat(location) {
+    String lat;
+    var psLat = location.indexOf('lat');
+    lat = location.substring(psLat + 5, location.length - 1);
+    return lat;
+  }
+
+  Future<Null> registerData(
+    String name,
+    String lastname,
+    String email,
+    String password,
+    String phone,
+    String typeBarber,
+    String nameShop,
+    String recommentShop,
+    TimeOfDay timeopen,
+    TimeOfDay timeclose,
+    Map dayopen,
+    lat,
+    lon,
+    subDestrict,
+    String destrict,
+    String detaillocation,
+  ) async {
+    print(
+      "$name $lastname $email $password $phone $typeBarber $nameShop $recommentShop $timeopen $timeclose $dayopen ${lat.toString()} ${lon.toString()} $subDistrict $district $detaillocation",
+    );
+    await Firebase.initializeApp().then((value) async {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) {
+        print("สมัครสำเร็จ");
+        proceedSaveDataBarber(
+          email,
+          name,
+          lastname,
+          phone,
+          typeBarber,
+          nameShop,
+          recommentShop,
+          dayopen,
+          timeopen,
+          timeclose,
+          lat,
+          lon,
+          destrict,
+          subDestrict,
+          detaillocation,
+        )
+            .then((value) => Navigator.pop(context))
+            .then((value) => Navigator.pop(context));
+      }).catchError((value) {
+        MyDialog().normalDialog(context, value.message);
+      });
+    });
+  }
+
+  Future<Null> proceedSaveDataBarber(
+    String email,
+    String name,
+    String lastname,
+    String phone,
+    String typeBarber,
+    String shopName,
+    String shopRecommend,
+    Map dayopen,
+    timeopen,
+    timeclose,
+    lat,
+    lon,
+    String destrict,
+    String subDestrict,
+    String addressdetails,
+  ) async {
+    await FirebaseFirestore.instance.collection('Barber').add({
+      "email": email,
+      "name": name,
+      "lastname": lastname,
+      "phone": phone,
+      "typeBarber": typeBarber,
+      "shopname": shopName,
+      "shoprecommend": shopRecommend,
+      "dayopen": dayopen,
+      "timeopen":
+          "${timeopen.hour.toString().padLeft(2, "0")} : ${_timeopen.minute.toString().padLeft(2, "0")}",
+      "timeclose":
+          "${timeclose.hour.toString().padLeft(2, "0")} : ${_timeclose.minute.toString().padLeft(2, "0")}",
+      "lat": lat,
+      "lon": lon,
+      "district": district,
+      "subdistrict": subDistrict,
+      "addressdetails": addressdetails,
+    });
+    debugPrint("บันทึกสำเร็จ");
   }
 
   ElevatedButton inputAlbum() {
@@ -213,6 +420,12 @@ class _RegisterBarberState extends State<RegisterBarber> {
       width: size * 0.75,
       margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
       child: TextFormField(
+        controller: detailLocationController,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "กรุณากรอกรายละเอียดที่อยู่ของร้าน";
+          }
+        },
         maxLines: 4,
         decoration: InputDecoration(
           labelText: "รายละเอียดที่อยู่ของร้าน",
@@ -310,36 +523,6 @@ class _RegisterBarberState extends State<RegisterBarber> {
       ],
     );
   }
-
-  Container inputLocation(double size) {
-    return Container(
-      color: Colors.grey,
-      width: double.infinity,
-      height: 200,
-      child: lat == null
-          ? ShowProgress()
-          : GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(lat!, lng!),
-                zoom: 16,
-              ),
-              onMapCreated: (controller) {},
-              markers: setMarker(),
-            ),
-    );
-  }
-
-  //มาร์ค สีแดงๆที่อยู่บนแมพ
-  Set<Marker> setMarker() => <Marker>[
-        Marker(
-          markerId: MarkerId("id"),
-          position: LatLng(lat!, lng!),
-          infoWindow: InfoWindow(
-              title: "คุณอยู่ที่นี่",
-              snippet:
-                  "Lat = $lat, lng = $lng"), //เมื่อคลิกที่มาร์ค จะแสดงtitle
-        ),
-      ].toSet();
 
   Row checkboxDayOpen() {
     return Row(
@@ -498,6 +681,12 @@ class _RegisterBarberState extends State<RegisterBarber> {
       width: size * 0.75,
       margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
       child: TextFormField(
+        controller: recommentShopController,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "กรุณาคำแนะนำร้าน";
+          }
+        },
         maxLines: 4,
         decoration: InputDecoration(
           labelText: "คำแนะนำร้าน",
@@ -515,6 +704,12 @@ class _RegisterBarberState extends State<RegisterBarber> {
     return Container(
       margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
       child: TextFormField(
+        controller: nameShopController,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "กรุณากรอกชื่อร้าน";
+          }
+        },
         decoration: InputDecoration(
           labelText: "ชื่อร้าน",
           enabledBorder: OutlineInputBorder(
@@ -562,6 +757,12 @@ class _RegisterBarberState extends State<RegisterBarber> {
       margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         keyboardType: TextInputType.phone,
+        controller: phoneController,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "กรุณากรอกเบอร์โทร";
+          }
+        },
         decoration: InputDecoration(
           labelText: "phone",
           enabledBorder: OutlineInputBorder(
@@ -579,13 +780,14 @@ class _RegisterBarberState extends State<RegisterBarber> {
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: size * 0.08),
       child: TextFormField(
         keyboardType: TextInputType.visiblePassword,
-        // validator: (value) {
-        //   if (value!.isEmpty) {
-        //     return "กรุณากรอกรหัสผ่าน";
-        //   } else if (value != passwordController.text) {
-        //     return "กรุณากรอกรหัสผ่านให้ตรงกัน";
-        //   }
-        // },
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "กรุณากรอกรหัสผ่าน";
+          } else if (value != passwordController.text) {
+            return "กรุณากรอกรหัสผ่านให้ตรงกัน";
+          }
+        },
+        obscureText: true,
         decoration: InputDecoration(
           labelText: "Confirm Password",
           enabledBorder: OutlineInputBorder(
@@ -603,12 +805,13 @@ class _RegisterBarberState extends State<RegisterBarber> {
       margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         keyboardType: TextInputType.visiblePassword,
-        // controller: passwordController,
+        controller: passwordController,
         validator: (value) {
           if (value!.isEmpty) {
             return "กรุณากรอกรหัสผ่าน";
           } else {}
         },
+        obscureText: true,
         decoration: InputDecoration(
           labelText: "Password",
           enabledBorder: OutlineInputBorder(
@@ -630,7 +833,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
             return "กรุณากรอกEmail";
           } else {}
         },
-        // controller: userController,
+        controller: emailController,
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           labelText: "Email",
@@ -653,10 +856,33 @@ class _RegisterBarberState extends State<RegisterBarber> {
             return "กรุณากรอกชื่อ";
           } else {}
         },
-        // controller: nameController,
+        controller: nameController,
         keyboardType: TextInputType.name,
         decoration: InputDecoration(
           labelText: "Name",
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder:
+              OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      ),
+    );
+  }
+
+  Container inputlastname(double size) {
+    return Container(
+      margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
+      child: TextFormField(
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "กรุณากรอกนามสกุล";
+          } else {}
+        },
+        controller: lastnameController,
+        keyboardType: TextInputType.name,
+        decoration: InputDecoration(
+          labelText: "Lastname",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),

@@ -1,5 +1,6 @@
 import 'package:barber/pages/barberserch_user.dart';
 import 'package:barber/widgets/barbermodel1.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,11 @@ class _HairCutUserState extends State<HairCutUser> {
   void initState() {
     super.initState();
     findNameAnEmail();
+    finddataID();
+  }
+
+  Future<Null> finddataID()async{
+    await FirebaseFirestore.instance.collection('users');
   }
 
   Future<Null> findNameAnEmail() async {
@@ -38,7 +44,6 @@ class _HairCutUserState extends State<HairCutUser> {
     double size = MediaQuery.of(context).size.width;
 
     late final user = FirebaseAuth.instance.currentUser;
-    // user = FirebaseAuth.getInstance().getCurrentUser();
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -52,14 +57,16 @@ class _HairCutUserState extends State<HairCutUser> {
         ],
         backgroundColor: Colors.grey,
       ),
-      body: Column(
-        children: [
-          buttonChooseAType(size),
-          sectionListview(size, "ร้านที่เคยใช้บริการ"),
-          listStoreHistory(size),
-          sectionListview(size, "ร้านที่ถูกใจ"),
-          listStoreLike(size),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            buttonChooseAType(size),
+            sectionListview(size, "ร้านที่เคยใช้บริการ"),
+            listStoreHistory(size),
+            sectionListview(size, "ร้านที่ถูกใจ"),
+            listStoreLike(size),
+          ],
+        ),
       ),
     );
   }

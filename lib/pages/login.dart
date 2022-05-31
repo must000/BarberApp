@@ -22,6 +22,7 @@ class _LoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool statusRedEys = true;
 
   var loading = false;
   void _loginwithfacebook() async {
@@ -89,7 +90,9 @@ class _LoginState extends State<Login> {
                             } else {}
                           },
                           controller: emailController,
+                          
                           decoration: InputDecoration(
+                            
                             labelText: "Email",
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -107,8 +110,25 @@ class _LoginState extends State<Login> {
                               return "กรุณากรอกรหัสผ่าน";
                             } else {}
                           },
+                          obscureText: statusRedEys,
                           controller: passwordController,
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  statusRedEys = !statusRedEys;
+                                });
+                              },
+                              icon: statusRedEys
+                                  ? const Icon(
+                                      Icons.remove_red_eye,
+                                      color: Colors.black,
+                                    )
+                                  : const Icon(
+                                      Icons.remove_red_eye_outlined,
+                                      color: Colors.black,
+                                    ),
+                            ),
                             labelText: "Password",
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -197,7 +217,9 @@ class _LoginState extends State<Login> {
               email: emailController.text, password: passwordController.text)
           .then((value) => Navigator.pushNamedAndRemoveUntil(
               context, Rount_CN.routeIndex, (route) => false))
-          .catchError((value) {MyDialog().normalDialog(context, value.message);} );
+          .catchError((value) {
+        MyDialog().normalDialog(context, value.message);
+      });
     });
   }
 
