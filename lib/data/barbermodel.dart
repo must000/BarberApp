@@ -1,0 +1,4 @@
+// class BarberModel(
+//   String email;
+
+// )

@@ -1,8 +1,10 @@
 import 'package:barber/pages/barberserch_user.dart';
+import 'package:barber/pages/test.dart';
 import 'package:barber/widgets/barbermodel1.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import '../Constant/route_cn.dart';
@@ -20,12 +22,8 @@ class _HairCutUserState extends State<HairCutUser> {
   void initState() {
     super.initState();
     findNameAnEmail();
-    finddataID();
   }
 
-  Future<Null> finddataID()async{
-    await FirebaseFirestore.instance.collection('users');
-  }
 
   Future<Null> findNameAnEmail() async {
     await Firebase.initializeApp().then((value) async {
@@ -48,7 +46,12 @@ class _HairCutUserState extends State<HairCutUser> {
       appBar: AppBar(
         actions: [
           FirebaseAuth.instance.currentUser != null
-              ? Center(child: Text(name == null ? "" : "$name"))
+              ? Center(
+                  child: Text(name == null
+                      ? ""
+                      : name == ""
+                          ? email.toString()
+                          : "$name"))
               : TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, Rount_CN.routeLogin);
@@ -60,6 +63,9 @@ class _HairCutUserState extends State<HairCutUser> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            ElevatedButton(onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Test(),));
+            }, child: Text("ssasaw")),
             buttonChooseAType(size),
             sectionListview(size, "ร้านที่เคยใช้บริการ"),
             listStoreHistory(size),

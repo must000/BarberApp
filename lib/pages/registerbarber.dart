@@ -1,18 +1,25 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:barber/Constant/district_cn.dart';
+import 'package:barber/pages/index.dart';
 import 'package:barber/pages/locationpage.dart';
+import 'package:barber/pages/test.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:barber/utils/show_progress.dart';
 import 'package:barber/widgets/barbermodel1.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:longdo_maps_api3_flutter/longdo_maps_api3_flutter.dart';
+// import 'package:path/path.dart';
 
 class RegisterBarber extends StatefulWidget {
   const RegisterBarber({Key? key}) : super(key: key);
@@ -332,13 +339,36 @@ class _RegisterBarberState extends State<RegisterBarber> {
           destrict,
           subDestrict,
           detaillocation,
-        )
-            .then((value) => Navigator.pop(context))
-            .then((value) => Navigator.pop(context));
+        ).then((value) => uploadphoto(email).then((value) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => IndexPage(),
+                  ),
+                  (route) => false);
+            }).catchError((value) {
+              MyDialog().stDialog(context, value.message);
+            }));
       }).catchError((value) {
         MyDialog().normalDialog(context, value.message);
       });
     });
+  }
+
+  Future<Null> uploadphoto(String email) async {
+    final path = 'imgfront/$email';
+    final file = File(photoShopFront!.path);
+    final ref = FirebaseStorage.instance.ref().child(path);
+    ref.putFile(file);
+    if (imagefiles != null) {
+      for (var i = 0; i < imagefiles!.length; i++) {
+        int x = Random().nextInt(1000000);
+        final path2 = 'album/$email/$x';
+        final file2 = File(imagefiles![i].path);
+        final ref = FirebaseStorage.instance.ref().child(path2);
+        ref.putFile(file2);
+      }
+    }
   }
 
   Future<Null> proceedSaveDataBarber(
@@ -358,7 +388,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
     String subDestrict,
     String addressdetails,
   ) async {
-    await FirebaseFirestore.instance.collection('Barber').add({
+    await FirebaseFirestore.instance.collection('Barber').doc(email).set({
       "email": email,
       "name": name,
       "lastname": lastname,

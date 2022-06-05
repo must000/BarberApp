@@ -1,7 +1,14 @@
+import 'dart:async';
+import 'dart:collection';
+
 import 'package:barber/pages/other_barber.dart';
 import 'package:barber/pages/queue_barber.dart';
 import 'package:barber/pages/service_barber.dart';
 import 'package:barber/pages/store_barber.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:barber/pages/haircut_user.dart';
 import 'package:barber/pages/other_user.dart';
@@ -19,7 +26,37 @@ class IndexPage extends StatefulWidget {
 }
 
 class _IndexPageState extends State<IndexPage> {
+  String? email;
+  bool load = false;
+
+  @override
+  void initState() {
+    super.initState();
+    findEmail();
+  }
+
   bool? isbarber;
+
+  Future<Null> findEmail() async {
+    await Firebase.initializeApp().then((value) async {
+      await FirebaseAuth.instance.authStateChanges().listen((event) async {
+        setState(() {
+          email = event!.email;
+        });
+        final data =
+            FirebaseFirestore.instance.collection('Barber').doc(event!.email);
+        final snapshot = await data.get();
+        if (snapshot.exists) {
+          setState(() {
+            isbarber = true;
+          });
+
+          print("${snapshot.data()} is a dataaaaaaaaaaaaaaaa");
+        }
+      });
+    });
+  }
+
   _IndexPageState({this.isbarber});
   @override
   Widget build(BuildContext context) {
