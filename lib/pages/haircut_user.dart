@@ -63,9 +63,6 @@ class _HairCutUserState extends State<HairCutUser> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Test(),));
-            }, child: Text("ssasaw")),
             buttonChooseAType(size),
             sectionListview(size, "ร้านที่เคยใช้บริการ"),
             listStoreHistory(size),

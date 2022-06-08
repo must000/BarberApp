@@ -19,7 +19,6 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:longdo_maps_api3_flutter/longdo_maps_api3_flutter.dart';
-// import 'package:path/path.dart';
 
 class RegisterBarber extends StatefulWidget {
   const RegisterBarber({Key? key}) : super(key: key);
