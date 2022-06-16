@@ -62,9 +62,7 @@ class _OtherBarberState extends State<OtherBarber> {
     return ElevatedButton(
         onPressed: () {
           final provider = Provider.of<MyProviders>(context, listen: false);
-          provider.logout();
-
-          Navigator.popAndPushNamed(context, Rount_CN.routeIndex);
+          provider.logoutBB(context);
         },
         child: const Text("logout"));
   }

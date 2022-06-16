@@ -44,7 +44,7 @@ class BarberModel1 extends StatelessWidget {
               Container(
                 child: score != null
                     ? Text("คะแนนและรีวิว $score")
-                    : Text("ยังไม่มีคะแนน"),
+                    : const Text("ยังไม่มีคะแนน"),
                 width: size * 0.3,
               ),
             ],

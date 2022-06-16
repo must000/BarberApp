@@ -69,21 +69,5 @@ class MyDialog {
       ),
     );
   }
-  // Future<Null> chooseImgDialog(BuildContext context) async {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => SimpleDialog(
-  //       title: const ListTile(
-  //         title: Text("เลือกวิธีเพิ่มรูปภาพ",
-  //             style: TextStyle(color: Colors.black)),
-  //       ),
-  //       children: [
-  //         TextButton(
-  //           onPressed: () => Navigator.pop(context),
-  //           child: const Text("ShowImage"),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
+
 }

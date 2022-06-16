@@ -54,7 +54,16 @@ class _ServiceBarberState extends State<ServiceBarber> {
                           Text(
                               "${userData['time'].toString()} นาที / ${userData["price"].toString()} บาท"),
                           IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                FirebaseFirestore.instance
+                                    .collection("Service")
+                                    .doc(email)
+                                    .collection("service")
+                                    .doc(userData.id)
+                                    .delete()
+                                    .then((value) => print("ลบสำเร็จ"));
+                                userData!.id!;
+                              },
                               icon: const Icon(
                                 Icons.close_sharp,
                                 color: Colors.red,
