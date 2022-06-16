@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:barber/main.dart';
@@ -33,6 +34,8 @@ class _StoreBarberState extends State<StoreBarber> {
   File? photoShopFront;
   List<Map<String, dynamic>>? filess;
   int deleteAlbum = 0;
+  List<XFile>? imagefiles;
+  final ImagePicker imgpicker = ImagePicker();
   @override
   void initState() {
     // TODO: implement initState
@@ -60,31 +63,31 @@ class _StoreBarberState extends State<StoreBarber> {
     });
   }
 
-  Future<List<Map<String, dynamic>>> fetchImages(String uniqueUserId) async {
-    List<Map<String, dynamic>> files = [];
-    final ListResult result = await FirebaseStorage.instance
-        .ref()
-        .child('album')
-        .child(uniqueUserId)
-        .list();
-    final List<Reference> allFiles = result.items;
-    print(allFiles.length);
+  // Future<List<Map<String, dynamic>>> fetchImages(String uniqueUserId) async {
+  //   List<Map<String, dynamic>> files = [];
+  //   final ListResult result = await FirebaseStorage.instance
+  //       .ref()
+  //       .child('album')
+  //       .child(uniqueUserId)
+  //       .list();
+  //   final List<Reference> allFiles = result.items;
+  //   print(allFiles.length);
 
-    await Future.forEach<Reference>(allFiles, (file) async {
-      final String fileUrl = await file.getDownloadURL();
-      final FullMetadata fileMeta = await file.getMetadata();
+  //   await Future.forEach<Reference>(allFiles, (file) async {
+  //     final String fileUrl = await file.getDownloadURL();
+  //     final FullMetadata fileMeta = await file.getMetadata();
 
-      files.add({
-        'url': fileUrl,
-        'path': file.fullPath,
-        'uploaded_by': fileMeta.customMetadata!['uploaded_by'] ?? 'Nobody',
-        'description':
-            fileMeta.customMetadata!['description'] ?? 'No description'
-      });
-      print('result is $files');
-    });
-    return files;
-  }
+  //     files.add({
+  //       'url': fileUrl,
+  //       'path': file.fullPath,
+  //       'uploaded_by': fileMeta.customMetadata!['uploaded_by'] ?? 'Nobody',
+  //       'description':
+  //           fileMeta.customMetadata!['description'] ?? 'No description'
+  //     });
+  //     print('result is $files');
+  //   });
+  //   return files;
+  // }
 
   Future<Null> getAlbumUrl() async {
     final ListResult result = await FirebaseStorage.instance
@@ -157,6 +160,32 @@ class _StoreBarberState extends State<StoreBarber> {
     );
   }
 
+  openImages() async {
+    try {
+      var pickedfiles = await imgpicker.pickMultiImage();
+      //you can use ImageCourse.camera for Camera capture
+      if (pickedfiles != null) {
+        for (var i = 0; i <= pickedfiles.length; i++) {
+          imagefiles = pickedfiles;
+        }
+
+        if (imagefiles != null) {
+          for (var i = 0; i < imagefiles!.length; i++) {
+            int x = Random().nextInt(1000000);
+            final path2 = 'album/$email/$x';
+            final file2 = File(imagefiles![i].path);
+            final ref = FirebaseStorage.instance.ref().child(path2);
+            ref.putFile(file2).then((p0) => getAlbumUrl());
+          }
+        }
+      } else {
+        print("No image is selected.");
+      }
+    } catch (e) {
+      print("error while picking file.");
+    }
+  }
+
   Future<Null> chooseImage(ImageSource source) async {
     try {
       // ignore: deprecated_member_use
@@ -167,6 +196,34 @@ class _StoreBarberState extends State<StoreBarber> {
         photoShopFront = File(result!.path);
       });
     } catch (e) {}
+  }
+
+  Future<Null> chooseImage2(ImageSource source) async {
+    try {
+      // ignore: deprecated_member_use
+      var result = await ImagePicker().getImage(
+        source: source,
+      );
+      uploadImgAlbum(email!, File(result!.path));
+    } catch (e) {}
+  }
+
+  Future<Null> uploadImgAlbum(String email, File img) async {
+    int x = Random().nextInt(1000000);
+    final path = 'album/$email/$x';
+    final file = File(img.path);
+    final ref = FirebaseStorage.instance.ref().child(path);
+    ref.putFile(file).then((p0) => getAlbumUrl());
+
+    // if (imagefiles != null) {
+    //   for (var i = 0; i < imagefiles!.length; i++) {
+    //     int x = Random().nextInt(1000000);
+    //     final path2 = 'album/$email/$x';
+    //     final file2 = File(imagefiles![i].path);
+    //     final ref = FirebaseStorage.instance.ref().child(path2);
+    //     ref.putFile(file2);
+    //   }
+    // }
   }
 
   Future<Null> uploadphoto(String email) async {
@@ -181,67 +238,106 @@ class _StoreBarberState extends State<StoreBarber> {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            showRecommend(),
-            change == true ? buttonsRecommend(context) : const SizedBox(),
-            const SizedBox(
-              height: 40,
-            ),
-            const Text("รูปหน้าร้าน"),
-            showimageFront(size),
-            buttonChangeImgFront(context),
-            photoShopFront == null
-                ? const SizedBox()
-                : buttonDeleteAndUpdateImgFront(),
-            const SizedBox(
-              height: 10,
-            ),
-            buttonDeleteimgAlbum(),
-            filess == null
-                ? const SizedBox(
-                    child: Text('ไม่มีรูปในอัลบั้ม'),
-                  )
-                : showImgAlbum()
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              showRecommend(),
+              change == true ? buttonsRecommend(context) : const SizedBox(),
+              const SizedBox(
+                height: 40,
+              ),
+              const Text("รูปหน้าร้าน"),
+              showimageFront(size),
+              buttonChangeImgFront(context),
+              photoShopFront == null
+                  ? const SizedBox()
+                  : buttonDeleteAndUpdateImgFront(),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    normalDialogForAlbum(context);
+                  },
+                  child: Text("เพิ่มรูป")),
+              buttonDeleteimgAlbum(),
+              filess == null
+                  ? const SizedBox(
+                      child: Text('ไม่มีรูปในอัลบั้ม'),
+                    )
+                  : showImgAlbum()
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Expanded showImgAlbum() {
-    return Expanded(
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-        ),
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              setState(() {
-                if (filess![index]['status'] == false) {
-                  deleteAlbum++;
-                } else {
-                  deleteAlbum--;
-                }
-                filess![index]['status'] = !filess![index]['status'];
-              });
-            },
-            child: Container(
-              margin: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                  border: Border.all(),
-                  color: filess![index]['status'] == true
-                      ? Colors.red
-                      : const Color.fromARGB(255, 172, 172, 172)),
-              child: Card(
-                child: Image.network(filess![index]['url'].toString()),
+  Future<Null> normalDialogForAlbum(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  chooseImage2(ImageSource.camera);
+                  Navigator.pop(context);
+                },
+                child: const Icon(Icons.camera_alt),
               ),
-            ),
-          );
-        },
-        itemCount: filess!.length,
+              ElevatedButton(
+                onPressed: () {
+                  openImages();
+                  Navigator.pop(context);
+                },
+                child: const Icon(
+                  Icons.collections_outlined,
+                ),
+              )
+            ],
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget showImgAlbum() {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+      ),
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () {
+            setState(() {
+              if (filess![index]['status'] == false) {
+                deleteAlbum++;
+              } else {
+                deleteAlbum--;
+              }
+              filess![index]['status'] = !filess![index]['status'];
+            });
+          },
+          child: Container(
+            margin: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              border: Border.all(),
+              color: filess![index]['status'] == true
+                  ? Colors.red
+                  : const Color.fromARGB(255, 172, 172, 172),
+            ),
+            child: Card(
+              child: Image.network(filess![index]['url'].toString()),
+            ),
+          ),
+        );
+      },
+      itemCount: filess!.length,
     );
   }
 
@@ -252,7 +348,7 @@ class _StoreBarberState extends State<StoreBarber> {
         const Padding(
           padding: EdgeInsets.only(left: 10),
           child: Text(
-            "",
+            "อัลบั้มร้าน",
             style: TextStyle(fontSize: 20),
           ),
         ),
@@ -277,12 +373,11 @@ class _StoreBarberState extends State<StoreBarber> {
         //ถ้าเจอtrue ให้ลบ
         final storageRef = FirebaseStorage.instance.ref();
         final desertRef = storageRef.child(filess![i]["path"]);
-        await desertRef
-            .delete()
-            .then((value) {
-              debugPrint("delete ${filess![i]["path"]}");
-            });
-            // test ลบสำเร็จ เหลือรีเฟรชข้อมูล
+        await desertRef.delete().then((value) {
+          debugPrint("delete ${filess![i]["path"]}");
+          getAlbumUrl();
+        });
+        // test ลบสำเร็จ เหลือรีเฟรชข้อมูล
       }
     }
   }
