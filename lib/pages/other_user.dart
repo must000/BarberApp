@@ -41,18 +41,13 @@ class _OtherUserState extends State<OtherUser> {
                                     fontSize: 15),
                               );
                       } else if (snapshot.hasError) {
-                        return Text("error");
+                        return const Text("error");
                       } else {
-                        return Text("");
+                        return const Text("");
                       }
                     },
                   ),
                   logout(context),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, Rount_CN.routeLogin);
-                      },
-                      child: const Text("Login"))
                 ],
               ),
               Container(
@@ -82,7 +77,9 @@ class _OtherUserState extends State<OtherUser> {
                 child: const Text("ขอความช่วยเหลือ"),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, Rount_CN.routeAboutDeveloper);
+                },
                 child: const Text("เกี่ยวกับเรา"),
               ),
             ],

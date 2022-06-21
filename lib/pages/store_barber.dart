@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:barber/main.dart';
+import 'package:barber/pages/date_picker_barber.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,48 +47,14 @@ class _StoreBarberState extends State<StoreBarber> {
   }
 
   Future<Null> findRecommend() async {
-    await Firebase.initializeApp().then((value) async {
-      await FirebaseAuth.instance.authStateChanges().listen((event) async {
-        setState(() {
-          email = event!.email;
-        });
-        final data =
-            FirebaseFirestore.instance.collection('Barber').doc(event!.email);
-        final snapshot = await data.get();
-        if (snapshot.exists) {
-          Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-          recommendController.text = data['shoprecommend'];
-          iii = data['shoprecommend'];
-        }
-      });
-    });
+    final data = FirebaseFirestore.instance.collection('Barber').doc(email);
+    final snapshot = await data.get();
+    if (snapshot.exists) {
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+      recommendController.text = data['shoprecommend'];
+      iii = data['shoprecommend'];
+    }
   }
-
-  // Future<List<Map<String, dynamic>>> fetchImages(String uniqueUserId) async {
-  //   List<Map<String, dynamic>> files = [];
-  //   final ListResult result = await FirebaseStorage.instance
-  //       .ref()
-  //       .child('album')
-  //       .child(uniqueUserId)
-  //       .list();
-  //   final List<Reference> allFiles = result.items;
-  //   print(allFiles.length);
-
-  //   await Future.forEach<Reference>(allFiles, (file) async {
-  //     final String fileUrl = await file.getDownloadURL();
-  //     final FullMetadata fileMeta = await file.getMetadata();
-
-  //     files.add({
-  //       'url': fileUrl,
-  //       'path': file.fullPath,
-  //       'uploaded_by': fileMeta.customMetadata!['uploaded_by'] ?? 'Nobody',
-  //       'description':
-  //           fileMeta.customMetadata!['description'] ?? 'No description'
-  //     });
-  //     print('result is $files');
-  //   });
-  //   return files;
-  // }
 
   Future<Null> getAlbumUrl() async {
     final ListResult result = await FirebaseStorage.instance
@@ -257,9 +224,20 @@ class _StoreBarberState extends State<StoreBarber> {
               ),
               ElevatedButton(
                   onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DatePickerBarber(
+                            email: email!,
+                          ),
+                        ));
+                  },
+                  child: const Text("แจ้งปิดร้านชั่วคราว")),
+              ElevatedButton(
+                  onPressed: () {
                     normalDialogForAlbum(context);
                   },
-                  child: Text("เพิ่มรูป")),
+                  child: const Text("เพิ่มรูปในอัลบั้ม")),
               buttonDeleteimgAlbum(),
               filess == null
                   ? const SizedBox(

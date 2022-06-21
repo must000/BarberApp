@@ -1,21 +1,56 @@
-import 'package:barber/Constant/route_cn.dart';
-import 'package:barber/pages/index.dart';
-import 'package:barber/provider/myproviders.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:barber/Constant/route_cn.dart';
+import 'package:barber/pages/index.dart';
+import 'package:barber/provider/myproviders.dart';
+
 class OtherBarber extends StatefulWidget {
-  const OtherBarber({Key? key}) : super(key: key);
+  String email;
+  OtherBarber({
+    Key? key,
+    required this.email,
+  }) : super(key: key);
 
   @override
-  State<OtherBarber> createState() => _OtherBarberState();
+  State<OtherBarber> createState() => _OtherBarberState(email: this.email);
 }
 
 class _OtherBarberState extends State<OtherBarber> {
+  String? email;
+  _OtherBarberState({required this.email});
+  String? fullname;
+
+  @override
+  void initState() {
+    super.initState();
+    findFullname();
+  }
+
+  Future<Null> findFullname() async {
+    await Firebase.initializeApp().then((value) async {
+      await FirebaseAuth.instance.authStateChanges().listen((event) async {
+        setState(() {
+          email = event!.email;
+        });
+        final data =
+            FirebaseFirestore.instance.collection('Barber').doc(event!.email);
+        final snapshot = await data.get();
+        if (snapshot.exists) {
+          Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+          setState(() {
+            fullname = "${data["name"]} ${data["lastname"]}";
+          });
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    late final user = FirebaseAuth.instance.currentUser;
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Container(
@@ -25,9 +60,7 @@ class _OtherBarberState extends State<OtherBarber> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  child: const Text("ชื่อ"),
-                ),
+                fullname == null ? const Text("") : Text("ชื่อ $fullname"),
                 logout(context),
               ],
             ),
@@ -49,7 +82,9 @@ class _OtherBarberState extends State<OtherBarber> {
               child: const Text("ขอความช่วยเหลือ"),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, Rount_CN.routeAboutDeveloper);
+              },
               child: const Text("เกี่ยวกับเรา"),
             ),
           ],

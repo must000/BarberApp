@@ -16,7 +16,7 @@ final Map<String, WidgetBuilder> map = {
   '/registerUser': (BuildContext context) => const RegisterUser(),
   '/barberserch': (BuildContext context) =>
       const BarberSerchUser(typeBarber: true),
-  '/contectAdminUser': (BuildContext context) => const ContactAdminUser(),
+  '/contactAdminUser': (BuildContext context) => const ContactAdminUser(),
   '/aboutDevloper': (BuildContext context) => const AboutDeveloper(),
 };
 void main() async {

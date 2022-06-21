@@ -12,14 +12,12 @@ class _AboutDeveloperState extends State<AboutDeveloper> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
-        child: Column(
-          children: const [
-            Text("ผู้พัฒนา"),
-            Text("นายจิตติ หอมกลิ่น"),
-            Text("นายจีรภัทร์ ทวีวัฒนามานนท์"),
-          ],
-        ),
+      body: ListView(
+        children: const [
+          Center(child: Text("ผู้พัฒนา")),
+          Center(child: Text("นายจิตติ หอมกลิ่น")),
+          Center(child: Text("นายจีรภัทร์ ทวีวัฒนามานนท์")),
+        ],
       ),
     );
   }

@@ -105,8 +105,12 @@ class _IndexPageState extends State<IndexPage> {
                     ServiceBarber(
                       email: email!,
                     ),
-                    StoreBarber(email: email!,),
-                    const OtherBarber(),
+                    StoreBarber(
+                      email: email!,
+                    ),
+                    OtherBarber(
+                      email: email!,
+                    ),
                   ]),
                   bottomNavigationBar: const TabBar(tabs: [
                     Tab(
