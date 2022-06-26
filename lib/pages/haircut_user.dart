@@ -1,29 +1,38 @@
-import 'package:barber/pages/barberserch_user.dart';
-import 'package:barber/pages/test.dart';
-import 'package:barber/widgets/barbermodel1.dart';
+import 'package:barber/data/barbermodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
+import 'package:barber/pages/barberserch_user.dart';
+import 'package:barber/pages/test.dart';
+import 'package:barber/widgets/barbermodel1.dart';
+
 import '../Constant/route_cn.dart';
 
 class HairCutUser extends StatefulWidget {
-  const HairCutUser({Key? key}) : super(key: key);
+  List<BarberModel> barbershop;
+  HairCutUser({
+    Key? key,
+    required this.barbershop,
+  }) : super(key: key);
 
   @override
-  State<HairCutUser> createState() => _HairCutUserState();
+  State<HairCutUser> createState() =>
+      _HairCutUserState(barbershop: this.barbershop);
 }
 
 class _HairCutUserState extends State<HairCutUser> {
+  List<BarberModel>? barbershop;
+  _HairCutUserState({required this.barbershop});
   String? name, email, phone;
   @override
   void initState() {
     super.initState();
     findNameAnEmail();
+    print(barbershop);
   }
-
 
   Future<Null> findNameAnEmail() async {
     await Firebase.initializeApp().then((value) async {

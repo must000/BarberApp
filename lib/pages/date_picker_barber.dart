@@ -1,3 +1,4 @@
+import 'package:barber/utils/dialog.dart';
 import 'package:barber/utils/show_progress.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +17,7 @@ class DatePickerBarber extends StatefulWidget {
 
   @override
   State<DatePickerBarber> createState() =>
-      _DatePickerBarberState(email: this.email);
+      _DatePickerBarberState(email: email);
 }
 
 class _DatePickerBarberState extends State<DatePickerBarber> {
@@ -25,24 +26,30 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
   DateRangePickerController datePickerController = DateRangePickerController();
 
   List<DateTime>? dateData;
+  List<String>? idDate;
   Map? dayss;
   List<int> dayClose = [];
-
+  var alldata;
   Future<Null> getData() async {
     var querySnapshot = await FirebaseFirestore.instance
         .collection("Barber")
         .doc(email)
         .collection("dayclose")
         .get();
-    var alldata = querySnapshot.docs.map((e) => e.data()).toList();
+    alldata = querySnapshot.docs.map((e) => e.data()).toList();
     List<DateTime> dataEx = [];
+    List<String> iddataEx = [];
     for (int n = 0; n < alldata.length; n++) {
       dataEx.add(alldata[n]["dayclosed"].toDate());
+      var a = querySnapshot.docs[n];
+      iddataEx.add(a.id);
+      // print(idDate[n]);
     }
+    // print(alldata);
     setState(() {
       dateData = dataEx;
+      idDate = iddataEx;
     });
-    print("dwrwerw");
   }
 
   Future<Null> getDayOpen() async {
@@ -53,25 +60,25 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
       dayss = data['dayopen'];
     }
     // print(dayss);
-    if (dayss!["tu"]==false) {
+    if (dayss!["tu"] == false) {
       dayClose.add(1);
     }
-    if (dayss!["su"]==false) {
+    if (dayss!["su"] == false) {
       dayClose.add(2);
     }
-    if (dayss!["mo"]==false) {
+    if (dayss!["mo"] == false) {
       dayClose.add(3);
     }
-    if (dayss!["th"]==false) {
+    if (dayss!["th"] == false) {
       dayClose.add(4);
     }
-    if (dayss!["fr"]==false) {
+    if (dayss!["fr"] == false) {
       dayClose.add(5);
     }
-    if (dayss!["sa"]==false) {
+    if (dayss!["sa"] == false) {
       dayClose.add(6);
     }
-    if (dayss!["we"]==false) {
+    if (dayss!["we"] == false) {
       dayClose.add(7);
     }
     setState(() {
@@ -82,7 +89,7 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
   @override
   initState() {
     getData().then((value) {
-      print('dddd');
+      print('$dateData $idDate');
       setState(() {});
     });
     getDayOpen();
@@ -94,15 +101,46 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
     return Scaffold(
         appBar: AppBar(),
         body: SfDateRangePicker(
-          selectionMode: DateRangePickerSelectionMode.multiple,
+          selectionMode: DateRangePickerSelectionMode.single,
           showActionButtons: true,
           controller: datePickerController,
           view: DateRangePickerView.month,
+          toggleDaySelection: true,
           onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-            // print(args.value);
+            final index = dateData?.indexOf(args.value);
+            if (index != -1) {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: const ListTile(
+                          title: Text("ยกเลิกปิดร้าน"),
+                          subtitle: Text("ต้องการเปิดร้านหรือไม่ ? "),
+                        ),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("ยกเลิก")),
+                          TextButton(
+                              onPressed: () {
+                                FirebaseFirestore.instance
+                                    .collection('Barber')
+                                    .doc(email)
+                                    .collection('dayclose')
+                                    .doc(idDate![index!])
+                                    .delete()
+                                    .then((value) {
+                                  Navigator.pop(context);
+                                  return getData();
+                                });
+                              },
+                              child: Text("เปิดร้าน"))
+                        ],
+                      ));
+            }
           },
-          // ร้านทำผม ต้องแจ้งปิดร้านก่อน 2 วัน
-          minDate: DateTime.now().add(const Duration(days: 2)),
+          minDate: DateTime.now(),
           monthViewSettings: DateRangePickerMonthViewSettings(
             specialDates: dateData,
             weekendDays: dayClose,
@@ -113,15 +151,32 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
                 border: Border.all(color: const Color(0xFFF44436), width: 1),
                 shape: BoxShape.circle),
             weekendDatesDecoration: BoxDecoration(
-                color: const Color.fromARGB(255, 95, 96, 99),
+                color: Color.fromARGB(255, 149, 149, 150),
                 border: Border.all(color: const Color(0xFFB6B6B6), width: 1),
                 shape: BoxShape.circle),
           ),
+          enablePastDates: true,
           onSubmit: (value) {
-            if (value == null) {
-              print("null");
+            if (datePickerController.selectedDate == null) {
             } else {
-              proceedSaveData();
+              final index =
+                  dateData!.indexOf(datePickerController.selectedDate!);
+              if (index != -1) {
+                print("ซ้ำ");
+              } else {
+                DateTime now = new DateTime.now();
+                if (datePickerController.selectedDate ==
+                        DateTime(now.year, now.month, now.day) ||
+                    datePickerController.selectedDate ==
+                        DateTime(now.year, now.month, now.day)
+                            .add(const Duration(days: 1))) {
+                  print("ไม่เกิน 2 วัน");
+                  MyDialog().normalDialog(
+                      context, "ต้องแจ้งปิดร้านก่อนอย่างน้อย 1 วัน");
+                } else {
+                  proceedSaveData();
+                }
+              }
             }
           },
           onCancel: () {},
@@ -129,13 +184,11 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
   }
 
   Future<Null> proceedSaveData() async {
-    for (var n = 0; n < datePickerController.selectedDates!.length; n++) {
-      await FirebaseFirestore.instance
-          .collection('Barber')
-          .doc(email)
-          .collection('dayclose')
-          .add({"dayclosed": datePickerController.selectedDates![n]}).then(
-              (value) => getData());
-    }
+    await FirebaseFirestore.instance
+        .collection('Barber')
+        .doc(email)
+        .collection('dayclose')
+        .add({"dayclosed": datePickerController.selectedDate!}).then(
+            (value) => getData());
   }
 }

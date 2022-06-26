@@ -12,12 +12,16 @@ class _AboutDeveloperState extends State<AboutDeveloper> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: ListView(
-        children: const [
-          Center(child: Text("ผู้พัฒนา")),
-          Center(child: Text("นายจิตติ หอมกลิ่น")),
-          Center(child: Text("นายจีรภัทร์ ทวีวัฒนามานนท์")),
-        ],
+      body: Center(
+        child: Column(
+          children: const [
+             SizedBox(height:50 ,),
+            Text("ผู้พัฒนา",style: TextStyle(fontSize: 30),),
+            SizedBox(height: 30,),
+            ListTile(title: Center(child: Text("Jitti Homklin")),subtitle: Center(child: Text("นายจิตติ หอมกลิ่น")),),
+            ListTile(title: Center(child: Text("Jeeraphat Thaveewattanamanont")),subtitle: Center(child: Text("จีรภัทร์ ทวีวัฒนามานนท์ ")),)
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/Constant/district_cn.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/pages/locationpage.dart';
@@ -9,6 +10,7 @@ import 'package:barber/utils/dialog.dart';
 import 'package:barber/utils/show_progress.dart';
 import 'package:barber/widgets/barbermodel1.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,8 +43,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
       sa = false;
   File? photoShopFront;
   List<String> listSubDistrict = District_CN.mueangNonthaburi;
-  String district = 'เมืองนนทบุรี';
-  String? subDistrict;
+  // String district = 'เมืองนนทบุรี';
+  // String? subDistrict;
   double? lat, lng;
   final ImagePicker imgpicker = ImagePicker();
   List<XFile>? imagefiles;
@@ -62,25 +64,55 @@ class _RegisterBarberState extends State<RegisterBarber> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    proceedfinelatlng();
+    chechpermission();
+    // proceedfinelatlng();
   }
 
-  Future<Null> proceedfinelatlng() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        print('Location permissions are denied');
-      } else if (permission == LocationPermission.deniedForever) {
-        print("'Location permissions are permanently denied");
+    Future<Null> chechpermission() async {
+    bool locationService;
+    LocationPermission locationPermission;
+    locationService = await Geolocator.isLocationServiceEnabled();
+    if (locationService) {
+      print("location open");
+      locationPermission = await Geolocator.checkPermission();
+      if (locationPermission == LocationPermission.denied) {
+        locationPermission = await Geolocator.requestPermission();
+        if (locationPermission == LocationPermission.deniedForever) {
+          MyDialog().alertLocation(
+              context, "ไม่อนุญาตแชร์ Locationn", "โปรดแชร์ location");
+        } else {
+          findLatLng();
+        }
       } else {
-        print("GPS Location service is granted");
+        if (locationPermission == LocationPermission.deniedForever) {
+          MyDialog().alertLocation(
+              context, "ไม่อนุญาตแชร์ Locationn", "โปรดแชร์ location");
+        } else {
+          findLatLng();
+        }
       }
     } else {
-      findLatLng();
+      MyDialog().alertLocation(
+          context, "Location service close", "please open locaation service");
     }
   }
+
+  // Future<Null> proceedfinelatlng() async {
+  //   LocationPermission permission = await Geolocator.checkPermission();
+
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       print('Location permissions are denied');
+  //     } else if (permission == LocationPermission.deniedForever) {
+  //       print("'Location permissions are permanently denied");
+  //     } else {
+  //       print("GPS Location service is granted");
+  //     }
+  //   } else {
+  //     findLatLng();
+  //   }
+  // }
 
   Future<Null> findLatLng() async {
     print("findLatlan ==> Work");
@@ -135,6 +167,15 @@ class _RegisterBarberState extends State<RegisterBarber> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  // ElevatedButton(
+                  //     onPressed: () async {
+                  //       String path =
+                  //           "https://api.longdo.com/map/services/address?lon=100.6&lat=13.7130&nopostcode=0&noroad=0&noaoi=0&noelevation=0&nowater=0&key=f347b56e94df23bde1dd8d0fc4bfa954";
+                  //       await Dio()
+                  //           .get(path)
+                  //           .then((value) => print(value.data['district']));
+                  //     },
+                  //     child: const Text("test api")),
                   inputname(size),
                   inputlastname(size),
                   inputEmail(size),
@@ -151,8 +192,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
                   checkboxDayOpen(),
                   mapLocation(size),
                   buttonMovePosition(),
-                  inputDistrict(),
-                  inputSubDistrict(),
+                  // inputDistrict(),
+                  // inputSubDistrict(),
                   inputDetailLocation(size),
                   imgPhotoShop(size, context),
                   buttonChangeImgPhotoShop(context),
@@ -216,9 +257,9 @@ class _RegisterBarberState extends State<RegisterBarber> {
       children: [
         Container(
           child: LongdoMapWidget(
-            apiKey: "192d687fea50c69265ac0c95e88f2599",
+            apiKey: Contants.keyLongdomap,
             key: map,
-            bundleId: "com.flutterthialand.barber",
+            bundleId: Contants.bundleID,
           ),
           width: size * 0.9,
           height: 400,
@@ -252,34 +293,46 @@ class _RegisterBarberState extends State<RegisterBarber> {
         if (formKey.currentState!.validate()) {
           if (groupTypeBarber == null) {
             MyDialog().normalDialog(context, "กรุณาเลือกประเภทของร้าน");
-          } else if (subDistrict == null) {
-            MyDialog().normalDialog(context, "กรุณาเลือกตำบลที่ร้านอยู่");
-          } else if (photoShopFront == null) {
+          }
+          // else if (subDistrict == null) {
+          //   MyDialog().normalDialog(context, "กรุณาเลือกตำบลที่ร้านอยู่");
+          // }
+          else if (photoShopFront == null) {
             MyDialog().normalDialog(context, "กรุณาเพิ่มรูปหน้าร้าน");
           } else {
-            registerData(
-              nameController.text.trim(),
-              lastnameController.text.trim(),
-              emailController.text.trim(),
-              passwordController.text,
-              phoneController.text,
-              groupTypeBarber!,
-              nameShopController.text,
-              recommentShopController.text,
-              _timeopen,
-              _timeclose,
-              groupDayOpen,
-              latx,
-              lonx,
-              subDistrict,
-              district,
-              detailLocationController.text,
-            );
+            apigetDataDistrict(latx, lonx);
           }
         }
       },
       child: const Text('ลงทะเบียนร้าน'),
     );
+  }
+
+  Future<Null> apigetDataDistrict(String lat, String lon) async {
+    String path =
+        "https://api.longdo.com/map/services/address?lon=$lon&lat=$lat&nopostcode=0&noroad=0&noaoi=0&noelevation=0&nowater=0&key=${Contants.keyLongdomap}";
+    await Dio().get(path).then((value) {
+      String dis = value.data['district'];
+      String dissub = value.data['subdistrict'];
+      return registerData(
+        nameController.text.trim(),
+        lastnameController.text.trim(),
+        emailController.text.trim(),
+        passwordController.text,
+        phoneController.text,
+        groupTypeBarber!,
+        nameShopController.text,
+        recommentShopController.text,
+        _timeopen,
+        _timeclose,
+        groupDayOpen,
+        lat,
+        lon,
+        dissub.toString(),
+        dis.toString(),
+        detailLocationController.text,
+      );
+    });
   }
 
   cutlon(location) {
@@ -310,12 +363,12 @@ class _RegisterBarberState extends State<RegisterBarber> {
     Map dayopen,
     lat,
     lon,
-    subDestrict,
+    String subDestrict,
     String destrict,
     String detaillocation,
   ) async {
     print(
-      "$name $lastname $email $password $phone $typeBarber $nameShop $recommentShop $timeopen $timeclose $dayopen ${lat.toString()} ${lon.toString()} $subDistrict $district $detaillocation",
+      "$name $lastname $email $password $phone $typeBarber $nameShop $recommentShop $timeopen $timeclose $dayopen ${lat.toString()} ${lon.toString()} $subDestrict $destrict $detaillocation",
     );
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance
@@ -402,8 +455,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
           "${timeclose.hour.toString().padLeft(2, "0")} : ${_timeclose.minute.toString().padLeft(2, "0")}",
       "lat": lat,
       "lon": lon,
-      "district": district,
-      "subdistrict": subDistrict,
+      "district": destrict,
+      "subdistrict": subDestrict,
       "addressdetails": addressdetails,
     });
     debugPrint("บันทึกสำเร็จ");
@@ -468,90 +521,90 @@ class _RegisterBarberState extends State<RegisterBarber> {
     );
   }
 
-  Row inputSubDistrict() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        const Text("ตำบล"),
-        DropdownButton<String>(
-          value: subDistrict,
-          icon: const Icon(Icons.arrow_downward),
-          elevation: 16,
-          style: const TextStyle(color: Colors.deepPurple),
-          underline: Container(
-            height: 2,
-            color: Colors.deepPurpleAccent,
-          ),
-          onChanged: (String? newValue) {
-            setState(() {
-              subDistrict = newValue!;
-            });
-            print(subDistrict);
-          },
-          items: listSubDistrict.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
+  // Row inputSubDistrict() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //     children: [
+  //       const Text("ตำบล"),
+  //       DropdownButton<String>(
+  //         value: subDistrict,
+  //         icon: const Icon(Icons.arrow_downward),
+  //         elevation: 16,
+  //         style: const TextStyle(color: Colors.deepPurple),
+  //         underline: Container(
+  //           height: 2,
+  //           color: Colors.deepPurpleAccent,
+  //         ),
+  //         onChanged: (String? newValue) {
+  //           setState(() {
+  //             subDistrict = newValue!;
+  //           });
+  //           print(subDistrict);
+  //         },
+  //         items: listSubDistrict.map<DropdownMenuItem<String>>((String value) {
+  //           return DropdownMenuItem<String>(
+  //             value: value,
+  //             child: Text(value),
+  //           );
+  //         }).toList(),
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  Row inputDistrict() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        const Text("อำเภอ"),
-        DropdownButton<String>(
-          value: district,
-          icon: const Icon(Icons.arrow_downward),
-          elevation: 16,
-          style: const TextStyle(color: Colors.deepPurple),
-          underline: Container(
-            height: 2,
-            color: Colors.deepPurpleAccent,
-          ),
-          onChanged: (String? newValue) {
-            setState(() {
-              subDistrict = null;
-              district = newValue!;
-            });
-            switch (district) {
-              case 'เมืองนนทบุรี':
-                listSubDistrict = District_CN.mueangNonthaburi;
-                break;
-              case 'บางกรวย':
-                listSubDistrict = District_CN.bangKruai;
-                break;
-              case 'บางใหญ่':
-                listSubDistrict = District_CN.bangYai;
-                break;
-              case 'บางบัวทอง':
-                listSubDistrict = District_CN.bangBuaThong;
-                break;
-              case 'ไทรน้อย':
-                listSubDistrict = District_CN.sainoi;
-                break;
-              case 'ปากเกร็ด':
-                listSubDistrict = District_CN.pakKret;
-                break;
-              default:
-            }
-            print(district);
-          },
-          items: District_CN.district
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
+  // Row inputDistrict() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //     children: [
+  //       const Text("อำเภอ"),
+  //       DropdownButton<String>(
+  //         value: district,
+  //         icon: const Icon(Icons.arrow_downward),
+  //         elevation: 16,
+  //         style: const TextStyle(color: Colors.deepPurple),
+  //         underline: Container(
+  //           height: 2,
+  //           color: Colors.deepPurpleAccent,
+  //         ),
+  //         onChanged: (String? newValue) {
+  //           setState(() {
+  //             subDistrict = null;
+  //             district = newValue!;
+  //           });
+  //           switch (district) {
+  //             case 'เมืองนนทบุรี':
+  //               listSubDistrict = District_CN.mueangNonthaburi;
+  //               break;
+  //             case 'บางกรวย':
+  //               listSubDistrict = District_CN.bangKruai;
+  //               break;
+  //             case 'บางใหญ่':
+  //               listSubDistrict = District_CN.bangYai;
+  //               break;
+  //             case 'บางบัวทอง':
+  //               listSubDistrict = District_CN.bangBuaThong;
+  //               break;
+  //             case 'ไทรน้อย':
+  //               listSubDistrict = District_CN.sainoi;
+  //               break;
+  //             case 'ปากเกร็ด':
+  //               listSubDistrict = District_CN.pakKret;
+  //               break;
+  //             default:
+  //           }
+  //           print(district);
+  //         },
+  //         items: District_CN.district
+  //             .map<DropdownMenuItem<String>>((String value) {
+  //           return DropdownMenuItem<String>(
+  //             value: value,
+  //             child: Text(value),
+  //           );
+  //         }).toList(),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Row checkboxDayOpen() {
     return Row(

@@ -56,7 +56,7 @@ class _OtherUserState extends State<OtherUser> {
               ),
               TextButton(
                 onPressed: () {},
-                child: const Text("ตั้งค่าข้อมูลผู้ใช้"),
+                child: const Text("ตั้งค่าข้อมูลผู้ใช้ "),
               ),
               TextButton(
                 onPressed: () {

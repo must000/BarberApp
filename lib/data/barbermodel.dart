@@ -1,14 +1,16 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 class BarberModel {
-  final String email;
+   final String email;
   final String name;
   final String lasiName;
   final String phone;
   final String typebarber;
   final String shopname;
   final String shoprecommend;
-  final String dayopen;
+  final Map<String, dynamic> dayopen;
   final String timeopen;
   final String timeclose;
   final String lat;
@@ -42,7 +44,7 @@ class BarberModel {
     String? typebarber,
     String? shopname,
     String? shoprecommend,
-    String? dayopen,
+    Map<String, dynamic>? dayopen,
     String? timeopen,
     String? timeclose,
     String? lat,
@@ -99,7 +101,7 @@ class BarberModel {
       typebarber: map['typebarber'] ?? '',
       shopname: map['shopname'] ?? '',
       shoprecommend: map['shoprecommend'] ?? '',
-      dayopen: map['dayopen'] ?? '',
+      dayopen: Map<String, dynamic>.from(map['dayopen']),
       timeopen: map['timeopen'] ?? '',
       timeclose: map['timeclose'] ?? '',
       lat: map['lat'] ?? '',
@@ -131,7 +133,7 @@ class BarberModel {
       other.typebarber == typebarber &&
       other.shopname == shopname &&
       other.shoprecommend == shoprecommend &&
-      other.dayopen == dayopen &&
+      mapEquals(other.dayopen, dayopen) &&
       other.timeopen == timeopen &&
       other.timeclose == timeclose &&
       other.lat == lat &&
