@@ -4,7 +4,13 @@ import 'package:flutter/material.dart';
 class BarberModel1 extends StatelessWidget {
   double size;
   String? img, score;
-  String nameBarber;
+  String nameBarber,lat,
+      lon,
+      addressdetails,
+      phoneNumber,
+      timeopen,
+      timeclose;
+        Map<String, dynamic> dayopen;
   bool? like = false;
 
   BarberModel1(
@@ -13,14 +19,22 @@ class BarberModel1 extends StatelessWidget {
       this.img,
       this.score,
       this.like,
-      required this.nameBarber})
+      required this.nameBarber,
+          required this.lat,
+    required this.lon,
+    required this.addressdetails,
+    required this.phoneNumber,
+    required this.timeopen,
+    required this.timeclose,
+    required this.dayopen,
+      })
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> BarberUser(nameBarber: nameBarber) ));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> BarberUser(nameShop: nameBarber, addressdetails: addressdetails, dayopen: dayopen, lat: lat, lon: lon, phoneNumber: phoneNumber, timeclose: timeclose, timeopen: timeopen, recommend: '',) ));
       },
       child: Stack(children: [
         Container(

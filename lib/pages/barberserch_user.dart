@@ -1,25 +1,94 @@
-import 'package:barber/pages/haircut_user.dart';
-import 'package:barber/pages/other_user.dart';
-import 'package:barber/pages/reservation_user.dart';
+import 'dart:collection';
+import 'package:barber/pages/barber_user.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
+import 'package:barber/data/barbermodel.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../widgets/barbermodel1.dart';
 
 class BarberSerchUser extends StatefulWidget {
   final bool typeBarber;
-  const BarberSerchUser({Key? key, required this.typeBarber}) : super(key: key);
+  List<BarberModel> barbershop;
+  double? lat, lon;
+  BarberSerchUser({
+    Key? key,
+    required this.typeBarber,
+    required this.barbershop,
+    this.lat,
+    this.lon,
+  }) : super(key: key);
 
   @override
-  State<BarberSerchUser> createState() =>
-      _BarberSerchUserState(typeBarber: this.typeBarber);
+  State<BarberSerchUser> createState() => _BarberSerchUserState(
+      typeBarber: typeBarber, barbershop: barbershop, lat: lat, lon: lon);
 }
 
 class _BarberSerchUserState extends State<BarberSerchUser> {
   bool typeBarber;
-  _BarberSerchUserState({required this.typeBarber});
+  List<BarberModel> barbershop;
+
+  double? lat, lon;
+  _BarberSerchUserState(
+      {required this.typeBarber, required this.barbershop, this.lat, this.lon});
+  // List<BarberModel>? barberResult = [];
+  List<BarberModel>? barberResult = [];
+  Map<String, String>? urlImgFront;
+  // List<List<dynamic>>? barberResult2 = [];
+// List<List<BarberModel,UrlImg>> barberResult2
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    calculateLatLon(barbershop);
+    getURL();
+  }
+
+  calculateLatLon(List<BarberModel> barber) {
+    var mapBarber = SplayTreeMap<double, BarberModel>();
+    if (lat != null && lon != null) {
+      for (var n = 0; n < barber.length; n++) {
+        double x, y, sum, sum2;
+        x = lat! - double.parse(barber[n].lat);
+        // print("$x *");
+        x = x.abs();
+        y = lon! - double.parse(barber[n].lng);
+        // print("$y *");
+        y = y.abs();
+        sum = x + y;
+        // print("$n x=$x y=$y sum = $sum");
+        sum2 = sum;
+        mapBarber[sum] = barber[n];
+      }
+      mapBarber.forEach((key, val) {
+        // print('{ key: $key, value: $val}');
+        barberResult!.add(val);
+      });
+    } else {
+      print("ไม่สามารถเข้าถึงlocation ของผู้ใช้ได้");
+    }
+  }
+
+  Future<Null> getURL() async {
+    Map<String, String>? urlImgFrontModel = {};
+    for (var i = 0; i < barberResult!.length; i++) {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child("imgfront/${barberResult![i].email}");
+      var url = await ref.getDownloadURL().then((value) {
+        urlImgFrontModel[barberResult![i].email] = value;
+      }).catchError((c) => print(c + "is an error"));
+    }
+    print("is an url $urlImgFrontModel");
+    setState(() {
+      urlImgFront = urlImgFrontModel;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
+
     return Scaffold(
         appBar: AppBar(
           title: Text(typeBarber == true ? "ร้านตัดผมชาย" : "ร้านเสริมสวย"),
@@ -29,25 +98,83 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
             children: [
               const SizedBox(height: 20),
               sectionListview(size, "ร้านยอดฮิต"),
-              listStoreHistory(size),
+              // listStoreHistory(size),
               sectionListview(size, "ร้านที่เคยใช้บริการ"),
-              listStoreHistory(size),
+              // listStoreHistory(size),
               sectionListview(size, "ร้านที่ถูกใจ"),
-              listStoreLike(size),
-              ListView.builder(
-                shrinkWrap: true, //    <-- Set this to true
-                physics: ScrollPhysics(),
-                itemBuilder: (context, index) => Card(
-                  child: ListTile(
-                    title: Text("ชื่อร้าน"),
-                    trailing: IconButton(
-                        onPressed: () {}, icon: const Icon(Icons.favorite)),
-                    leading: Image.network(
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmY6B2ye2mMyWxqH4YzDWxE0fpB43lcrBhig&usqp=CAU"),
-                  ),
-                ),
-                itemCount: 10,
-              )
+              // listStoreLike(size),
+              urlImgFront == null
+                  ? Container()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                        ),
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BarberUser(
+                                    nameShop: barberResult![index].shopname,
+                                    url: urlImgFront![
+                                        barberResult![index].email]!,
+                                    recommend:
+                                        barberResult![index].shoprecommend,
+                                    addressdetails:
+                                        barberResult![index].addressdetails,
+                                    dayopen: barberResult![index].dayopen,
+                                    lat: barberResult![index].lat,
+                                    lon: barberResult![index].lng,
+                                    phoneNumber: barberResult![index].phone,
+                                    timeopen: barberResult![index].timeopen,
+                                    timeclose: barberResult![index].timeclose,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 5),
+                              child: Container(
+                                decoration: BoxDecoration(border: Border.all()),
+                                child: Column(
+                                  children: [
+                                    CachedNetworkImage(
+                                      height: 60,
+                                      fit: BoxFit.fill,
+                                      imageUrl: urlImgFront![
+                                          barberResult![index].email]!,
+                                      placeholder: (context, url) =>
+                                          LoadingAnimationWidget.inkDrop(
+                                              color: Colors.black, size: 20),
+                                    ),
+                                    ListTile(
+                                      title:
+                                          Text(barberResult![index].shopname),
+                                      subtitle: Text(
+                                          barberResult![index].shoprecommend),
+                                    ),
+                                    Row(
+                                      children: const [
+                                        Text("คะแนน X "),
+                                        Icon(Icons.star)
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        itemCount: barberResult!.length,
+                      ),
+                    )
             ],
           ),
         ));
@@ -64,41 +191,41 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     );
   }
 
-  Container listStoreLike(double size) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      height: 140,
-      child: Expanded(
-        flex: 3,
-        child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 20,
-            itemBuilder: (context, index) => BarberModel1(
-                  size: size,
-                  nameBarber: "ร้านที่ถูกใจ",
-                )),
-      ),
-    );
-  }
+  // Container listStoreLike(double size) {
+  //   return Container(
+  //     margin: const EdgeInsets.only(bottom: 20),
+  //     height: 140,
+  //     child: Expanded(
+  //       flex: 3,
+  //       child: ListView.builder(
+  //           scrollDirection: Axis.horizontal,
+  //           itemCount: 20,
+  //           itemBuilder: (context, index) => BarberModel1(
+  //                 size: size,
+  //                 nameBarber: "ร้านที่ถูกใจ",
+  //               )),
+  //     ),
+  //   );
+  // }
 
-  Container listStoreHistory(double size) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      height: 140,
-      child: Expanded(
-        flex: 3,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: 20,
-          itemBuilder: (context, index) => BarberModel1(
-            size: size,
-            nameBarber: "ชื่อร้าน",
-            img:
-                "https://images.ctfassets.net/81iqaqpfd8fy/3r4flvP8Z26WmkMwAEWEco/870554ed7577541c5f3bc04942a47b95/78745131.jpg?w=1200&h=1200&fm=jpg&fit=fill",
-            score: "4",
-          ),
-        ),
-      ),
-    );
-  }
+  // Container listStoreHistory(double size) {
+  //   return Container(
+  //     margin: const EdgeInsets.only(bottom: 20),
+  //     height: 140,
+  //     child: Expanded(
+  //       flex: 3,
+  //       child: ListView.builder(
+  //         scrollDirection: Axis.horizontal,
+  //         itemCount: 20,
+  //         itemBuilder: (context, index) => BarberModel1(
+  //           size: size,
+  //           nameBarber: "ชื่อร้าน",
+  //           img:
+  //               "https://images.ctfassets.net/81iqaqpfd8fy/3r4flvP8Z26WmkMwAEWEco/870554ed7577541c5f3bc04942a47b95/78745131.jpg?w=1200&h=1200&fm=jpg&fit=fill",
+  //           score: "4",
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

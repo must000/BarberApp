@@ -1,20 +1,46 @@
 import 'package:flutter/material.dart';
 
 class DetailBarberUser extends StatefulWidget {
-  final String nameBarber;
-  const DetailBarberUser({
+  final String nameShop,
+      lat,
+      lon,
+      addressdetails,
+      phoneNumber,
+      timeopen,
+      timeclose;
+  Map<String, dynamic> dayopen;
+  DetailBarberUser({
     Key? key,
-    required this.nameBarber,
+    required this.nameShop,
+    required this.lat,
+    required this.lon,
+    required this.addressdetails,
+    required this.phoneNumber,
+    required this.timeopen,
+    required this.timeclose,
+    required this.dayopen,
   }) : super(key: key);
 
   @override
   State<DetailBarberUser> createState() =>
-      _DetailBarberUserState(nameBarber: nameBarber);
+      _DetailBarberUserState(nameBarber: nameShop,lat: lat,lon: lon,addressdetails: addressdetails,phoneNumber: phoneNumber,timeopen: timeopen,timeclose: timeclose,dayopen: dayopen);
 }
 
 class _DetailBarberUserState extends State<DetailBarberUser> {
   String nameBarber;
-  _DetailBarberUserState({required this.nameBarber});
+  String lat, lon;
+  String addressdetails, phoneNumber;
+  Map<String, dynamic> dayopen;
+  String timeopen, timeclose;
+  _DetailBarberUserState(
+      {required this.nameBarber,
+      required this.addressdetails,
+      required this.phoneNumber,
+      required this.dayopen,
+      required this.timeopen,
+      required this.timeclose,
+      required this.lat,
+      required this.lon});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,13 +56,13 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
             margin: const EdgeInsets.all(10),
           ),
           headingDetail("รายละเอียดที่อยู่ : "),
-          contentDetail('หมู่ 5 ซอย18 อยู่หน้าซอย ร้านสีแดง ๆ'),
+          contentDetail('$addressdetails'),
           headingDetail("เวลาเปิดปิด"),
-          contentDetail("08.00-22.00"),
+          contentDetail("$timeopen - $timeclose"),
           headingDetail("วันหยุด"),
-          contentDetail("พุทธ"),
+          contentDetail("----"),
           headingDetail("เบอร์ติดต่อ"),
-          contentDetail("0845525886"),
+          contentDetail("$phoneNumber"),
         ],
       ),
     );

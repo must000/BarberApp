@@ -1,25 +1,47 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/album_barber_user.dart';
 import 'package:barber/pages/comment_barber_user.dart';
 import 'package:barber/pages/confirmreserve_user.dart';
 import 'package:barber/pages/detail_barber_user.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class BarberUser extends StatefulWidget {
-  final String nameBarber;
-  const BarberUser({
+  final String nameShop, lat,
+      lon,
+      addressdetails,
+      phoneNumber,
+      timeopen,
+      timeclose;
+  Map<String, dynamic> dayopen;
+  final String? url, recommend;
+  
+  BarberUser({
     Key? key,
-    required this.nameBarber,
+    required this.dayopen,
+    required this.recommend, required this.nameShop, required this.lat, required this.lon, required this.addressdetails, required this.phoneNumber, required this.timeopen, required this.timeclose, this.url,
   }) : super(key: key);
 
   @override
-  State<BarberUser> createState() => _BarberUserState(nameBarber: nameBarber);
+  State<BarberUser> createState() =>
+      _BarberUserState(nameShop: nameShop, url: url, recommend: recommend,lat: lat,lon: lon,addressdetails: addressdetails,phoneNumber: phoneNumber,timeopen: timeopen,timeclose: timeclose,dayopen: dayopen);
 }
 
 class _BarberUserState extends State<BarberUser> {
-  String nameBarber;
-  _BarberUserState({required this.nameBarber});
+  String nameShop;
+  String? url, recommend;
+    String lat, lon;
+  String addressdetails, phoneNumber;
+  Map<String, dynamic> dayopen;
+  String timeopen, timeclose;
+  _BarberUserState({required this.nameShop, this.url, this.recommend,required this.addressdetails,
+      required this.phoneNumber,
+      required this.dayopen,
+      required this.timeopen,
+      required this.timeclose,
+      required this.lat,
+      required this.lon});
   int x = 0;
   @override
   Widget build(BuildContext context) {
@@ -28,7 +50,7 @@ class _BarberUserState extends State<BarberUser> {
     late final user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
-        title: Text(nameBarber),
+        title: Text(nameShop),
         actions: [
           buildUsername_Login(user),
         ],
@@ -44,7 +66,9 @@ class _BarberUserState extends State<BarberUser> {
                 height: size * 0.45,
                 width: size * 0.6,
                 child: Image.network(
-                  "https://images.ctfassets.net/81iqaqpfd8fy/3r4flvP8Z26WmkMwAEWEco/870554ed7577541c5f3bc04942a47b95/78745131.jpg?w=1200&h=1200&fm=jpg&fit=fill",
+                  url == null
+                      ? "https://images.ctfassets.net/81iqaqpfd8fy/3r4flvP8Z26WmkMwAEWEco/870554ed7577541c5f3bc04942a47b95/78745131.jpg?w=1200&h=1200&fm=jpg&fit=fill"
+                      : url!,
                   fit: BoxFit.fitWidth,
                 ),
               ),
@@ -68,7 +92,7 @@ class _BarberUserState extends State<BarberUser> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                DetailBarberUser(nameBarber: nameBarber),
+                                DetailBarberUser(nameShop: nameShop, addressdetails: addressdetails, dayopen: dayopen, lat: lat, lon: lon, phoneNumber: phoneNumber, timeclose: timeclose, timeopen: timeopen,),
                           ),
                         );
                       },
@@ -109,7 +133,7 @@ class _BarberUserState extends State<BarberUser> {
           ],
         ),
         Container(
-          child: Text("รับตัดผมวินเทจ เกาหลี โดยยอดฝีมือ"),
+          child: Text("$recommend"),
           margin: const EdgeInsets.symmetric(horizontal: 15),
         ),
         const SizedBox(
