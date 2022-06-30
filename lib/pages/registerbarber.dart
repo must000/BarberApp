@@ -167,15 +167,6 @@ class _RegisterBarberState extends State<RegisterBarber> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // ElevatedButton(
-                  //     onPressed: () async {
-                  //       String path =
-                  //           "https://api.longdo.com/map/services/address?lon=100.6&lat=13.7130&nopostcode=0&noroad=0&noaoi=0&noelevation=0&nowater=0&key=f347b56e94df23bde1dd8d0fc4bfa954";
-                  //       await Dio()
-                  //           .get(path)
-                  //           .then((value) => print(value.data['district']));
-                  //     },
-                  //     child: const Text("test api")),
                   inputname(size),
                   inputlastname(size),
                   inputEmail(size),

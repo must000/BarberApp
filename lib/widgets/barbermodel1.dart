@@ -9,7 +9,7 @@ class BarberModel1 extends StatelessWidget {
       addressdetails,
       phoneNumber,
       timeopen,
-      timeclose;
+      timeclose,recommend;
         Map<String, dynamic> dayopen;
   bool? like = false;
 
@@ -27,6 +27,7 @@ class BarberModel1 extends StatelessWidget {
     required this.timeopen,
     required this.timeclose,
     required this.dayopen,
+    required this.recommend,
       })
       : super(key: key);
 
@@ -34,7 +35,7 @@ class BarberModel1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> BarberUser(nameShop: nameBarber, addressdetails: addressdetails, dayopen: dayopen, lat: lat, lon: lon, phoneNumber: phoneNumber, timeclose: timeclose, timeopen: timeopen, recommend: '',) ));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> BarberUser(nameShop: nameBarber, addressdetails: addressdetails, dayopen: dayopen, lat: lat, lon: lon, phoneNumber: phoneNumber, timeclose: timeclose, timeopen: timeopen, recommend: recommend,) ));
       },
       child: Stack(children: [
         Container(

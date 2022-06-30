@@ -1,4 +1,6 @@
+import 'package:barber/Constant/contants.dart';
 import 'package:flutter/material.dart';
+import 'package:longdo_maps_api3_flutter/view.dart';
 
 class DetailBarberUser extends StatefulWidget {
   final String nameShop,
@@ -22,8 +24,15 @@ class DetailBarberUser extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<DetailBarberUser> createState() =>
-      _DetailBarberUserState(nameBarber: nameShop,lat: lat,lon: lon,addressdetails: addressdetails,phoneNumber: phoneNumber,timeopen: timeopen,timeclose: timeclose,dayopen: dayopen);
+  State<DetailBarberUser> createState() => _DetailBarberUserState(
+      nameBarber: nameShop,
+      lat: lat,
+      lon: lon,
+      addressdetails: addressdetails,
+      phoneNumber: phoneNumber,
+      timeopen: timeopen,
+      timeclose: timeclose,
+      dayopen: dayopen);
 }
 
 class _DetailBarberUserState extends State<DetailBarberUser> {
@@ -41,26 +50,84 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
       required this.timeclose,
       required this.lat,
       required this.lon});
+
+  final map = GlobalKey<LongdoMapState>();
+  String? dayC;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    dayclose();
+    print(dayopen);
+    // proceedMoveLongdoMap(double.parse(lat), double.parse(lon));
+  }
+
+  dayclose() {
+    String dayclose = "";
+
+    if (dayopen['su'] == false) {
+      dayclose = "$dayclose อาทิตย์";
+    }
+    if (dayopen['mo'] == false) {
+      dayclose = "$dayclose จันทร์";
+    }
+    if (dayopen['tu'] == false) {
+      dayclose = "$dayclose อังคาร";
+    }
+    if (dayopen['we'] == false) {
+      dayclose = "$dayclose พุธ";
+    }
+    if (dayopen['th'] == false) {
+      dayclose = "$dayclose พฤหัสบดี";
+    }
+    if (dayopen['fr'] == false) {
+      dayclose = "$dayclose ศุกร์";
+    }
+    if (dayopen['sa'] == false) {
+      dayclose = "$dayclose เสาร์";
+    }
+
+    setState(() {
+      dayC = dayclose;
+    });
+  }
+
+  proceedMoveLongdoMap(double lat, double lng) async {
+    await map.currentState?.call(
+      "location",
+      [
+        {
+          "lon": lng,
+          "lat": lat,
+        },
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    double size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text(nameBarber),
       ),
       body: ListView(
         children: [
-          Container(
-            height: 200,
-            child: const Text(""),
-            decoration: const BoxDecoration(color: Colors.green),
-            margin: const EdgeInsets.all(10),
-          ),
+          // Container(
+          //   child: LongdoMapWidget(
+          //     apiKey: Contants.keyLongdomap,
+          //     key: map,
+          //     bundleId: Contants.bundleID,
+          //   ),
+          //   width: size * 0.9,
+          //   height: 250,
+          // ),
           headingDetail("รายละเอียดที่อยู่ : "),
           contentDetail('$addressdetails'),
           headingDetail("เวลาเปิดปิด"),
           contentDetail("$timeopen - $timeclose"),
           headingDetail("วันหยุด"),
-          contentDetail("----"),
+          contentDetail("$dayC"),
           headingDetail("เบอร์ติดต่อ"),
           contentDetail("$phoneNumber"),
         ],

@@ -1,4 +1,5 @@
 import 'package:barber/data/barbermodel.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -114,6 +115,16 @@ class _HairCutUserState extends State<HairCutUser> {
     });
   }
 
+  CarouselController buttonCarouselController = CarouselController();
+  int _current = 0;
+  final List<String> imgList = [
+    "https://images.ctfassets.net/81iqaqpfd8fy/3r4flvP8Z26WmkMwAEWEco/870554ed7577541c5f3bc04942a47b95/78745131.jpg?w=1200&h=1200&fm=jpg&fit=fill",
+    "https://www.kosinstudio.com/wp-content/uploads/2020/06/Sleeve-badge-EPL-2017-Present.png",
+    "https://images.ctfassets.net/81iqaqpfd8fy/3r4flvP8Z26WmkMwAEWEco/870554ed7577541c5f3bc04942a47b95/78745131.jpg?w=1200&h=1200&fm=jpg&fit=fill",
+    "https://www.kosinstudio.com/wp-content/uploads/2020/06/Sleeve-badge-EPL-2017-Present.png",
+    "https://www.kosinstudio.com/wp-content/uploads/2020/06/Sleeve-badge-EPL-2017-Present.png",
+  ];
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -151,6 +162,57 @@ class _HairCutUserState extends State<HairCutUser> {
           : SingleChildScrollView(
               child: Column(
                 children: [
+                  Stack(children: [
+                    Container(height: 200,
+                      child: CarouselSlider(
+                      carouselController: buttonCarouselController,
+                      items: imgList
+                          .map((item) => Container(
+                                child: Center(
+                                    child: Image.network(item,
+                                        fit: BoxFit.cover, width: 1000)),
+                              ))
+                          .toList(),
+                      options: CarouselOptions(
+                          autoPlay: true,
+                          enlargeCenterPage: true,
+                          autoPlayInterval: Duration(seconds: 3),
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _current = index;
+                            });
+                          }),
+                  ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top:165),
+                      child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: imgList.asMap().entries.map((entry) {
+                        return GestureDetector(
+                          onTap: () =>
+                              buttonCarouselController.animateToPage(entry.key),
+                          child: Container(
+                            width: 12.0,
+                            height: 12.0,
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 4.0),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: (Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black)
+                                    .withOpacity(
+                                        _current == entry.key ? 0.9 : 0.4)),
+                          ),
+                        );
+                      }).toList(),
+                  ),
+                    ),
+                  ],),
+                  
+                
                   buttonChooseAType(size),
                   sectionListview(size, "ร้านที่เคยใช้บริการ"),
                   // listStoreHistory(size),
