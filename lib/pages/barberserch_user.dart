@@ -118,6 +118,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => BarberUser(
+                                    email: barberResult![index].email,
                                     nameShop: barberResult![index].shopname,
                                     url: urlImgFront![
                                         barberResult![index].email]!,
@@ -200,14 +201,14 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
             itemBuilder: (context, index) => BarberModel1(
                   size: size,
                   nameBarber: "ร้านที่ถูกใจ",
-                     addressdetails: '',
-            dayopen: barberResult![0].dayopen,
-            lat: '',
-            lon: '',
-            phoneNumber: '',
-            recommend: '',
-            timeclose: '',
-            timeopen: '',
+                  addressdetails: '',
+                  dayopen: barberResult![0].dayopen,
+                  lat: '',
+                  lon: '',
+                  phoneNumber: '',
+                  recommend: '',
+                  timeclose: '',
+                  timeopen: '',
                 )),
       ),
     );

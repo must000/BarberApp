@@ -182,15 +182,6 @@ class _StoreBarberState extends State<StoreBarber> {
     final ref = FirebaseStorage.instance.ref().child(path);
     ref.putFile(file).then((p0) => getAlbumUrl());
 
-    // if (imagefiles != null) {
-    //   for (var i = 0; i < imagefiles!.length; i++) {
-    //     int x = Random().nextInt(1000000);
-    //     final path2 = 'album/$email/$x';
-    //     final file2 = File(imagefiles![i].path);
-    //     final ref = FirebaseStorage.instance.ref().child(path2);
-    //     ref.putFile(file2);
-    //   }
-    // }
   }
 
   Future<Null> uploadphoto(String email) async {
@@ -222,17 +213,7 @@ class _StoreBarberState extends State<StoreBarber> {
               const SizedBox(
                 height: 10,
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DatePickerBarber(
-                            email: email!,
-                          ),
-                        ));
-                  },
-                  child: const Text("แจ้งปิดร้านชั่วคราว")),
+              buttonCloseShop(context),
               ElevatedButton(
                   onPressed: () {
                     normalDialogForAlbum(context);
@@ -249,6 +230,20 @@ class _StoreBarberState extends State<StoreBarber> {
         ),
       ),
     );
+  }
+
+  ElevatedButton buttonCloseShop(BuildContext context) {
+    return ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DatePickerBarber(
+                          email: email!,
+                        ),
+                      ));
+                },
+                child: const Text("แจ้งปิดร้านชั่วคราว"));
   }
 
   Future<Null> normalDialogForAlbum(BuildContext context) async {

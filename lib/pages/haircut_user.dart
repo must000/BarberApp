@@ -162,57 +162,60 @@ class _HairCutUserState extends State<HairCutUser> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  Stack(children: [
-                    Container(height: 200,
-                      child: CarouselSlider(
-                      carouselController: buttonCarouselController,
-                      items: imgList
-                          .map((item) => Container(
-                                child: Center(
-                                    child: Image.network(item,
-                                        fit: BoxFit.cover, width: 1000)),
-                              ))
-                          .toList(),
-                      options: CarouselOptions(
-                          autoPlay: true,
-                          enlargeCenterPage: true,
-                          autoPlayInterval: Duration(seconds: 3),
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _current = index;
-                            });
-                          }),
+                  Stack(
+                    children: [
+                      Container(
+                        height: 200,
+                        child: CarouselSlider(
+                          carouselController: buttonCarouselController,
+                          items: imgList
+                              .map((item) => Container(
+                                    child: Center(
+                                        child: Image.network(item,
+                                            fit: BoxFit.cover, width: 1000)),
+                                  ))
+                              .toList(),
+                          options: CarouselOptions(
+                              autoPlay: true,
+                              enlargeCenterPage: true,
+                              autoPlayInterval: const Duration(seconds: 3),
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  _current = index;
+                                });
+                              }),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 165),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: imgList.asMap().entries.map((entry) {
+                            return GestureDetector(
+                              onTap: () => buttonCarouselController
+                                  .animateToPage(entry.key),
+                              child: Container(
+                                width: 12.0,
+                                height: 12.0,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: (Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black)
+                                      .withOpacity(
+                                          _current == entry.key ? 0.9 : 0.4),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
                   ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top:165),
-                      child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: imgList.asMap().entries.map((entry) {
-                        return GestureDetector(
-                          onTap: () =>
-                              buttonCarouselController.animateToPage(entry.key),
-                          child: Container(
-                            width: 12.0,
-                            height: 12.0,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 4.0),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: (Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.black)
-                                    .withOpacity(
-                                        _current == entry.key ? 0.9 : 0.4)),
-                          ),
-                        );
-                      }).toList(),
-                  ),
-                    ),
-                  ],),
-                  
-                
+
                   buttonChooseAType(size),
                   sectionListview(size, "ร้านที่เคยใช้บริการ"),
                   // listStoreHistory(size),
@@ -313,7 +316,8 @@ class _HairCutUserState extends State<HairCutUser> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => BarberSerchUser(
-                              typeBarber: false, barbershop: barberwoman)));
+                              typeBarber: false, barbershop: barberwoman, lat: lat,
+                                lon: lng,)));
                 },
                 child: const Text("ร้านเสริมสวย")),
             width: size * 0.4,

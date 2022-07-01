@@ -35,7 +35,7 @@ class BarberModel1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> BarberUser(nameShop: nameBarber, addressdetails: addressdetails, dayopen: dayopen, lat: lat, lon: lon, phoneNumber: phoneNumber, timeclose: timeclose, timeopen: timeopen, recommend: recommend,) ));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> BarberUser(nameShop: nameBarber, addressdetails: addressdetails, dayopen: dayopen, lat: lat, lon: lon, phoneNumber: phoneNumber, timeclose: timeclose, timeopen: timeopen, recommend: recommend, email: '',) ));
       },
       child: Stack(children: [
         Container(

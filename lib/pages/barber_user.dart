@@ -1,14 +1,18 @@
+import 'package:barber/data/servicemodel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/album_barber_user.dart';
 import 'package:barber/pages/comment_barber_user.dart';
 import 'package:barber/pages/confirmreserve_user.dart';
 import 'package:barber/pages/detail_barber_user.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class BarberUser extends StatefulWidget {
-  final String nameShop, lat,
+  final String nameShop,
+      lat,
+      email,
       lon,
       addressdetails,
       phoneNumber,
@@ -16,33 +20,59 @@ class BarberUser extends StatefulWidget {
       timeclose;
   Map<String, dynamic> dayopen;
   final String? url, recommend;
-  
+
   BarberUser({
     Key? key,
     required this.dayopen,
-    required this.recommend, required this.nameShop, required this.lat, required this.lon, required this.addressdetails, required this.phoneNumber, required this.timeopen, required this.timeclose, this.url,
+    required this.recommend,
+    required this.email,
+    required this.nameShop,
+    required this.lat,
+    required this.lon,
+    required this.addressdetails,
+    required this.phoneNumber,
+    required this.timeopen,
+    required this.timeclose,
+    this.url,
   }) : super(key: key);
 
   @override
-  State<BarberUser> createState() =>
-      _BarberUserState(nameShop: nameShop, url: url, recommend: recommend,lat: lat,lon: lon,addressdetails: addressdetails,phoneNumber: phoneNumber,timeopen: timeopen,timeclose: timeclose,dayopen: dayopen);
+  State<BarberUser> createState() => _BarberUserState(
+      nameShop: nameShop,
+      email: email,
+      url: url,
+      recommend: recommend,
+      lat: lat,
+      lon: lon,
+      addressdetails: addressdetails,
+      phoneNumber: phoneNumber,
+      timeopen: timeopen,
+      timeclose: timeclose,
+      dayopen: dayopen);
 }
 
 class _BarberUserState extends State<BarberUser> {
-  String nameShop;
+  String nameShop, email;
   String? url, recommend;
-    String lat, lon;
+  String lat, lon;
   String addressdetails, phoneNumber;
   Map<String, dynamic> dayopen;
   String timeopen, timeclose;
-  _BarberUserState({required this.nameShop, this.url, this.recommend,required this.addressdetails,
+  _BarberUserState(
+      {required this.nameShop,
+      this.url,
+      this.recommend,
+      required this.addressdetails,
       required this.phoneNumber,
       required this.dayopen,
       required this.timeopen,
       required this.timeclose,
       required this.lat,
-      required this.lon});
+      required this.lon,
+      required this.email});
   int x = 0;
+  double time = 0, price = 0;
+  List<ServiceModel> servicemodel = [];
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -91,8 +121,16 @@ class _BarberUserState extends State<BarberUser> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                DetailBarberUser(nameShop: nameShop, addressdetails: addressdetails, dayopen: dayopen, lat: lat, lon: lon, phoneNumber: phoneNumber, timeclose: timeclose, timeopen: timeopen,),
+                            builder: (context) => DetailBarberUser(
+                              nameShop: nameShop,
+                              addressdetails: addressdetails,
+                              dayopen: dayopen,
+                              lat: lat,
+                              lon: lon,
+                              phoneNumber: phoneNumber,
+                              timeclose: timeclose,
+                              timeopen: timeopen,
+                            ),
                           ),
                         );
                       },
@@ -106,7 +144,9 @@ class _BarberUserState extends State<BarberUser> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AlbumBarberUser(),
+                            builder: (context) => AlbumBarberUser(
+                              email: email,
+                            ),
                           ),
                         );
                       },
@@ -120,7 +160,7 @@ class _BarberUserState extends State<BarberUser> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CommentBarberUser(),
+                            builder: (context) => const CommentBarberUser(),
                           ),
                         );
                       },
@@ -139,25 +179,54 @@ class _BarberUserState extends State<BarberUser> {
         const SizedBox(
           height: 50,
         ),
-        ListView.builder(
-          shrinkWrap: true, //    <-- Set this to true
-          physics: const ScrollPhysics(),
-          itemBuilder: (context, index) => Card(
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  x++;
-                });
-              },
-              child: const ListTile(
-                title: Text("ชื่อรายการ"),
-                subtitle: Text("รายละเอียด"),
-                trailing: Text('30 นาที / 60 บาท'),
-              ),
-            ),
-          ),
-          itemCount: 10,
-        )
+        StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('Service')
+              .doc(email)
+              .collection("service")
+              .snapshots(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              var data = snapshot.data.docs;
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (_, index) {
+                  var userData = data[index];
+                  return InkWell(
+                    child: Card(
+                      child: ListTile(
+                        title: Text(userData['name']),
+                        subtitle: Text(userData['detail']),
+                        trailing: Wrap(children: [
+                          Text(
+                              "${userData['time'].toString()} นาที / ${userData["price"].toString()} บาท"),
+                        ]),
+                      ),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        x = x + 1;
+                        servicemodel.add(
+                          ServiceModel(
+                              id: userData.id,
+                              name: userData['name'],
+                              detail: userData['detail'],
+                              time: userData['time'],
+                              price: userData['price']),
+                        );
+                              print(servicemodel);
+                      });
+                    },
+                  );
+                },
+                itemCount: data.length,
+              );
+            }
+            return LoadingAnimationWidget.waveDots(
+                color: Colors.blue, size: 20);
+          },
+        ),
       ]),
       bottomNavigationBar: BottomAppBar(
         color: Colors.redAccent,
@@ -173,10 +242,10 @@ class _BarberUserState extends State<BarberUser> {
             height: 75,
             child: ListTile(
               title: Text(
-                "$x รายการ 100 บาท",
+                "$x รายการ ${price.toString()} บาท",
                 style: const TextStyle(color: Colors.black),
               ),
-              subtitle: const Text("60 นาที"),
+              subtitle: Text("${time.toString()} นาที"),
             ),
           ),
         ),
