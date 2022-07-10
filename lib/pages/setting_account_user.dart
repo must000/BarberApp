@@ -1,17 +1,21 @@
+import 'dart:math';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class SettingAccountUser extends StatefulWidget {
-  String username;
+  String username, email;
   SettingAccountUser({
     Key? key,
     required this.username,
+    required this.email,
   }) : super(key: key);
 
   @override
   State<SettingAccountUser> createState() =>
-      _SettingAccountUserState(username: this.username);
+      _SettingAccountUserState(username: this.username, email: this.email);
 }
 
 class _SettingAccountUserState extends State<SettingAccountUser> {
@@ -19,8 +23,9 @@ class _SettingAccountUserState extends State<SettingAccountUser> {
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmNewPasswordController = TextEditingController();
-  String username;
-  _SettingAccountUserState({required this.username});
+  final formKey = GlobalKey<FormState>();
+  String username, email;
+  _SettingAccountUserState({required this.username, required this.email});
 
   @override
   Widget build(BuildContext context) {
@@ -28,94 +33,125 @@ class _SettingAccountUserState extends State<SettingAccountUser> {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: AppBar(),
-        body: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.only(
-                  top: 15, left: size * 0.08, right: size * 0.08),
-              child: TextFormField(
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "กรุณากรอกชื่อ";
-                  } else {}
-                },
-                controller: nameController,
-                keyboardType: TextInputType.name,
-                decoration: InputDecoration(
-                  labelText: "Name",
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+        body: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(
+                    top: 15, left: size * 0.08, right: size * 0.08),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "กรุณากรอกชื่อ";
+                    } else {}
+                  },
+                  controller: nameController,
+                  keyboardType: TextInputType.name,
+                  decoration: InputDecoration(
+                    labelText: "Name",
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                  top: 15, left: size * 0.08, right: size * 0.08),
-              child: TextFormField(
-                // validator: (value) {
-                //   if (value!.isEmpty) {
-                //     return "กรุณากรอกรหัสผ่านเดิม";
-                //   } else {}
-                // },
-                controller: oldPasswordController,
-                keyboardType: TextInputType.visiblePassword,
-                decoration: InputDecoration(
-                  labelText: "Old password",
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              Container(
+                margin: EdgeInsets.only(
+                    top: 15, left: size * 0.08, right: size * 0.08),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "กรุณากรอกรหัสผ่านเดิม";
+                    } else {}
+                  },
+                  controller: oldPasswordController,
+                  keyboardType: TextInputType.visiblePassword,
+                  decoration: InputDecoration(
+                    labelText: "Old password",
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                  top: 15, left: size * 0.08, right: size * 0.08),
-              child: TextFormField(
-                // validator: (value) {
-                //   if (value!.isEmpty) {
-                //     return "กรุณากรอกรหัสผ่านใหม่";
-                //   } else {}
-                // },
-                controller: newPasswordController,
-                keyboardType: TextInputType.visiblePassword,
-                decoration: InputDecoration(
-                  labelText: "New password",
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              Container(
+                margin: EdgeInsets.only(
+                    top: 15, left: size * 0.08, right: size * 0.08),
+                child: TextFormField(
+                  controller: newPasswordController,
+                  keyboardType: TextInputType.visiblePassword,
+                  decoration: InputDecoration(
+                    labelText: "New password",
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                  top: 15, left: size * 0.08, right: size * 0.08),
-              child: TextFormField(
-                // validator: (value) {
-                //   if (value!.isEmpty) {
-                //     return "กรุณากรอกรหัสผ่านใหม่อีกครั้ง";
-                //   } else {}
-                // },
-                controller: confirmNewPasswordController,
-                keyboardType: TextInputType.visiblePassword,
-                decoration: InputDecoration(
-                  labelText: "Confirm password",
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              Container(
+                margin: EdgeInsets.only(
+                    top: 15, left: size * 0.08, right: size * 0.08),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value != newPasswordController.text) {
+                      return "กรุณากรอกคอนเฟิร์มรหัสผ่านให้ตรงกับรหัสผ่านใหม่";
+                    }
+                  },
+                  controller: confirmNewPasswordController,
+                  keyboardType: TextInputType.visiblePassword,
+                  decoration: InputDecoration(
+                    labelText: "Confirm password",
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
                 ),
               ),
-            ),
-            ElevatedButton(onPressed: (){}, child: const Text("บันทึก"))
-          ],
+              ElevatedButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      proceedUpdateProfile();
+                    }
+                  },
+                  child: const Text("บันทึก"))
+            ],
+          ),
         ));
+  }
+
+  proceedUpdateProfile() async {
+    final user = await FirebaseAuth.instance.currentUser;
+    final cred = EmailAuthProvider.credential(
+        email: email, password: oldPasswordController.text);
+    user!.reauthenticateWithCredential(cred).then((value) {
+      if (newPasswordController.text.isNotEmpty) {
+        return user
+            .updatePassword(newPasswordController.text)
+            .then((value) => print("อัพเดตสำเร็จ"))
+            .catchError((e) => print("$e"));
+      }
+      return user.updateDisplayName(nameController.text);
+    }).catchError((e) {
+      print("$e มีข้อผิดพลาด");
+    });
+
+    // else{
+    // FirebaseAuth.instance.authStateChanges().listen(
+    //   (User? user) {
+    //     if (user != null) {
+    //       user.updateDisplayName(nameController.text);
+    //     }
+    //   },
+    // );
+    // }
   }
 }

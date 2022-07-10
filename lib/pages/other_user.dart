@@ -71,7 +71,7 @@ class _OtherUserState extends State<OtherUser> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  SettingAccountUser(
+                                                  SettingAccountUser(email: user.email!,
                                                 username: user.displayName!,
                                               ),
                                             ));
