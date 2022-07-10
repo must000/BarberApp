@@ -12,6 +12,7 @@ import 'package:barber/pages/test.dart';
 import 'package:barber/widgets/barbermodel1.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:intl/intl.dart';
 
 import '../Constant/route_cn.dart';
 
@@ -34,12 +35,63 @@ class _HairCutUserState extends State<HairCutUser> {
   double? lat, lng;
   String? dataPositionUser;
   bool? load = true;
+  List<BarberModel> barbershopOpen = [];
   @override
   void initState() {
     super.initState();
     chechpermission();
     findNameAnEmail();
     getAdvert();
+  }
+
+  checkBarberOpen() {
+    DateTime mydatetime = DateTime.now();
+    String getnameday = DateFormat('EEEE').format(mydatetime);
+    String nameday = "";
+    DateTime timeopen;
+    DateTime timeclose;
+
+    // print("${mydatetime.toString()} 999999");
+    // print("ชื่อวัน ${DateFormat('EEEE').format(mydatetime)}");
+    switch (getnameday) {
+      case "Sunday":
+        nameday = "su";
+        break;
+      case "Monday":
+        nameday = "mo";
+        break;
+      case "Tuesday":
+        nameday = "tu";
+        break;
+      case "Wednesday":
+        nameday = "we";
+        break;
+      case "Thursday":
+        nameday = "th";
+        break;
+      case "Friday":
+        nameday = "fr";
+        break;
+      case "Saturday":
+        nameday = "sa";
+        break;
+      default:
+    }
+    for (var i = 0; i < barbershop!.length; i++) {
+      // *** เช็คว่าวันที่ร้านนี้เปิด ตรงกับวันที่ ณ ตอนนี้ไหม
+      if (barbershop![i].dayopen[nameday] == true) {
+        timeopen = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
+            '2020-04-03 ${barbershop![i].timeopen.replaceAll(' ', '')}:00');
+        timeclose = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
+            '2020-04-03 ${barbershop![i].timeopen.replaceAll(' ', '')}:00');
+        mydatetime.isBefore(timeclose);
+        barbershopOpen.add(barbershop![i]);
+      }
+    }
+
+    for (var n = 0; n < barbershopOpen.length; n++) {
+      print(">>>>>>> ${barbershopOpen[n]} ");
+    }
   }
 
   Future<Null> getAdvert() async {
@@ -177,25 +229,29 @@ class _HairCutUserState extends State<HairCutUser> {
                     children: [
                       Container(
                         height: 200,
-                        child: imgList == [] ? const Text("ไม่มีโฆษณา") : CarouselSlider(
-                          carouselController: buttonCarouselController,
-                          items: imgList
-                              .map((item) => Container(
-                                    child: Center(
-                                        child: Image.network(item,
-                                            fit: BoxFit.cover, width: 1000)),
-                                  ))
-                              .toList(),
-                          options: CarouselOptions(
-                              autoPlay: true,
-                              enlargeCenterPage: true,
-                              autoPlayInterval: const Duration(seconds: 3),
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  _current = index;
-                                });
-                              }),
-                        ),
+                        child: imgList == []
+                            ? const Text("ไม่มีโฆษณา")
+                            : CarouselSlider(
+                                carouselController: buttonCarouselController,
+                                items: imgList
+                                    .map((item) => Container(
+                                          child: Center(
+                                              child: Image.network(item,
+                                                  fit: BoxFit.cover,
+                                                  width: 1000)),
+                                        ))
+                                    .toList(),
+                                options: CarouselOptions(
+                                    autoPlay: true,
+                                    enlargeCenterPage: true,
+                                    autoPlayInterval:
+                                        const Duration(seconds: 3),
+                                    onPageChanged: (index, reason) {
+                                      setState(() {
+                                        _current = index;
+                                      });
+                                    }),
+                              ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 165),

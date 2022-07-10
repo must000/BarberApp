@@ -1,4 +1,5 @@
 import 'package:barber/Constant/route_cn.dart';
+import 'package:barber/pages/index.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -148,9 +149,14 @@ class _RegisterUserState extends State<RegisterUser> {
           .createUserWithEmailAndPassword(
               email: userController.text, password: passwordController.text)
           .then((value) async {
-        await value.user!.updateDisplayName(nameController.text).then(
-              (value) => Navigator.pop(context),
-            );
+        await value.user!
+            .updateDisplayName(nameController.text)
+            .then((value) => Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => IndexPage(),
+                ),
+                (route) => false));
         print("สมัครแล้ว $value");
       }).catchError((value) {
         MyDialog().normalDialog(context, value.message);
