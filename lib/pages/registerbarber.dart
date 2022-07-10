@@ -68,7 +68,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
     // proceedfinelatlng();
   }
 
-    Future<Null> chechpermission() async {
+  Future<Null> chechpermission() async {
     bool locationService;
     LocationPermission locationPermission;
     locationService = await Geolocator.isLocationServiceEnabled();
@@ -449,6 +449,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
       "district": destrict,
       "subdistrict": subDestrict,
       "addressdetails": addressdetails,
+      "countservice": 1,
     });
     debugPrint("บันทึกสำเร็จ");
   }

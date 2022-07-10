@@ -39,7 +39,24 @@ class _HairCutUserState extends State<HairCutUser> {
     super.initState();
     chechpermission();
     findNameAnEmail();
-    // print(barbershop);
+    getAdvert();
+  }
+
+  Future<Null> getAdvert() async {
+    final ListResult result =
+        await FirebaseStorage.instance.ref().child('advert').list();
+    final List<Reference> allFiles = result.items;
+    print(allFiles.length);
+    List<String> files = [];
+    await Future.forEach<Reference>(allFiles, (file) async {
+      final String fileUrl = await file.getDownloadURL();
+
+      files.add(fileUrl);
+      print(files);
+    });
+    setState(() {
+      imgList = files;
+    });
   }
 
   Future<Null> chechpermission() async {
@@ -117,13 +134,7 @@ class _HairCutUserState extends State<HairCutUser> {
 
   CarouselController buttonCarouselController = CarouselController();
   int _current = 0;
-  final List<String> imgList = [
-    "https://images.ctfassets.net/81iqaqpfd8fy/3r4flvP8Z26WmkMwAEWEco/870554ed7577541c5f3bc04942a47b95/78745131.jpg?w=1200&h=1200&fm=jpg&fit=fill",
-    "https://www.kosinstudio.com/wp-content/uploads/2020/06/Sleeve-badge-EPL-2017-Present.png",
-    "https://images.ctfassets.net/81iqaqpfd8fy/3r4flvP8Z26WmkMwAEWEco/870554ed7577541c5f3bc04942a47b95/78745131.jpg?w=1200&h=1200&fm=jpg&fit=fill",
-    "https://www.kosinstudio.com/wp-content/uploads/2020/06/Sleeve-badge-EPL-2017-Present.png",
-    "https://www.kosinstudio.com/wp-content/uploads/2020/06/Sleeve-badge-EPL-2017-Present.png",
-  ];
+  List<String> imgList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +168,7 @@ class _HairCutUserState extends State<HairCutUser> {
       body: load == true
           ? Center(
               child: LoadingAnimationWidget.newtonCradle(
-                  color: Color.fromARGB(255, 111, 111, 240), size: 200),
+                  color: const Color.fromARGB(255, 111, 111, 240), size: 200),
             )
           : SingleChildScrollView(
               child: Column(
@@ -166,7 +177,7 @@ class _HairCutUserState extends State<HairCutUser> {
                     children: [
                       Container(
                         height: 200,
-                        child: CarouselSlider(
+                        child: imgList == [] ? const Text("ไม่มีโฆษณา") : CarouselSlider(
                           carouselController: buttonCarouselController,
                           items: imgList
                               .map((item) => Container(
@@ -316,8 +327,11 @@ class _HairCutUserState extends State<HairCutUser> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => BarberSerchUser(
-                              typeBarber: false, barbershop: barberwoman, lat: lat,
-                                lon: lng,)));
+                                typeBarber: false,
+                                barbershop: barberwoman,
+                                lat: lat,
+                                lon: lng,
+                              )));
                 },
                 child: const Text("ร้านเสริมสวย")),
             width: size * 0.4,

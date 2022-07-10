@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 
+import 'package:barber/data/servicemodel.dart';
+
 class ConfirmReserveUser extends StatefulWidget {
-  const ConfirmReserveUser({Key? key}) : super(key: key);
+  List<ServiceModel> servicemodel;
+  ConfirmReserveUser({
+    Key? key,
+    required this.servicemodel,
+  }) : super(key: key);
 
   @override
-  State<ConfirmReserveUser> createState() => _ConfirmReserveUserState();
+  State<ConfirmReserveUser> createState() => _ConfirmReserveUserState(servicemodel:servicemodel);
 }
 
+
+
 class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
+  List<ServiceModel> servicemodel;
+_ConfirmReserveUserState({required this.servicemodel});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

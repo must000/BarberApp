@@ -135,7 +135,7 @@ class _IndexPageState extends State<IndexPage> {
                 length: 4,
                 child: Scaffold(
                   body: TabBarView(children: [
-                    const QueueBarber(),
+                    QueueBarber(email: email!,),
                     ServiceBarber(
                       email: email!,
                     ),

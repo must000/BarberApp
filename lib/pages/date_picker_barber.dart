@@ -60,13 +60,16 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
       dayss = data['dayopen'];
     }
     // print(dayss);
-    if (dayss!["tu"] == false) {
-      dayClose.add(1);
-    }
     if (dayss!["su"] == false) {
-      dayClose.add(2);
+      dayClose.add(7);
     }
     if (dayss!["mo"] == false) {
+      dayClose.add(1);
+    }
+    if (dayss!["tu"] == false) {
+      dayClose.add(2);
+    }
+    if (dayss!["we"] == false) {
       dayClose.add(3);
     }
     if (dayss!["th"] == false) {
@@ -77,9 +80,6 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
     }
     if (dayss!["sa"] == false) {
       dayClose.add(6);
-    }
-    if (dayss!["we"] == false) {
-      dayClose.add(7);
     }
     setState(() {
       print(dayClose);

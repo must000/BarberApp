@@ -96,9 +96,9 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
               const SizedBox(height: 20),
               sectionListview(size, "ร้านยอดฮิต"),
               listStoreHistory(size),
-              sectionListview(size, "ร้านที่เคยใช้บริการ"),
+              // sectionListview(size, "ร้านที่เคยใช้บริการ"),
               // listStoreHistory(size),
-              sectionListview(size, "ร้านที่ถูกใจ"),
+              // sectionListview(size, "ร้านที่ถูกใจ"),
               // listStoreLike(size),
               urlImgFront == null
                   ? Container()

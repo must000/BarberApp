@@ -35,6 +35,7 @@ class _StoreBarberState extends State<StoreBarber> {
   File? photoShopFront;
   List<Map<String, dynamic>>? filess;
   int deleteAlbum = 0;
+  int x = 1;
   List<XFile>? imagefiles;
   final ImagePicker imgpicker = ImagePicker();
   @override
@@ -53,6 +54,14 @@ class _StoreBarberState extends State<StoreBarber> {
       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
       recommendController.text = data['shoprecommend'];
       iii = data['shoprecommend'];
+      if (data["countservice"] != null) {
+        print("NotEmpty");
+        setState(() {
+          x = data["countservice"];
+        });
+      } else {
+        print('Empty');
+      }
     }
   }
 
@@ -181,7 +190,6 @@ class _StoreBarberState extends State<StoreBarber> {
     final file = File(img.path);
     final ref = FirebaseStorage.instance.ref().child(path);
     ref.putFile(file).then((p0) => getAlbumUrl());
-
   }
 
   Future<Null> uploadphoto(String email) async {
@@ -213,6 +221,51 @@ class _StoreBarberState extends State<StoreBarber> {
               const SizedBox(
                 height: 10,
               ),
+              const Text('จำนวนที่รับบริการ'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      CollectionReference users =
+                          FirebaseFirestore.instance.collection('Barber');
+                      users.doc(email).update({"countservice": 1});
+                      setState(() {
+                        x = 1;
+                      });
+                    },
+                    child: const Text('1'),
+                    style: ElevatedButton.styleFrom(
+                        primary: x == 1 ? Colors.red : Colors.grey),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                                            CollectionReference users =
+                          FirebaseFirestore.instance.collection('Barber');
+                      users.doc(email).update({"countservice": 2});
+                      setState(() {
+                        x = 2;
+                      });
+                    },
+                    child: const Text('2'),
+                    style: ElevatedButton.styleFrom(
+                        primary: x == 2 ? Colors.red : Colors.grey),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                                            CollectionReference users =
+                          FirebaseFirestore.instance.collection('Barber');
+                      users.doc(email).update({"countservice": 3});
+                      setState(() {
+                        x = 3;
+                      });
+                    },
+                    child: const Text('3'),
+                    style: ElevatedButton.styleFrom(
+                        primary: x == 3 ? Colors.red : Colors.grey),
+                  ),
+                ],
+              ),
               buttonCloseShop(context),
               ElevatedButton(
                   onPressed: () {
@@ -234,16 +287,16 @@ class _StoreBarberState extends State<StoreBarber> {
 
   ElevatedButton buttonCloseShop(BuildContext context) {
     return ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DatePickerBarber(
-                          email: email!,
-                        ),
-                      ));
-                },
-                child: const Text("แจ้งปิดร้านชั่วคราว"));
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DatePickerBarber(
+                  email: email!,
+                ),
+              ));
+        },
+        child: const Text("แจ้งปิดร้านชั่วคราว"));
   }
 
   Future<Null> normalDialogForAlbum(BuildContext context) async {
