@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:barber/pages/index.dart';
+import 'package:barber/utils/dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -134,24 +136,19 @@ class _SettingAccountUserState extends State<SettingAccountUser> {
         email: email, password: oldPasswordController.text);
     user!.reauthenticateWithCredential(cred).then((value) {
       if (newPasswordController.text.isNotEmpty) {
-        return user
-            .updatePassword(newPasswordController.text)
-            .then((value) => print("อัพเดตสำเร็จ"))
-            .catchError((e) => print("$e"));
+        return user.updatePassword(newPasswordController.text).then((value) =>
+            Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => IndexPage(),
+                    ),
+                    (route) => false)
+                .catchError((e) =>
+                    MyDialog().normalDialog(context, "เกิดข้อผิดพลาดขึ้น")));
       }
       return user.updateDisplayName(nameController.text);
     }).catchError((e) {
-      print("$e มีข้อผิดพลาด");
+      MyDialog().normalDialog(context, "เกิดข้อผิดพลาดขึ้น");
     });
-
-    // else{
-    // FirebaseAuth.instance.authStateChanges().listen(
-    //   (User? user) {
-    //     if (user != null) {
-    //       user.updateDisplayName(nameController.text);
-    //     }
-    //   },
-    // );
-    // }
   }
 }

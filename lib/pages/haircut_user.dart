@@ -1,4 +1,5 @@
 import 'package:barber/data/barbermodel.dart';
+import 'package:barber/pages/search_user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
@@ -197,7 +198,9 @@ class _HairCutUserState extends State<HairCutUser> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.search),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => SearchUser(),));
+          },
         ),
         title:
             dataPositionUser == null ? const Text('') : Text(dataPositionUser!),
