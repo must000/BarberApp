@@ -199,7 +199,7 @@ class _HairCutUserState extends State<HairCutUser> {
         leading: IconButton(
           icon: const Icon(Icons.search),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => SearchUser(),));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => SearchUser(barberModel: barbershop!,),));
           },
         ),
         title:
