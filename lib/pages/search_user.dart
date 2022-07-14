@@ -1,3 +1,4 @@
+import 'package:barber/pages/search_result_user.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -20,11 +21,13 @@ class SearchUser extends StatefulWidget {
 class _SearchUserState extends State<SearchUser> {
   List<BarberModel> barberModel;
   _SearchUserState({required this.barberModel});
-  final List<String> itemsDistrict = District_CN.district;
+
+  List<String> itemsDistrict = ["อำเภอทั้งหมด "] + District_CN.district;
   TextEditingController searchController = TextEditingController();
   List<String> itemSubDistricts = [];
   bool valueman = false, valuewoman = false;
-  String? selectedValueDis = "อำเภอ", selectedValueSubDis = "ตำบล";
+  String? selectedValueDis = "อำเภอทั้งหมด ",
+      selectedValueSubDis = "ตำบลทั้งหมด ";
   List searchresult = [];
   List<dynamic>? _list = [];
 
@@ -37,7 +40,7 @@ class _SearchUserState extends State<SearchUser> {
 
   void values() {
     for (var i = 0; i < barberModel.length; i++) {
-      _list!.add(barberModel[i].name);
+      _list!.add(barberModel[i].shopname);
     }
     print(_list);
   }
@@ -72,30 +75,37 @@ class _SearchUserState extends State<SearchUser> {
                         borderRadius: BorderRadius.circular(10)),
                   ),
                   onChanged: searchOperation,
+                  onEditingComplete: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    setState(() {
+                      searchresult.clear();
+                    });
+                  },
                 ),
               ),
               searchresult.length != 0
-                  ? ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: searchresult.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        String listData = searchresult[index];
-                        return InkWell(
-                          onTap: () {
-                            FocusScope.of(context).requestFocus(FocusNode());
-                            setState(() {
-                              searchController.text = listData.toString();
-                              searchresult.clear();
-                            });
-                          },
-                          child: Container(
-                            height: 50,
-                            width: size * 0.7,
-                            decoration: BoxDecoration(border: Border.all()),
-                            child: Text(listData.toString()),
-                          ),
-                        );
-                      },
+                  ? Container(
+                      width: size * 0.6,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: searchresult.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          String listData = searchresult[index];
+                          return InkWell(
+                            onTap: () {
+                              FocusScope.of(context).requestFocus(FocusNode());
+                              setState(() {
+                                searchController.text = listData.toString();
+                                searchresult.clear();
+                              });
+                            },
+                            child: Container(
+                              height: 40,
+                              child: Text(listData.toString()),
+                            ),
+                          );
+                        },
+                      ),
                     )
                   : const SizedBox(
                       child: Text(""),
@@ -125,23 +135,29 @@ class _SearchUserState extends State<SearchUser> {
                           .toList(),
                       onChanged: (value) {
                         if (value == 'เมืองนนทบุรี ') {
-                          itemSubDistricts = District_CN.mueangNonthaburi;
-                        } else if (value == 'บางกรวย') {
-                          itemSubDistricts = District_CN.bangKruai;
-                        } else if (value == 'บางใหญ่ ') {
-                          itemSubDistricts = District_CN.bangYai;
-                        } else if (value == 'บางบัวทอง') {
-                          itemSubDistricts = District_CN.bangBuaThong;
-                        } else if (value == 'ไทรน้อย') {
-                          itemSubDistricts = District_CN.sainoi;
-                        } else if (value == 'ปากเกร็ด') {
-                          itemSubDistricts = District_CN.pakKret;
+                          itemSubDistricts =
+                              ["ตำบลทั้งหมด "] + District_CN.mueangNonthaburi;
+                        } else if (value == 'อ.บางกรวย') {
+                          itemSubDistricts =
+                              ["ตำบลทั้งหมด "] + District_CN.bangKruai;
+                        } else if (value == 'อ.บางใหญ่ ') {
+                          itemSubDistricts =
+                              ["ตำบลทั้งหมด "] + District_CN.bangYai;
+                        } else if (value == 'อ.บางบัวทอง') {
+                          itemSubDistricts =
+                              ["ตำบลทั้งหมด "] + District_CN.bangBuaThong;
+                        } else if (value == 'อ.ไทรน้อย') {
+                          itemSubDistricts =
+                              ["ตำบลทั้งหมด "] + District_CN.sainoi;
+                        } else if (value == 'อ.ปากเกร็ด') {
+                          itemSubDistricts =
+                              ["ตำบลทั้งหมด "] + District_CN.pakKret;
                         } else {
                           itemSubDistricts = [];
                         }
                         setState(() {
                           itemSubDistricts;
-                          selectedValueSubDis = "ตำบล";
+                          selectedValueSubDis = "ตำบลทั้งหมด ";
                           selectedValueDis = value as String;
                         });
                       },
@@ -199,16 +215,14 @@ class _SearchUserState extends State<SearchUser> {
                       });
                     },
                   ),
-                  const Text("ร้านตัดหญิง")
+                  const Text("ร้านเสริมสวย")
                 ],
               ),
               ElevatedButton(
                   onPressed: () {
-                    print(
-                        "$valueman $valuewoman $selectedValueDis $selectedValueSubDis ${searchController.text}");
                     computeResultBarber();
                   },
-                  child: const Text("ค้นหา"))
+                  child: const Text("ค้นหา")),
             ],
           ),
         ),
@@ -218,6 +232,11 @@ class _SearchUserState extends State<SearchUser> {
 
   computeResultBarber() {
     List<BarberModel> listbarber = [];
+    List<BarberModel> listbarber2 = [];
+    List<BarberModel> listbarber3 = [];
+    List<BarberModel> listbarber4 = [];
+
+    // เช็คประเภท ร้าน
     if (valueman == false && valuewoman == false) {
       listbarber = barberModel;
     }
@@ -235,6 +254,61 @@ class _SearchUserState extends State<SearchUser> {
         }
       }
     }
+    for (var i = 0; i < listbarber.length; i++) {
+      print("step 1 ${listbarber[i]}");
+    }
+
+    // เช็คkey word
+    if (searchController.text != "") {
+      List<BarberModel> databarber = listbarber;
+      for (var i = 0; i < databarber.length; i++) {
+        if (databarber[i]
+            .shopname
+            .toLowerCase()
+            .contains(searchController.text.toLowerCase())) {
+          setState(() {
+            listbarber2.add(databarber[i]);
+          });
+        }
+      }
+    } else {
+      listbarber2 = listbarber;
+    }
+    for (var i = 0; i < listbarber2.length; i++) {
+      print("step 2 ${listbarber2[i]}");
+    }
+
+    // เช็ค อำเภอ ตำบล
+    if (selectedValueDis != "อำเภอทั้งหมด ") {
+      for (var i = 0; i < listbarber2.length; i++) {
+        if (listbarber2[i].districtl == selectedValueDis!.trim()) {
+          listbarber3.add(listbarber2[i]);
+        }
+      }
+    } else {
+      listbarber3 = listbarber2;
+    }
+    for (var i = 0; i < listbarber3.length; i++) {
+      print("step 3 ${listbarber3[i]}");
+    }
+    if (selectedValueSubDis != "ตำบลทั้งหมด ") {
+      for (var i = 0; i < listbarber3.length; i++) {
+        if (listbarber3[i].subDistrict == selectedValueSubDis!.trim()) {
+          listbarber4.add(listbarber3[i]);
+        }
+      }
+    } else {
+      listbarber4 = listbarber3;
+    }
+    for (var i = 0; i < listbarber4.length; i++) {
+      print("step 4 ${listbarber4[i]}");
+    }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SearchResultUser(barberModel: listbarber4,),
+        ),
+        );
   }
 
   searchOperation(String searchText) {
