@@ -367,6 +367,8 @@ class _BarberUserState extends State<BarberUser> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ConfirmReserveUser(
+                       dayopen: dayopen,
+                       timeclose: timeclose,timeopen: timeopen,
                         servicemodel: servicemodel,
                       ),
                     ),

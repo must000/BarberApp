@@ -303,6 +303,7 @@ class _SearchUserState extends State<SearchUser> {
     for (var i = 0; i < listbarber4.length; i++) {
       print("step 4 ${listbarber4[i]}");
     }
+    Navigator.pop(context);
     Navigator.push(
         context,
         MaterialPageRoute(

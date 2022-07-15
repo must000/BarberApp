@@ -28,8 +28,7 @@ class _OtherUserState extends State<OtherUser> {
               StreamBuilder(
                 stream: FirebaseAuth.instance.authStateChanges(),
                 builder: (context, snapshot) {
-                  // print("${snapshot.data} <<<<<<<<<");
-                  // print(user!.emailVerified);
+                  print("${snapshot.data} <<<<<<<<<");
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   } else if (snapshot.hasData) {
@@ -72,7 +71,7 @@ class _OtherUserState extends State<OtherUser> {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   SettingAccountUser(email: user.email!,
-                                                username: user.displayName!,
+                                                username: user.displayName!,typebarber: false,
                                               ),
                                             ));
                                       },

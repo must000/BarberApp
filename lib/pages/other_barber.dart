@@ -1,3 +1,4 @@
+import 'package:barber/pages/setting_account_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -65,7 +66,15 @@ class _OtherBarberState extends State<OtherBarber> {
               ],
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SettingAccountUser(
+                              email: email!,
+                              typebarber: true,
+                            )));
+              },
               child: const Text("ตั้งค่าข้อมูลผู้ใช้ "),
             ),
             TextButton(

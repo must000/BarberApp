@@ -36,7 +36,6 @@ class _IndexPageState extends State<IndexPage> {
     super.initState();
     findEmail().then((value) {
       if (isbarber != false) {
-        print('dwerw');
         getDataBarberForUser().then((value) {
           setState(() {
             load = false;

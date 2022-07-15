@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:barber/pages/index.dart';
+import 'package:barber/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 // import 'package:geolocator/geolocator.dart';
@@ -19,6 +20,36 @@ class MyDialog {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text("OK"),
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<Null> checkLoginDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: const ListTile(
+          title: Text("กรุณาเข้าสู่ระบบก่อนทำรายการจอง",
+              style: TextStyle(color: Colors.black)),
+          subtitle: Text("ไปที่หน้าล็อคอิน"),
+        ),
+        children: [
+          TextButton(
+            onPressed: () => Navigator.push(context, MaterialPageRoute(
+              builder: (context) {
+                return const Login();
+              },
+            )),
+            child: const Text("login"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+            child: const Text("ยกเลิก"),
           )
         ],
       ),
@@ -69,5 +100,4 @@ class MyDialog {
       ),
     );
   }
-
 }

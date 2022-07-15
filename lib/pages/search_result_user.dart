@@ -1,9 +1,12 @@
 import 'package:barber/pages/barber_user.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 import 'package:barber/data/barbermodel.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SearchResultUser extends StatefulWidget {
   List<BarberModel> barberModel;
@@ -20,10 +23,27 @@ class SearchResultUser extends StatefulWidget {
 class _SearchResultUserState extends State<SearchResultUser> {
   List<BarberModel> barberModel;
   _SearchResultUserState({required this.barberModel});
+  Map<String, String>? urlImgFront;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getURL();
+  }
+
+  Future<Null> getURL() async {
+    Map<String, String>? urlImgFrontModel = {};
+    for (var i = 0; i < barberModel.length; i++) {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child("imgfront/${barberModel[i].email}");
+      var url = await ref.getDownloadURL().then((value) {
+        urlImgFrontModel[barberModel[i].email] = value;
+      }).catchError((c) => print(c + "is an error"));
+    }
+    setState(() {
+      urlImgFront = urlImgFrontModel;
+    });
   }
 
   @override
@@ -31,10 +51,13 @@ class _SearchResultUserState extends State<SearchResultUser> {
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
-        child: GridView.builder(
+        child: urlImgFront == null ? Container() : GridView.builder(
           physics: const NeverScrollableScrollPhysics(),
+          
           shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+            childAspectRatio: MediaQuery.of(context).size.width /
+              (MediaQuery.of(context).size.height/1.3),
             crossAxisCount: 3,
           ),
           itemBuilder: (context, index) {
@@ -46,7 +69,7 @@ class _SearchResultUserState extends State<SearchResultUser> {
                     builder: (context) => BarberUser(
                       email: barberModel[index].email,
                       nameShop: barberModel[index].shopname,
-                      url: "",
+                      url: urlImgFront![barberModel[index].email]!,
                       recommend: barberModel[index].shoprecommend,
                       addressdetails: barberModel[index].addressdetails,
                       dayopen: barberModel[index].dayopen,
@@ -65,15 +88,14 @@ class _SearchResultUserState extends State<SearchResultUser> {
                   decoration: BoxDecoration(border: Border.all()),
                   child: Column(
                     children: [
-                      // CachedNetworkImage(
-                      //   height: 60,
-                      //   fit: BoxFit.fill,
-                      //   imageUrl: urlImgFront![
-                      //       barberResult![index].email]!,
-                      //   placeholder: (context, url) =>
-                      //       LoadingAnimationWidget.inkDrop(
-                      //           color: Colors.black, size: 20),
-                      // ),
+                      CachedNetworkImage(
+                        height: 60,
+                        fit: BoxFit.fill,
+                        imageUrl: urlImgFront![barberModel[index].email]!,
+                        placeholder: (context, url) =>
+                            LoadingAnimationWidget.inkDrop(
+                                color: Colors.black, size: 20),
+                      ),
                       ListTile(
                         title: Text(barberModel[index].shopname),
                         subtitle: Text(barberModel[index].shoprecommend),
