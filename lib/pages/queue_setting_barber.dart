@@ -228,10 +228,6 @@ class _QueueSettingBarberState extends State<QueueSettingBarber> {
     }
   }
 
-  // bool checking(<Map<String, bool>> ){
-
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
