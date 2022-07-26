@@ -10,19 +10,22 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SearchResultUser extends StatefulWidget {
   List<BarberModel> barberModel;
+  String nameUser;
   SearchResultUser({
     Key? key,
     required this.barberModel,
+    required this.nameUser,
   }) : super(key: key);
 
   @override
   State<SearchResultUser> createState() =>
-      _SearchResultUserState(barberModel: barberModel);
+      _SearchResultUserState(barberModel: barberModel,nameUser: nameUser);
 }
 
 class _SearchResultUserState extends State<SearchResultUser> {
   List<BarberModel> barberModel;
-  _SearchResultUserState({required this.barberModel});
+  String nameUser;
+  _SearchResultUserState({required this.barberModel,required this.nameUser});
   Map<String, String>? urlImgFront;
   @override
   void initState() {
@@ -67,6 +70,7 @@ class _SearchResultUserState extends State<SearchResultUser> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => BarberUser(
+                      nameUser: nameUser,
                       email: barberModel[index].email,
                       nameShop: barberModel[index].shopname,
                       url: urlImgFront![barberModel[index].email]!,

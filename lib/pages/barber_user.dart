@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/album_barber_user.dart';
 import 'package:barber/pages/comment_barber_user.dart';
-import 'package:barber/pages/confirmreserve_user.dart';
+import 'package:barber/pages/select_datetime_user.dart';
 import 'package:barber/pages/detail_barber_user.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -17,7 +17,7 @@ class BarberUser extends StatefulWidget {
       addressdetails,
       phoneNumber,
       timeopen,
-      timeclose;
+      timeclose,nameUser;
   Map<String, dynamic> dayopen;
   final String? url, recommend;
 
@@ -33,6 +33,7 @@ class BarberUser extends StatefulWidget {
     required this.phoneNumber,
     required this.timeopen,
     required this.timeclose,
+    required this.nameUser,
     this.url,
   }) : super(key: key);
 
@@ -48,11 +49,11 @@ class BarberUser extends StatefulWidget {
       phoneNumber: phoneNumber,
       timeopen: timeopen,
       timeclose: timeclose,
-      dayopen: dayopen);
+      dayopen: dayopen,nameUser:nameUser);
 }
 
 class _BarberUserState extends State<BarberUser> {
-  String nameShop, email;
+  String nameShop, email,nameUser;
   String? url, recommend;
   String lat, lon;
   String addressdetails, phoneNumber;
@@ -69,7 +70,7 @@ class _BarberUserState extends State<BarberUser> {
       required this.timeclose,
       required this.lat,
       required this.lon,
-      required this.email});
+      required this.email,required this.nameUser});
   int price = 0, z = 0;
   List<ServiceModel> servicemodel = [];
   bool showlist = false;
@@ -367,11 +368,11 @@ class _BarberUserState extends State<BarberUser> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ConfirmReserveUser(
+                      builder: (context) =>SelectDateTimeUser(
                        dayopen: dayopen,
                        timeclose: timeclose,timeopen: timeopen,
                         servicemodel: servicemodel,
-                        email: email,
+                        email: email, nameBarber: nameShop, nameUser: nameUser,
                       ),
                     ),
                   );

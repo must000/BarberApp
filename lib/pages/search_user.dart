@@ -9,18 +9,21 @@ import 'package:barber/data/barbermodel.dart';
 
 class SearchUser extends StatefulWidget {
   List<BarberModel> barberModel;
+  String nameUser;
   SearchUser({
     Key? key,
     required this.barberModel,
+    required this.nameUser,
   }) : super(key: key);
 
   @override
-  State<SearchUser> createState() => _SearchUserState(barberModel: barberModel);
+  State<SearchUser> createState() => _SearchUserState(barberModel: barberModel,nameUser:nameUser);
 }
 
 class _SearchUserState extends State<SearchUser> {
   List<BarberModel> barberModel;
-  _SearchUserState({required this.barberModel});
+  String nameUser;
+  _SearchUserState({required this.barberModel,required this.nameUser});
 
   List<String> itemsDistrict = ["อำเภอทั้งหมด "] + District_CN.district;
   TextEditingController searchController = TextEditingController();
@@ -307,7 +310,7 @@ class _SearchUserState extends State<SearchUser> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SearchResultUser(barberModel: listbarber4,),
+          builder: (context) => SearchResultUser(barberModel: listbarber4, nameUser: nameUser,),
         ),
         );
   }

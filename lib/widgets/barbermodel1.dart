@@ -6,7 +6,7 @@ class BarberModel1 extends StatelessWidget {
   String? img, score;
   String nameBarber,lat,
       lon,
-      addressdetails,
+      addressdetails,nameUser,
       phoneNumber,
       timeopen,
       timeclose,recommend;
@@ -28,6 +28,7 @@ class BarberModel1 extends StatelessWidget {
     required this.timeclose,
     required this.dayopen,
     required this.recommend,
+    required this.nameUser
       })
       : super(key: key);
 
@@ -35,7 +36,7 @@ class BarberModel1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> BarberUser(nameShop: nameBarber, addressdetails: addressdetails, dayopen: dayopen, lat: lat, lon: lon, phoneNumber: phoneNumber, timeclose: timeclose, timeopen: timeopen, recommend: recommend, email: '',) ));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> BarberUser(nameShop: nameBarber, addressdetails: addressdetails, dayopen: dayopen, lat: lat, lon: lon, phoneNumber: phoneNumber, timeclose: timeclose, timeopen: timeopen, recommend: recommend, email: '',nameUser: nameUser,) ));
       },
       child: Stack(children: [
         Container(

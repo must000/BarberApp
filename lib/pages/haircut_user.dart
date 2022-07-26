@@ -192,7 +192,6 @@ class _HairCutUserState extends State<HairCutUser> {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-
     late final user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
@@ -203,6 +202,7 @@ class _HairCutUserState extends State<HairCutUser> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SearchUser(
+                    nameUser: name == null? "":name!,
                     barberModel: barbershop!,
                   ),
                 ));
@@ -377,6 +377,7 @@ class _HairCutUserState extends State<HairCutUser> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => BarberSerchUser(
+                            nameUser: name == null? "":name!,
                                 typeBarber: true,
                                 barbershop: barberman,
                                 lat: lat,
@@ -400,6 +401,7 @@ class _HairCutUserState extends State<HairCutUser> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => BarberSerchUser(
+                            nameUser: name == null? "":name!,
                                 typeBarber: false,
                                 barbershop: barberwoman,
                                 lat: lat,

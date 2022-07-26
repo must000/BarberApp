@@ -11,26 +11,28 @@ class BarberSerchUser extends StatefulWidget {
   final bool typeBarber;
   List<BarberModel> barbershop;
   double? lat, lon;
+  String nameUser;
   BarberSerchUser({
     Key? key,
     required this.typeBarber,
     required this.barbershop,
     this.lat,
     this.lon,
+    required this.nameUser
   }) : super(key: key);
 
   @override
   State<BarberSerchUser> createState() => _BarberSerchUserState(
-      typeBarber: typeBarber, barbershop: barbershop, lat: lat, lon: lon);
+      typeBarber: typeBarber, barbershop: barbershop, lat: lat, lon: lon,nameUser:nameUser);
 }
 
 class _BarberSerchUserState extends State<BarberSerchUser> {
   bool typeBarber;
   List<BarberModel> barbershop;
-
+String nameUser;
   double? lat, lon;
   _BarberSerchUserState(
-      {required this.typeBarber, required this.barbershop, this.lat, this.lon});
+      {required this.typeBarber, required this.barbershop, this.lat, this.lon,required this.nameUser});
   List<BarberModel>? barberResult = [];
   Map<String, String>? urlImgFront;
   @override
@@ -118,6 +120,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => BarberUser(
+                                    nameUser: nameUser,
                                     email: barberResult![index].email,
                                     nameShop: barberResult![index].shopname,
                                     url: urlImgFront![
@@ -199,6 +202,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
             scrollDirection: Axis.horizontal,
             itemCount: 20,
             itemBuilder: (context, index) => BarberModel1(
+              nameUser: nameUser,
                   size: size,
                   nameBarber: "ร้านที่ถูกใจ",
                   addressdetails: '',
@@ -224,6 +228,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
           scrollDirection: Axis.horizontal,
           itemCount: 20,
           itemBuilder: (context, index) => BarberModel1(
+            nameUser: nameUser,
             size: size,
             nameBarber: "ชื่อร้าน",
             img:

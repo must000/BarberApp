@@ -1,4 +1,3 @@
-import 'package:barber/data/queuemodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,45 +7,51 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:barber/data/barbermodel.dart';
+import 'package:barber/data/queuemodel.dart';
 import 'package:barber/data/servicemodel.dart';
+import 'package:barber/pages/confirm_queue_user.dart';
 import 'package:barber/utils/dialog.dart';
 
-class ConfirmReserveUser extends StatefulWidget {
+class SelectDateTimeUser extends StatefulWidget {
   List<ServiceModel> servicemodel;
   Map<String, dynamic> dayopen;
   String timeopen;
   String timeclose;
   String email;
-  ConfirmReserveUser({
+  String nameUser,nameBarber;
+  SelectDateTimeUser({
     Key? key,
     required this.servicemodel,
     required this.dayopen,
     required this.timeopen,
     required this.timeclose,
     required this.email,
+    required this.nameUser,required this.nameBarber,
   }) : super(key: key);
 
   @override
-  State<ConfirmReserveUser> createState() => _ConfirmReserveUserState(
+  State<SelectDateTimeUser> createState() => _SelectDateTimeUserState(
       servicemodel: servicemodel,
       dayopen: dayopen,
       timeclose: timeclose,
       timeopen: timeopen,
-      email: email);
+      email: email,nameUser:nameUser,nameBarber:nameBarber);
 }
 
-class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
+class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
   List<ServiceModel> servicemodel;
   Map<String, dynamic> dayopen;
   String timeopen;
   String timeclose;
   String email;
-  _ConfirmReserveUserState(
+  String nameUser,nameBarber;
+
+  _SelectDateTimeUserState(
       {required this.servicemodel,
       required this.dayopen,
       required this.timeopen,
       required this.timeclose,
-      required this.email});
+      required this.email,required this.nameUser,required this.nameBarber});
   DateTime selectedDate = DateTime.now();
   String? uid;
   bool load = true;
@@ -54,16 +59,15 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
   String? o;
   bool open = false;
   DateTime? timeOpen;
-  DateTime? xxx;
+  DateTime? dateResult;
   int? timediff;
   @override
   void initState() {
     super.initState();
     findEmail();
-    getQueue().then(
+    getDayClosed().then(
       (value) {
         checkdayclose();
-        setQueue();
       },
     );
     totalTimeAndPrice();
@@ -73,50 +77,24 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
   List<String>? idDate;
   List<QueueModel>? queue;
   List<DateTime>? listDayClosed;
-  var alldata, alldata2;
-  Future<Null> getQueue() async {
-    print("1");
-    var querySnapshot = await FirebaseFirestore.instance
-        .collection("reservation")
-        .doc(email)
-        .collection("queue")
-        .get();
-    alldata = querySnapshot.docs.map((e) => e.data()).toList();
-    List<QueueModel> dataEx = [];
-    if (alldata.isNotEmpty) {
-      print("$alldata qqqqq");
-      for (int n = 0; n < alldata.length; n++) {
-        dataEx.add(QueueModel(
-          datetime: (alldata[n]["datetime"] as Timestamp).toDate(),
-          idUser: alldata[n]["idUser"],
-          emailBarber: alldata[n]["emailBarber"],
-        ));
-      }
-    } else {
-      // dataEx.add(QueueModel(datetime: DateTime.now(), idUser: "dawq", emailBarber: email));
-      print("ไม่มีค่า");
-    }
+  Future<Null> getDayClosed() async {
     var queryS = await FirebaseFirestore.instance
         .collection("Barber")
         .doc(email)
         .collection("dayclose")
         .get();
-    alldata2 = queryS.docs.map((e) => e.data()).toList();
+    var alldata2 = queryS.docs.map((e) => e.data()).toList();
     List<DateTime> dataEx2 = [];
-    if (dataEx2.isNotEmpty) {
+    print(alldata2);
+    if (alldata2.isNotEmpty) {
       for (int n = 0; n < alldata2.length; n++) {
-        // print((alldata2[n]["dayclosed"] as Timestamp).toDate());
-
         dataEx2.add((alldata2[n]["dayclosed"] as Timestamp).toDate());
       }
     } else {
-      // dataEx2.add(    timeOpen = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
-      //   '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} 00:00:00'));
       print("ไม่มีค่า 2");
     }
 
     setState(() {
-      queue = dataEx;
       listDayClosed = dataEx2;
     });
   }
@@ -124,28 +102,7 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
   List<Map<DateTime, dynamic>>? queuemodel3 = [];
   List<Map<DateTime, dynamic>>? queuemodelInsert = [];
 
-  setQueue() {
-    for (var i = 0; i < timediff! * 2; i++) {
-      queuemodel3!.add({xxx!.add(Duration(minutes: i * 30)): null});
-      queuemodelInsert!.add({xxx!.add(Duration(minutes: i * 30)): null});
-      for (var n = 0; n < queue!.length; n++) {
-        if (xxx!.add(Duration(minutes: i * 30)) == queue![n].datetime) {
-          queuemodel3![i] = {xxx!.add(Duration(minutes: i * 30)): "มีค่า"};
-        }
-      }
-    }
-    setState(() {
-      load = false;
-    });
-  }
-
   totalTimeAndPrice() {
-    int _time = 0, _price = 0;
-    for (var i = 0; i < servicemodel.length; i++) {
-      _time += servicemodel[i].time.toInt();
-      _price += servicemodel[i].price.toInt();
-    }
-
     DateTime tOpen = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
         '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} ${timeopen.replaceAll(' ', '')}:00');
     DateTime tClose = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
@@ -155,16 +112,15 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
     timeOpen = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
         '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} ${timeopen.replaceAll(' ', '')}:00');
     setState(() {
-      time = _time;
-      price = _price;
       timediff = diff.inHours;
+      load = false;
     });
   }
 
   checkdayclose() {
     // print(dayopen);
+    //get ชื่อวัน จากวันที่เลือก
     String x = DateFormat('EEEE').format(selectedDate);
-
     if (x == "Sunday") {
       o = "su";
     } else if (x == "Monday") {
@@ -184,7 +140,7 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
     int p = 0;
     if (dayopen[o] == true) {
       setState(() {
-        xxx = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
+        dateResult = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
             '${selectedDate.year}-${selectedDate.month}-${selectedDate.day} ${timeopen.replaceAll(' ', '')}:00');
         open = true;
       });
@@ -207,7 +163,7 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
       }
     } else {
       setState(() {
-        xxx = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
+        dateResult = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
             '${selectedDate.year}-${selectedDate.month}-${selectedDate.day} ${timeopen.replaceAll(' ', '')}:00');
         open = false;
       });
@@ -235,15 +191,10 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
 
   @override
   Widget build(BuildContext context) {
+    double size = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                checkReserve();
-              },
-              icon: const Icon(Icons.check))
-        ],
       ),
       body: load == true
           ? Center(
@@ -252,13 +203,6 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        print(listDayClosed);
-                      },
-                      child: Text("เทสฟังชั่น")),
-                  Center(child: Text("เวลาทั้งหมด $time นาที")),
-                  Center(child: Text("รวม $price บาท")),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -279,64 +223,24 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
                     ],
                   ),
                   open
-                      ? ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) => Row(
-                            children: [
-                              Checkbox(
-                                  activeColor: queuemodelInsert![index][xxx!.add(
-                                              Duration(minutes: index * 30))] !=
-                                          null
-                                      ? Colors.green
-                                      : Colors.red,
-                                  value: queuemodel3![index][xxx!.add(Duration(
-                                                  minutes: index * 30))] ==
-                                              null &&
-                                          queuemodelInsert![index][xxx!.add(
-                                                  Duration(minutes: index * 30))] ==
-                                              null
-                                      ? false
-                                      : true,
-                                  onChanged: (newValue) {
-                                    if (newValue!) {
-                                      queuemodelInsert![index] = {
-                                        xxx!.add(Duration(minutes: index * 30)):
-                                            QueueModel(
-                                          datetime: DateTime.parse(
-                                              "${xxx!.add(Duration(minutes: index * 30)).year.toString()}-${xxx!.add(Duration(minutes: index * 30)).month.toString().padLeft(2, "0")}-${xxx!.add(Duration(minutes: index * 30)).day.toString().padLeft(2, "0")} ${xxx!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}:${xxx!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}:00"),
-                                          idUser: uid!,
-                                          emailBarber: email,
-                                        )
-                                      };
-                                    } else {
-                                      queuemodelInsert![index] = {
-                                        xxx!.add(Duration(minutes: index * 30)):
-                                            null
-                                      };
-                                    }
-                                    setState(() {});
-                                    // print(queuemodelInsert![index]);
-                                  }),
-                              queuemodel3![index][xxx!.add(
-                                          Duration(minutes: index * 30))] ==
-                                      null
-                                  ? Text(
-                                      "${xxx!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}-${xxx!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")} คิวว่าง",
-                                    )
-                                  : const Text("คิวไม่ว่าง")
-                            ],
+                      ? SizedBox(
+                          width: size * 0.6,
+                          child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) => ElevatedButton(
+                              onPressed: () {
+Navigator.push(context, MaterialPageRoute(builder: (context) => ConfirmQueueUser(datetime: dateResult!.add(Duration(minutes: index * 30)), nameUser: nameUser, nameBarber: nameBarber, emailBarber: email, idUser: uid!, servicemodel: servicemodel),));
+                              },
+                              child: Text(
+                                "${dateResult!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}:${dateResult!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")} - ${dateResult!.add(Duration(minutes: (index + 1) * 30)).hour.toString().padLeft(2, "0")}:${dateResult!.add(Duration(minutes: (index + 1) * 30)).minute.toString().padLeft(2, "0")}",
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            ),
+                            itemCount: timediff! * 2,
                           ),
-                          itemCount: timediff! * 2,
                         )
-                      : const Text("ร้านปิดทำการ ในวันนี้"),
-                  open
-                      ? ElevatedButton(
-                          onPressed: () {
-                            checkReserve();
-                          },
-                          child: const Text("ยืนยัน"))
-                      : const SizedBox()
+                      : const Text("ร้านปิดทำการในวันนี้"),
                 ],
               ),
             ),
@@ -347,8 +251,10 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
     double _time = time / 30;
     List<QueueModel>? queue = [];
     for (var n = 0; n < queuemodelInsert!.length; n++) {
-      if (queuemodelInsert![n][xxx!.add(Duration(minutes: n * 30))] != null) {
-        queue.add(queuemodelInsert![n][xxx!.add(Duration(minutes: n * 30))]);
+      if (queuemodelInsert![n][dateResult!.add(Duration(minutes: n * 30))] !=
+          null) {
+        queue.add(
+            queuemodelInsert![n][dateResult!.add(Duration(minutes: n * 30))]);
       }
     }
     if (queue.length == _time.toInt()) {
@@ -388,27 +294,8 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
     if (picked != null && picked != selectedDate) {
       selectedDate = picked;
       checkdayclose();
-      setQueue();
     }
   }
-
-  // Future<Null> insertData(List<QueueModel> listQueue) async {
-  //   final data = FirebaseFirestore.instance.collection('Barber').doc(email).collection('queue').where("");
-  //   final snapshot = await data.get();
-  //   if (snapshot.exists) {
-  //     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-  //     // recommendController.text = data['shoprecommend'];
-  //     // iii = data['shoprecommend'];
-  //     if (data["countservice"] != null) {
-  //       print("NotEmpty");
-  //       setState(() {
-  //         // x = data["countservice"];
-  //       });
-  //     } else {
-  //       print('Empty');
-  //     }
-  //   }
-  // }
 
   Future<Null> savedata(List<QueueModel> listQueue) async {
     listQueue.forEach((element) async {
@@ -420,9 +307,7 @@ class _ConfirmReserveUserState extends State<ConfirmReserveUser> {
         "datetime": element.datetime,
         "emailBarber": element.emailBarber,
         "idUser": element.idUser
-      }).then(((value) {
-        
-      }));
+      }).then(((value) {}));
       debugPrint("สำเร็จ");
     });
   }
