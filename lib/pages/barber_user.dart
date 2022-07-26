@@ -185,7 +185,7 @@ class _BarberUserState extends State<BarberUser> {
               ),
               StreamBuilder(
                 stream: FirebaseFirestore.instance
-                    .collection('Service')
+                    .collection('Barber')
                     .doc(email)
                     .collection("service")
                     .snapshots(),
@@ -229,6 +229,7 @@ class _BarberUserState extends State<BarberUser> {
                       itemCount: data.length,
                     );
                   }
+                 
                   return LoadingAnimationWidget.waveDots(
                       color: Colors.blue, size: 200);
                 },
@@ -370,6 +371,7 @@ class _BarberUserState extends State<BarberUser> {
                        dayopen: dayopen,
                        timeclose: timeclose,timeopen: timeopen,
                         servicemodel: servicemodel,
+                        email: email,
                       ),
                     ),
                   );

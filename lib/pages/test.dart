@@ -17,36 +17,24 @@ class Test extends StatefulWidget {
 
 class _TestState extends State<Test> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    test();
+  }
+
+  Future test()async{
+     
+    await FirebaseFirestore.instance
+        .collection('test').doc("111")
+        .set({"name":"77"});
+    debugPrint("บันทึกสำเร็จ");
+  
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('Barber')
-              .snapshots(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
-              var data = snapshot.data.docs;
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (_, index) {
-                  var userData = data[index];
-                  return Card(
-                    child: ListTile(
-                      onTap: () async {},
-                      title: Text(userData['name']),
-                    ),
-                  );
-                },
-                itemCount: data.length,
-              );
-            }
-            return const CircularProgressIndicator();
-          },
-        ),
-      ),
     );
   }
 }

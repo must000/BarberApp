@@ -51,6 +51,7 @@ class _StoreBarberState extends State<StoreBarber> {
     final data = FirebaseFirestore.instance.collection('Barber').doc(email);
     final snapshot = await data.get();
     if (snapshot.exists) {
+      print("snapshot ${snapshot.data()}");
       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
       recommendController.text = data['shoprecommend'];
       iii = data['shoprecommend'];
@@ -221,51 +222,51 @@ class _StoreBarberState extends State<StoreBarber> {
               const SizedBox(
                 height: 10,
               ),
-              const Text('จำนวนที่รับบริการ'),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      CollectionReference users =
-                          FirebaseFirestore.instance.collection('Barber');
-                      users.doc(email).update({"countservice": 1});
-                      setState(() {
-                        x = 1;
-                      });
-                    },
-                    child: const Text('1'),
-                    style: ElevatedButton.styleFrom(
-                        primary: x == 1 ? Colors.red : Colors.grey),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                                            CollectionReference users =
-                          FirebaseFirestore.instance.collection('Barber');
-                      users.doc(email).update({"countservice": 2});
-                      setState(() {
-                        x = 2;
-                      });
-                    },
-                    child: const Text('2'),
-                    style: ElevatedButton.styleFrom(
-                        primary: x == 2 ? Colors.red : Colors.grey),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                                            CollectionReference users =
-                          FirebaseFirestore.instance.collection('Barber');
-                      users.doc(email).update({"countservice": 3});
-                      setState(() {
-                        x = 3;
-                      });
-                    },
-                    child: const Text('3'),
-                    style: ElevatedButton.styleFrom(
-                        primary: x == 3 ? Colors.red : Colors.grey),
-                  ),
-                ],
-              ),
+              // const Text('จำนวนที่รับบริการ'),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     ElevatedButton(
+              //       onPressed: () {
+              //         CollectionReference users =
+              //             FirebaseFirestore.instance.collection('Barber');
+              //         users.doc(email).update({"countservice": 1});
+              //         setState(() {
+              //           x = 1;
+              //         });
+              //       },
+              //       child: const Text('1'),
+              //       style: ElevatedButton.styleFrom(
+              //           primary: x == 1 ? Colors.red : Colors.grey),
+              //     ),
+              //     ElevatedButton(
+              //       onPressed: () {
+              //                               CollectionReference users =
+              //             FirebaseFirestore.instance.collection('Barber');
+              //         users.doc(email).update({"countservice": 2});
+              //         setState(() {
+              //           x = 2;
+              //         });
+              //       },
+              //       child: const Text('2'),
+              //       style: ElevatedButton.styleFrom(
+              //           primary: x == 2 ? Colors.red : Colors.grey),
+              //     ),
+              //     ElevatedButton(
+              //       onPressed: () {
+              //                               CollectionReference users =
+              //             FirebaseFirestore.instance.collection('Barber');
+              //         users.doc(email).update({"countservice": 3});
+              //         setState(() {
+              //           x = 3;
+              //         });
+              //       },
+              //       child: const Text('3'),
+              //       style: ElevatedButton.styleFrom(
+              //           primary: x == 3 ? Colors.red : Colors.grey),
+              //     ),
+              //   ],
+              // ),
               buttonCloseShop(context),
               ElevatedButton(
                   onPressed: () {

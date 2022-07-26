@@ -12,7 +12,7 @@ class MyDialog {
       context: context,
       builder: (context) => SimpleDialog(
         title: ListTile(
-          title: const Text("Normal Dialog",
+          title: const Text("",
               style: TextStyle(color: Colors.black)),
           subtitle: Text(string),
         ),

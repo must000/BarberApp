@@ -199,7 +199,13 @@ class _HairCutUserState extends State<HairCutUser> {
         leading: IconButton(
           icon: const Icon(Icons.search),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => SearchUser(barberModel: barbershop!,),));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchUser(
+                    barberModel: barbershop!,
+                  ),
+                ));
           },
         ),
         title:
@@ -285,7 +291,15 @@ class _HairCutUserState extends State<HairCutUser> {
                       ),
                     ],
                   ),
-
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Test(),
+                            ));
+                      },
+                      child: const Text("เทสส")),
                   buttonChooseAType(size),
                   sectionListview(size, "ร้านที่เคยใช้บริการ"),
                   // listStoreHistory(size),
