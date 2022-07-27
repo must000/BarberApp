@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:barber/data/servicemodel.dart';
 
@@ -19,6 +21,7 @@ class ConfirmQueueUser extends StatefulWidget {
   }) : super(key: key);
 
   @override
+  // ignore: no_logic_in_create_state
   State<ConfirmQueueUser> createState() => _ConfirmQueueUserState(
       datetime: datetime,
       emailBarber: emailBarber,
@@ -123,7 +126,7 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
                         style: TextStyle(fontSize: fontSize),
                       ),
                       Text(
-                        servicemodel[index].price.toString(),
+                        servicemodel[index].price.toInt().toString(),
                         style: TextStyle(fontSize: fontSize),
                       )
                     ],
@@ -142,38 +145,72 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
                         style: TextStyle(fontSize: fontSize),
                       )
                     ]),
-              )
+              ),
             ],
           )
         ]),
         bottomNavigationBar: BottomAppBar(
-          child: Container(
-              height: 55,
-              child: Row(
+          child: SizedBox(
+              height: 100,
+              child: Column(
                 children: [
                   Container(
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 67, 165, 58),
-                        ),
-                        onPressed: () {},
-                        child: const Text("ยืนยัน")),
-                    width: size * 0.5,
-                    height: 55,
+                    margin: EdgeInsets.symmetric(horizontal: size * 0.10),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(""),
+                          Text(
+                            "ยอมรวม $price",
+                            style: const TextStyle(fontSize: 33),
+                          )
+                        ]),
                   ),
-                  Container(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
+                  Row(
+                    children: [
+                      SizedBox(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color.fromARGB(255, 67, 165, 58),
+                          ),
+                          onPressed: () {
+                            checkQueueInDatabase();
+                          },
+                          child: const Text("ยืนยัน"),
                         ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }, child: const Text("ยกเลิก")),
-                    width: size * 0.5,
-                    height: 55,
+                        width: size * 0.5,
+                        height: 55,
+                      ),
+                      SizedBox(
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text("ยกเลิก")),
+                        width: size * 0.5,
+                        height: 55,
+                      ),
+                    ],
                   ),
                 ],
               )),
         ));
+  }
+ Future<void> checkQueueInDatabase()async{
+  
+  }
+  Future<void> insertQueue()async{
+    DateTime timee = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
+            '${datetime.year}-${datetime.month}-${datetime.day} 00:00:00');
+   await FirebaseFirestore.instance
+          .collection('Barber')
+          .doc(emailBarber)
+          .collection('queue').doc("$timee").collection("$datetime")
+          .add({
+      
+      });
   }
 }

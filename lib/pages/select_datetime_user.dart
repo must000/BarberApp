@@ -18,7 +18,7 @@ class SelectDateTimeUser extends StatefulWidget {
   String timeopen;
   String timeclose;
   String email;
-  String nameUser,nameBarber;
+  String nameUser, nameBarber;
   SelectDateTimeUser({
     Key? key,
     required this.servicemodel,
@@ -26,7 +26,8 @@ class SelectDateTimeUser extends StatefulWidget {
     required this.timeopen,
     required this.timeclose,
     required this.email,
-    required this.nameUser,required this.nameBarber,
+    required this.nameUser,
+    required this.nameBarber,
   }) : super(key: key);
 
   @override
@@ -35,7 +36,9 @@ class SelectDateTimeUser extends StatefulWidget {
       dayopen: dayopen,
       timeclose: timeclose,
       timeopen: timeopen,
-      email: email,nameUser:nameUser,nameBarber:nameBarber);
+      email: email,
+      nameUser: nameUser,
+      nameBarber: nameBarber);
 }
 
 class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
@@ -44,14 +47,16 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
   String timeopen;
   String timeclose;
   String email;
-  String nameUser,nameBarber;
+  String nameUser, nameBarber;
 
   _SelectDateTimeUserState(
       {required this.servicemodel,
       required this.dayopen,
       required this.timeopen,
       required this.timeclose,
-      required this.email,required this.nameUser,required this.nameBarber});
+      required this.email,
+      required this.nameUser,
+      required this.nameBarber});
   DateTime selectedDate = DateTime.now();
   String? uid;
   bool load = true;
@@ -194,8 +199,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
     double size = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(
-      ),
+      appBar: AppBar(),
       body: load == true
           ? Center(
               child:
@@ -230,7 +234,8 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                             shrinkWrap: true,
                             itemBuilder: (context, index) => ElevatedButton(
                               onPressed: () {
-Navigator.push(context, MaterialPageRoute(builder: (context) => ConfirmQueueUser(datetime: dateResult!.add(Duration(minutes: index * 30)), nameUser: nameUser, nameBarber: nameBarber, emailBarber: email, idUser: uid!, servicemodel: servicemodel),));
+                                checkReserve(dateResult!
+                                    .add(Duration(minutes: index * 30)));
                               },
                               child: Text(
                                 "${dateResult!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}:${dateResult!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")} - ${dateResult!.add(Duration(minutes: (index + 1) * 30)).hour.toString().padLeft(2, "0")}:${dateResult!.add(Duration(minutes: (index + 1) * 30)).minute.toString().padLeft(2, "0")}",
@@ -247,41 +252,22 @@ Navigator.push(context, MaterialPageRoute(builder: (context) => ConfirmQueueUser
     );
   }
 
-  checkReserve() {
-    double _time = time / 30;
-    List<QueueModel>? queue = [];
-    for (var n = 0; n < queuemodelInsert!.length; n++) {
-      if (queuemodelInsert![n][dateResult!.add(Duration(minutes: n * 30))] !=
-          null) {
-        queue.add(
-            queuemodelInsert![n][dateResult!.add(Duration(minutes: n * 30))]);
-      }
-    }
-    if (queue.length == _time.toInt()) {
-      bool c = true;
-      for (var i = 0; i < queue.length; i++) {
-        // print(queue[i].datetime);
-        if (queue[i]
-            .datetime
-            .isBefore(DateTime.now().add(Duration(hours: 2)))) {
-          // เวลาที่จอง ไม่เกิน 2 ชม. ต้องจองล่วงหน้า อย่างน้อย 2 ชม.
-          // MyDialog()
-          //     .normalDialog(context, "ต้องทำการจองล่วงหน้าอย่างน้อย 2 ชม.");
-          c = false;
-        }
-      }
-      if (c) {
-        //เรียบร้อยดี
-        savedata(queue);
-      } else {
-        // เวลาที่จอง ไม่เกิน 2 ชม. ต้องจองล่วงหน้า อย่างน้อย 2 ชม.
-        MyDialog().normalDialog(context, "ต้องทำการจองล่วงหน้าอย่างน้อย 2 ชม.");
-      }
+  checkReserve(DateTime selectime) {
+    if (selectime.isBefore(DateTime.now().add(Duration(hours: 2)))) {
+      // เวลาที่จอง ไม่เกิน 2 ชม. ต้องจองล่วงหน้า อย่างน้อย 2 ชม.
+      MyDialog().normalDialog(context, "ต้องทำการจองล่วงหน้าอย่างน้อย 2 ชม.");
     } else {
-      //เวลาที่เลือกไม่สอดคล้องกับบริการที่เลือก
-      MyDialog()
-          .normalDialog(context, "เวลาที่เลือกไม่สอดคล้องกับบริการที่เลือก");
-      print("เวลาที่เลือกไม่สอดคล้องกับบริการที่เลือก");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ConfirmQueueUser(
+                datetime: selectime,
+                nameUser: nameUser,
+                nameBarber: nameBarber,
+                emailBarber: email,
+                idUser: uid!,
+                servicemodel: servicemodel),
+          ));
     }
   }
 
