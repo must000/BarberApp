@@ -7,18 +7,42 @@ import 'package:geolocator/geolocator.dart';
 // import 'package:geolocator/geolocator.dart';
 
 class MyDialog {
+  final Function()? funcAction;
+
+  MyDialog({this.funcAction});
   Future<Null> normalDialog(BuildContext context, String string) async {
     showDialog(
       context: context,
       builder: (context) => SimpleDialog(
         title: ListTile(
-          title: const Text("",
-              style: TextStyle(color: Colors.black)),
+          title: const Text("", style: TextStyle(color: Colors.black)),
           subtitle: Text(string),
         ),
         children: [
           TextButton(
             onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<Null> hardDialog(
+    BuildContext context,
+    String string,
+    String title,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: ListTile(
+          title: Text(title, style: TextStyle(color: Colors.black)),
+          subtitle: Text(string),
+        ),
+        children: [
+          TextButton(
+            onPressed: funcAction,
             child: const Text("OK"),
           )
         ],

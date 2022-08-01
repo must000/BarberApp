@@ -1,3 +1,5 @@
+import 'package:barber/pages/index.dart';
+import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -44,7 +46,9 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
       required this.idUser,
       required this.servicemodel});
 
+  // เวลาที่ใช้ แบบตัดเป็น ชม.
   String time = "";
+  //เวลาที่ใช้รวมนาที รวมราคาที่ยูเซอร์ต้องจ่าย
   int timeint = 0, price = 0;
   @override
   void initState() {
@@ -174,7 +178,8 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
                             primary: const Color.fromARGB(255, 67, 165, 58),
                           ),
                           onPressed: () {
-                            checkQueueInDatabase();
+                            // insertQueue();
+                            checkQueueInDatabase2();
                           },
                           child: const Text("ยืนยัน"),
                         ),
@@ -199,18 +204,161 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
               )),
         ));
   }
- Future<void> checkQueueInDatabase()async{
-  
+
+  Future<void> checkQueueInDatabase() async {
+    DateTime timee = DateFormat('yyyyy-MM-dd HH:mm:ss')
+        .parse('${datetime.year}-${datetime.month}-${datetime.day} 00:00:00');
+    var data = await FirebaseFirestore.instance
+        .collection('Barber')
+        .doc(emailBarber)
+        .collection('queue')
+        .doc("$timee")
+        .collection("time")
+        .get();
+    var alldata = data.docs.map((e) => e.data()).toList();
+    if (alldata.isNotEmpty) {
+      for (int n = 0; n < alldata.length; n++) {
+        // print("$n ${alldata[n]}");
+        // print((alldata[n]["timestart"] as Timestamp).toDate());
+        if ((alldata[n]["timestart"] as Timestamp).toDate() == datetime) {
+          print("คิวไม่ว่าง เวลาตรงกัน");
+        } else {
+          for (var i = 0; i < timeint / 30; i++) {
+            if ((alldata[n]["timestart"] as Timestamp).toDate() ==
+                datetime.add(Duration(minutes: i * 30))) {
+              return print('คิวไม่ว่่าง มีเวลาที่อยู่ในคิว');
+            } else if ((alldata[n]["timeend"] as Timestamp).toDate() ==
+                datetime.add(Duration(minutes: (i + 1) * 30))) {
+            } else {
+              print("คิวว่าง");
+            }
+          }
+          print("บันทึกคิวลงในระบบได้");
+        }
+      }
+    } else {
+      print("คิวว่าง ไม่มีค่า");
+    }
   }
-  Future<void> insertQueue()async{
-    DateTime timee = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
-            '${datetime.year}-${datetime.month}-${datetime.day} 00:00:00');
-   await FirebaseFirestore.instance
+
+  Future<void> checkQueueInDatabase2() async {
+    DateTime timee = DateFormat('yyyyy-MM-dd HH:mm:ss')
+        .parse('${datetime.year}-${datetime.month}-${datetime.day} 00:00:00');
+    var data = await FirebaseFirestore.instance
+        .collection('Barber')
+        .doc(emailBarber)
+        .collection('queue')
+        .doc("$timee")
+        .collection("time")
+        .get();
+    var alldata = data.docs.map((e) => e.data()).toList();
+    bool queue = true;
+    if (alldata.isNotEmpty) {
+      int i = 0;
+      while (i < alldata.length) {
+        if ((alldata[i]["timestart"] as Timestamp).toDate() == datetime) {
+          print("คิวไม่ว่าง เวลาตรงกัน");
+          i = alldata.length;
+          queue = false;
+        } else {
+          int n = 0;
+          while (n < timeint / 30) {
+            if ((alldata[i]["timestart"] as Timestamp).toDate() ==
+                datetime.add(Duration(minutes: n * 30))) {
+              print('คิวไม่ว่่าง มีเวลาที่อยู่ในคิว *');
+              n = 200;
+              i = alldata.length;
+              queue = false;
+            } else if (n != 0) {
+              if ((alldata[i]["timeend"] as Timestamp).toDate() ==
+                  datetime.add(Duration(minutes: (n) * 30))) {
+                print('คิวไม่ว่่าง มีเวลาที่อยู่ในคิว **');
+                n = 200;
+                i = alldata.length;
+                queue = false;
+              }
+            } else {
+              print("คิวว่าง");
+            }
+            n++;
+          }
+        }
+        i++;
+      }
+    } else {
+      print("คิวว่าง ไม่มีค่า");
+      queue = false;
+    }
+    if (queue) {
+      // print("บันทึกคิวลงในระบบ");
+      insertQueue();
+    } else {
+      // print("ไม่บันทึกคิวลงในระบบ");
+      MyDialog(funcAction: f1).hardDialog(
+        context,
+        "กรุณาเปลี่ยนเวลาที่ต้องการจอง",
+        "คิวไม่ว่าง",
+      );
+    }
+  }
+
+ void f1() {
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
+ void f2() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => IndexPage(),
+        ));
+  }
+
+  Future<void> insertQueue() async {
+    List<String> listid = [];
+    List<String> listname = [];
+    List<String> listdetail = [];
+    List listprice = [];
+    List listtime = [];
+    for (var i = 0; i < servicemodel.length; i++) {
+      listid.add(servicemodel[i].id);
+      listname.add(servicemodel[i].name);
+      listdetail.add(servicemodel[i].detail);
+      listprice.add(servicemodel[i].price);
+      listtime.add(servicemodel[i].time);
+    }
+    DateTime timee = DateFormat('yyyyy-MM-dd HH:mm:ss')
+        .parse('${datetime.year}-${datetime.month}-${datetime.day} 00:00:00');
+    await FirebaseFirestore.instance
+        .collection('Barber')
+        .doc(emailBarber)
+        .collection('queue')
+        .doc("$timee")
+        .collection("time")
+        .doc("$datetime")
+        .set({
+      "emailbarber": emailBarber,
+      "idUser": idUser,
+      "timestart": datetime,
+      "timeend": datetime.add(Duration(minutes: timeint))
+    }).then((value) async {
+      await FirebaseFirestore.instance
           .collection('Barber')
           .doc(emailBarber)
-          .collection('queue').doc("$timee").collection("$datetime")
+          .collection('queue')
+          .doc("$timee")
+          .collection("time")
+          .doc("$datetime")
+          .collection("service")
           .add({
-      
-      });
+        "idService": listid,
+        "nameService": listname,
+        "detailService": listdetail,
+        "priceService": listprice,
+        "timeService": listtime,
+      }).then((value) => MyDialog(funcAction: f2).hardDialog(
+              context, "ขอบคุณที่ใช้บริการจองคิวของเรา", "บันทึกสำเร็จ"));
+    });
   }
 }
