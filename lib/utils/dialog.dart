@@ -37,7 +37,7 @@ class MyDialog {
       context: context,
       builder: (context) => SimpleDialog(
         title: ListTile(
-          title: Text(title, style: TextStyle(color: Colors.black)),
+          title: Text(title, style: const TextStyle(color: Colors.black)),
           subtitle: Text(string),
         ),
         children: [

@@ -51,7 +51,11 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
       required this.lat,
       required this.lon});
 
+  late double latX = double.parse(lat);
+  late double lonX = double.parse(lon);
+
   final map = GlobalKey<LongdoMapState>();
+
   String? dayC;
   @override
   void initState() {
@@ -113,15 +117,31 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
       ),
       body: ListView(
         children: [
-          // Container(
-          //   child: LongdoMapWidget(
-          //     apiKey: Contants.keyLongdomap,
-          //     key: map,
-          //     bundleId: Contants.bundleID,
-          //   ),
-          //   width: size * 0.9,
-          //   height: 250,
-          // ),
+          Center(
+            child: Stack(
+              children: [
+                SizedBox(
+                  child: LongdoMapWidget(
+                    apiKey: Contants.keyLongdomap,
+                    key: map,
+                    bundleId: Contants.bundleID,
+                  ),
+                  width: size * 0.9,
+                  height: 250,
+                ),
+                SizedBox(
+                  child: const Icon(Icons.pin_drop),
+                  width: size * 0.9,
+                  height: 250,
+                )
+              ],
+            ),
+          ),
+          ElevatedButton(
+              onPressed: () {
+                proceedMoveLongdoMap(double.parse(lat), double.parse(lon));
+              },
+              child: const Text("ย้ายไปยังตำแหน่งของร้าน")),
           headingDetail("รายละเอียดที่อยู่ : "),
           contentDetail('$addressdetails'),
           headingDetail("เวลาเปิดปิด"),

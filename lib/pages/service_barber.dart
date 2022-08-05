@@ -234,7 +234,7 @@ class _ServiceBarberState extends State<ServiceBarber> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           Row(

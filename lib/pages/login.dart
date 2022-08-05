@@ -1,5 +1,6 @@
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/index.dart';
+import 'package:barber/pages/register_phone_user.dart';
 import 'package:barber/pages/registerbarber.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:barber/utils/dialog.dart';
@@ -90,9 +91,7 @@ class _LoginState extends State<Login> {
                             } else {}
                           },
                           controller: emailController,
-                          
                           decoration: InputDecoration(
-                            
                             labelText: "Email",
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -198,7 +197,7 @@ class _LoginState extends State<Login> {
                           label: const Text('Facebook'),
                         ),
                         width: size * 0.7,
-                      )
+                      ),
                     ],
                   ),
                 ),

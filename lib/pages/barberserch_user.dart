@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:barber/pages/barber_user.dart';
+import 'package:barber/widgets/barbermodel2.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -12,27 +13,35 @@ class BarberSerchUser extends StatefulWidget {
   List<BarberModel> barbershop;
   double? lat, lon;
   String nameUser;
-  BarberSerchUser({
-    Key? key,
-    required this.typeBarber,
-    required this.barbershop,
-    this.lat,
-    this.lon,
-    required this.nameUser
-  }) : super(key: key);
+  BarberSerchUser(
+      {Key? key,
+      required this.typeBarber,
+      required this.barbershop,
+      this.lat,
+      this.lon,
+      required this.nameUser})
+      : super(key: key);
 
   @override
   State<BarberSerchUser> createState() => _BarberSerchUserState(
-      typeBarber: typeBarber, barbershop: barbershop, lat: lat, lon: lon,nameUser:nameUser);
+      typeBarber: typeBarber,
+      barbershop: barbershop,
+      lat: lat,
+      lon: lon,
+      nameUser: nameUser);
 }
 
 class _BarberSerchUserState extends State<BarberSerchUser> {
   bool typeBarber;
   List<BarberModel> barbershop;
-String nameUser;
+  String nameUser;
   double? lat, lon;
   _BarberSerchUserState(
-      {required this.typeBarber, required this.barbershop, this.lat, this.lon,required this.nameUser});
+      {required this.typeBarber,
+      required this.barbershop,
+      this.lat,
+      this.lon,
+      required this.nameUser});
   List<BarberModel>? barberResult = [];
   Map<String, String>? urlImgFront;
   @override
@@ -104,6 +113,7 @@ String nameUser;
               // listStoreLike(size),
               urlImgFront == null
                   ? Container()
+                  
                   : Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: GridView.builder(
@@ -111,67 +121,15 @@ String nameUser;
                         shrinkWrap: true,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                        ),
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16.0,
+                                mainAxisSpacing: 5,
+                                childAspectRatio: 0.82),
                         itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BarberUser(
-                                    nameUser: nameUser,
-                                    email: barberResult![index].email,
-                                    nameShop: barberResult![index].shopname,
-                                    url: urlImgFront![
-                                        barberResult![index].email]!,
-                                    recommend:
-                                        barberResult![index].shoprecommend,
-                                    addressdetails:
-                                        barberResult![index].addressdetails,
-                                    dayopen: barberResult![index].dayopen,
-                                    lat: barberResult![index].lat,
-                                    lon: barberResult![index].lng,
-                                    phoneNumber: barberResult![index].phone,
-                                    timeopen: barberResult![index].timeopen,
-                                    timeclose: barberResult![index].timeclose,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 5),
-                              child: Container(
-                                decoration: BoxDecoration(border: Border.all()),
-                                child: Column(
-                                  children: [
-                                    CachedNetworkImage(
-                                      height: 60,
-                                      fit: BoxFit.fill,
-                                      imageUrl: urlImgFront![
-                                          barberResult![index].email]!,
-                                      placeholder: (context, url) =>
-                                          LoadingAnimationWidget.inkDrop(
-                                              color: Colors.black, size: 20),
-                                    ),
-                                    ListTile(
-                                      title:
-                                          Text(barberResult![index].shopname),
-                                      subtitle: Text(
-                                          barberResult![index].shoprecommend),
-                                    ),
-                                    Row(
-                                      children: const [
-                                        Text("คะแนน X "),
-                                        Icon(Icons.star)
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
+                          return BarberModel2(
+                              nameUser: nameUser,
+                              barberModel: barberResult![index],
+                              url: urlImgFront![barberResult![index].email]!);
                         },
                         itemCount: barberResult!.length,
                       ),
@@ -180,6 +138,39 @@ String nameUser;
           ),
         ));
   }
+
+  // Padding(
+  //                             padding: const EdgeInsets.symmetric(
+  //                                 vertical: 4, horizontal: 5),
+  //                             child: Container(
+  //                               decoration: BoxDecoration(border: Border.all()),
+  //                               child: Column(
+  //                                 children: [
+  //                                   CachedNetworkImage(
+  //                                     height: 60,
+  //                                     fit: BoxFit.fill,
+  //                                     imageUrl: urlImgFront![
+  //                                         barberResult![index].email]!,
+  //                                     placeholder: (context, url) =>
+  //                                         LoadingAnimationWidget.inkDrop(
+  //                                             color: Colors.black, size: 20),
+  //                                   ),
+  //                                   ListTile(
+  //                                     title:
+  //                                         Text(barberResult![index].shopname),
+  //                                     subtitle: Text(
+  //                                         barberResult![index].shoprecommend),
+  //                                   ),
+  //                                   Row(
+  //                                     children: const [
+  //                                       Text("คะแนน X "),
+  //                                       Icon(Icons.star)
+  //                                     ],
+  //                                   )
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                           ),
 
   Container sectionListview(double size, String title) {
     return Container(
@@ -202,7 +193,7 @@ String nameUser;
             scrollDirection: Axis.horizontal,
             itemCount: 20,
             itemBuilder: (context, index) => BarberModel1(
-              nameUser: nameUser,
+                  nameUser: nameUser,
                   size: size,
                   nameBarber: "ร้านที่ถูกใจ",
                   addressdetails: '',

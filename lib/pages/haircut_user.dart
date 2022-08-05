@@ -1,5 +1,8 @@
 import 'package:barber/data/barbermodel.dart';
+import 'package:barber/data/sqlite_model.dart';
 import 'package:barber/pages/search_user.dart';
+import 'package:barber/utils/sqlite_helper.dart';
+import 'package:barber/widgets/barbermodel2.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
@@ -30,6 +33,7 @@ class HairCutUser extends StatefulWidget {
 }
 
 class _HairCutUserState extends State<HairCutUser> {
+  List<SQLiteModel> sqliteModels = [];
   List<BarberModel>? barbershop;
   _HairCutUserState({required this.barbershop});
   String? name, email, phone;
@@ -43,6 +47,20 @@ class _HairCutUserState extends State<HairCutUser> {
     chechpermission();
     findNameAnEmail();
     getAdvert();
+    processReadSQLite();
+  }
+
+  Future<Null> processReadSQLite() async {
+    if (sqliteModels.isNotEmpty) {
+      sqliteModels.clear();
+    }
+
+    await SQLiteHelper().readSQLite().then((value) {
+      setState(() {
+        sqliteModels = value;
+        // findDetailSeller();
+      });
+    });
   }
 
   checkBarberOpen() {
@@ -202,7 +220,7 @@ class _HairCutUserState extends State<HairCutUser> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SearchUser(
-                    nameUser: name == null? "":name!,
+                    nameUser: name == null ? "" : name!,
                     barberModel: barbershop!,
                   ),
                 ));
@@ -293,40 +311,37 @@ class _HairCutUserState extends State<HairCutUser> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Test(),
-                            ));
+                        print(sqliteModels);
                       },
                       child: const Text("เทสส")),
                   buttonChooseAType(size),
                   sectionListview(size, "ร้านที่เคยใช้บริการ"),
                   // listStoreHistory(size),
                   sectionListview(size, "ร้านที่ถูกใจ"),
-                  // listStoreLike(size),
+                  listStoreLike(size),
                 ],
               ),
             ),
     );
   }
 
-  // Container listStoreLike(double size) {
-  //   return Container(
-  //     margin: const EdgeInsets.only(bottom: 20),
-  //     height: 180,
-  //     child: Expanded(
-  //       flex: 3,
-  //       child: ListView.builder(
-  //           scrollDirection: Axis.horizontal,
-  //           itemCount: 20,
-  //           itemBuilder: (context, index) => BarberModel1(
-  //                 size: size,
-  //                 nameBarber: "ร้านที่ถูกใจ",
-  //               )),
-  //     ),
-  //   );
-  // }
+  Container listStoreLike(double size) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      height: 180,
+      child: Expanded(
+        flex: 3,
+        child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 20,
+            itemBuilder: (context, index) => BarberModel2(
+                  barberModel: barbershop![index],
+                  url: "",
+                  nameUser: name!,
+                )),
+      ),
+    );
+  }
 
   // Container listStoreHistory(double size) {
   //   return Container(
@@ -377,7 +392,7 @@ class _HairCutUserState extends State<HairCutUser> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => BarberSerchUser(
-                            nameUser: name == null? "":name!,
+                                nameUser: name == null ? "" : name!,
                                 typeBarber: true,
                                 barbershop: barberman,
                                 lat: lat,
@@ -401,7 +416,7 @@ class _HairCutUserState extends State<HairCutUser> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => BarberSerchUser(
-                            nameUser: name == null? "":name!,
+                                nameUser: name == null ? "" : name!,
                                 typeBarber: false,
                                 barbershop: barberwoman,
                                 lat: lat,

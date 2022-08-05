@@ -1,5 +1,6 @@
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/index.dart';
+import 'package:barber/pages/register_phone_user.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,7 +17,7 @@ class _RegisterUserState extends State<RegisterUser> {
   final formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController userController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
   PhoneAuthCredential? phoneCredential;
   @override
@@ -128,6 +129,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     child: ElevatedButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
+                            // registerFirebase();
                             registerFirebase();
                           }
                         },
@@ -149,18 +151,24 @@ class _RegisterUserState extends State<RegisterUser> {
           .createUserWithEmailAndPassword(
               email: userController.text, password: passwordController.text)
           .then((value) async {
-        await value.user!
-            .updateDisplayName(nameController.text)
-            .then((value) => Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => IndexPage(),
-                ),
-                (route) => false));
+        await value.user!.updateDisplayName(nameController.text).then(
+              (value) => MyDialog(funcAction: fc).hardDialog(
+                  context, "เรากำลังนำคุณไปลงทะเบียนเบอร์", "สมัครสำเร็จ"),
+            );
         print("สมัครแล้ว $value");
       }).catchError((value) {
         MyDialog().normalDialog(context, value.message);
       });
     });
+  }
+
+  void fc() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RegisterPhoneUser(
+          ),
+        ),
+        (route) => false);
   }
 }
