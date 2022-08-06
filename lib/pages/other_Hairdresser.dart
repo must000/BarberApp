@@ -9,20 +9,21 @@ import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/provider/myproviders.dart';
 
-class OtherBarber extends StatefulWidget {
+class OtherHairdresser extends StatefulWidget {
   String email;
-  OtherBarber({
+  OtherHairdresser({
     Key? key,
     required this.email,
   }) : super(key: key);
 
   @override
-  State<OtherBarber> createState() => _OtherBarberState(email: this.email);
+  State<OtherHairdresser> createState() =>
+      _OtherHairdresserState(email: this.email);
 }
 
-class _OtherBarberState extends State<OtherBarber> {
+class _OtherHairdresserState extends State<OtherHairdresser> {
   String? email;
-  _OtherBarberState({required this.email});
+  _OtherHairdresserState({required this.email});
   String? fullname;
 
   @override
@@ -38,7 +39,7 @@ class _OtherBarberState extends State<OtherBarber> {
           email = event!.email;
         });
         final data =
-            FirebaseFirestore.instance.collection('Barber').doc(event!.email);
+            FirebaseFirestore.instance.collection('Hairdresser').doc(event!.email);
         final snapshot = await data.get();
         if (snapshot.exists) {
           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;

@@ -1,4 +1,4 @@
-import 'dart:developer';
+
 
 import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,19 +6,20 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 class ServiceBarber extends StatefulWidget {
-  String email;
+  String serviceID;
   ServiceBarber({
     Key? key,
-    required this.email,
+    required this.serviceID,
   }) : super(key: key);
 
   @override
-  State<ServiceBarber> createState() => _ServiceBarberState(email: this.email);
+  State<ServiceBarber> createState() =>
+      _ServiceBarberState(serviceID: this.serviceID);
 }
 
 class _ServiceBarberState extends State<ServiceBarber> {
-  String? email;
-  _ServiceBarberState({required this.email});
+  String? serviceID;
+  _ServiceBarberState({required this.serviceID});
   bool slid = false;
   double x = 0, y = 0, z = 0;
   double time = 0;
@@ -37,8 +38,8 @@ class _ServiceBarberState extends State<ServiceBarber> {
         children: [
           StreamBuilder(
             stream: FirebaseFirestore.instance
-                .collection('Barber')
-                .doc(email)
+                .collection('Service')
+                .doc(serviceID)
                 .collection("service")
                 .snapshots(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -59,8 +60,8 @@ class _ServiceBarberState extends State<ServiceBarber> {
                           IconButton(
                               onPressed: () {
                                 FirebaseFirestore.instance
-                                    .collection("Barber")
-                                    .doc(email)
+                                    .collection('Service')
+                                    .doc(serviceID)
                                     .collection("service")
                                     .doc(userData.id)
                                     .delete()
@@ -148,16 +149,14 @@ class _ServiceBarberState extends State<ServiceBarber> {
                                       setState(() {
                                         time = 60;
                                       });
-                                    }
-                                    else if (value == "1.30 ชั่วโมง") {
-                                    setState(() {
-                                      time = 90;
-                                    });
-                                    }
-                                    else if(value =="2 ชั่วโมง") {
-                                    setState(() {
-                                      time = 120;
-                                    });
+                                    } else if (value == "1.30 ชั่วโมง") {
+                                      setState(() {
+                                        time = 90;
+                                      });
+                                    } else if (value == "2 ชั่วโมง") {
+                                      setState(() {
+                                        time = 120;
+                                      });
                                     }
                                   },
                                 ),
@@ -264,7 +263,8 @@ class _ServiceBarberState extends State<ServiceBarber> {
                             height: 40,
                             child: ElevatedButton(
                               onPressed: () {
-                                if (formKey.currentState!.validate()&&time!=0) {
+                                if (formKey.currentState!.validate() &&
+                                    time != 0) {
                                   print(
                                       "${nameServiceController.text} ${time.toString()} ${detailServiceController.text} ${priceServiceController.text}");
                                   insertData(
@@ -280,9 +280,9 @@ class _ServiceBarberState extends State<ServiceBarber> {
                                       priceServiceController.text = "";
                                     });
                                   });
-                                }
-                                else{
-                                  MyDialog().normalDialog(context, "กรุณาใส่เวลาที่จะใช้ให้บริการ");
+                                } else {
+                                  MyDialog().normalDialog(
+                                      context, "กรุณาใส่เวลาที่จะใช้ให้บริการ");
                                 }
                               },
                               child: const Text(
@@ -309,9 +309,9 @@ class _ServiceBarberState extends State<ServiceBarber> {
   Future<Null> insertData(
       String name, double time, String? detail, double price) async {
     await FirebaseFirestore.instance
-        .collection('Barber')
-        .doc(email)
-        .collection('service')
+        .collection('Service')
+        .doc(serviceID)
+        .collection("service")
         .add({"name": name, "time": time, "detail": detail, "price": price});
     debugPrint("บันทึกสำเร็จ");
   }

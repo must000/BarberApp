@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:barber/data/barbermodel.dart';
-import 'package:barber/pages/other_barber.dart';
-import 'package:barber/pages/queue_barber.dart';
+import 'package:barber/pages/other_Hairdresser.dart';
+import 'package:barber/pages/queue_Hairdresser.dart';
+import 'package:barber/pages/queue_setting_hairdresser.dart';
 import 'package:barber/pages/service_barber.dart';
 import 'package:barber/pages/store_barber.dart';
 import 'package:barber/utils/show_progress.dart';
@@ -29,6 +30,7 @@ class IndexPage extends StatefulWidget {
 
 class _IndexPageState extends State<IndexPage> {
   String? email;
+  
   bool load = true;
   List<BarberModel> barbershop = [];
   @override
@@ -46,18 +48,22 @@ class _IndexPageState extends State<IndexPage> {
   }
 
   bool? isbarber;
-
+var dataHairresser;
   Future<Null> findEmail() async {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance.authStateChanges().listen((event) async {
         setState(() {
           email = event!.email;
         });
-        final data =
-            FirebaseFirestore.instance.collection('Barber').doc(event!.email);
+        final data = FirebaseFirestore.instance
+            .collection('Hairdresser')
+            .doc(event!.email);
         final snapshot = await data.get();
         if (snapshot.exists) {
+          print("snapshot +++ ${snapshot.data()} ");
+          
           setState(() {
+            dataHairresser = snapshot.data();
             isbarber = true;
             load = false;
           });
@@ -108,69 +114,67 @@ class _IndexPageState extends State<IndexPage> {
                     const ReservationUser(),
                     const OtherUser(),
                   ]),
-                  bottomNavigationBar: const TabBar(tabs: [
-                    Tab(
-                      child: Icon(
-                        Icons.cut,
-                        color: Colors.black,
+                  bottomNavigationBar: const TabBar(
+                    tabs: [
+                      Tab(
+                        child: Icon(
+                          Icons.cut,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    Tab(
-                      child: Icon(
-                        Icons.format_list_bulleted,
-                        color: Colors.black,
+                      Tab(
+                        child: Icon(
+                          Icons.format_list_bulleted,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    Tab(
-                      child: Icon(
-                        Icons.account_box,
-                        color: Colors.black,
+                      Tab(
+                        child: Icon(
+                          Icons.account_box,
+                          color: Colors.black,
+                        ),
                       ),
-                    )
-                  ]),
+                    ],
+                  ),
                 ),
               )
             : DefaultTabController(
-                length: 4,
+                length: 3,
                 child: Scaffold(
-                  body: TabBarView(children: [
-                    QueueBarber(email: email!,),
-                    ServiceBarber(
-                      email: email!,
-                    ),
-                    StoreBarber(
-                      email: email!,
-                    ),
-                    OtherBarber(
-                      email: email!,
-                    ),
-                  ]),
-                  bottomNavigationBar: const TabBar(tabs: [
-                    Tab(
-                      child: Icon(
-                        Icons.table_chart_outlined,
-                        color: Colors.black,
+                  body: TabBarView(
+                    children: [
+                      QueueHairdresser(
+                        email: email!,
                       ),
-                    ),
-                    Tab(
-                      child: Icon(
-                        Icons.cut_sharp,
-                        color: Colors.black,
+                      ServiceBarber(serviceID: dataHairresser["serviceID"],),
+                      OtherHairdresser(
+                        email: email!,
                       ),
-                    ),
-                    Tab(
-                      child: Icon(
-                        Icons.store,
-                        color: Colors.black,
+                    ],
+                  ),
+                  bottomNavigationBar: const TabBar(
+                    tabs: [
+                      Tab(
+                        child: Icon(
+                          Icons.table_chart_outlined,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    Tab(
-                      child: Icon(
-                        Icons.account_box,
-                        color: Colors.black,
+                      Tab(
+                        child: Icon(
+                          Icons.cut_sharp,
+                          color: Colors.black,
+                        ),
                       ),
-                    )
-                  ]),
-                ));
+                      Tab(
+                        child: Icon(
+                          Icons.store,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
   }
 }

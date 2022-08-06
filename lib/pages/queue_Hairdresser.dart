@@ -1,30 +1,23 @@
 import 'package:flutter/material.dart';
-
-import 'package:barber/pages/queue_setting_barber.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 
-class QueueBarber extends StatefulWidget {
+class QueueHairdresser extends StatefulWidget {
   String email;
-  QueueBarber({
+  QueueHairdresser({
     Key? key,
     required this.email,
   }) : super(key: key);
 
   @override
-  State<QueueBarber> createState() => _QueueBarberState(email: email);
+  State<QueueHairdresser> createState() => _QueueHairdresserState(email: email);
 }
 
-class _QueueBarberState extends State<QueueBarber> {
+class _QueueHairdresserState extends State<QueueHairdresser> {
   String email;
-  _QueueBarberState({required this.email});
+  _QueueHairdresserState({required this.email});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          actions: [IconButton(onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => QueueSettingBarber(email: email,),));
-          }, icon: Icon(Icons.settings))],
-          ),
       body: HorizontalDataTable(
         leftHandSideColumnWidth: 100,
         rightHandSideColumnWidth: 600,

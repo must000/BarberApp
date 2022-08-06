@@ -289,25 +289,35 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
     });
   }
 
-  Future<Null>  uploadAvarter() async{
+  Future<Null> uploadAvarter() async {
     final path = 'avatar/${emailController.text}';
     final file = File(avertarIng!.path);
     final ref = FirebaseStorage.instance.ref().child(path);
-   ref.putFile(file).then((p0) {
-    
-   } 
-   
-   );
+    ref.putFile(file).then((p0) {});
   }
 
   proceedsaveData() async {
-    await FirebaseFirestore.instance.collection('Hairdresser').add({
+    await FirebaseFirestore.instance
+        .collection('Hairdresser')
+        .doc(emailController.text)
+        .set({
       "name": nameController.text,
       "lastname": lastnameController.text,
       "barberState": null,
       "idCode": randomNumeric(7)
     });
     debugPrint("บันทึกสำเร็จ");
+     await FirebaseFirestore.instance
+        .collection('Service').add({}).then((value) async {
+         print( value.id);
+         await FirebaseFirestore.instance
+        .collection('Hairdresser')
+        .doc(emailController.text)
+        .update({
+          "serviceID":value.id
+        });
+        debugPrint("อัพเดตเซอร์วิสไอดี สำเร็จ");
+        });
   }
 
   void fc() {
