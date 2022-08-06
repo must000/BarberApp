@@ -123,6 +123,7 @@ class _OtherUserState extends State<OtherUser> {
                 },
                 child: const Text("เกี่ยวกับเรา"),
               ),
+              
             ],
           ),
         ),

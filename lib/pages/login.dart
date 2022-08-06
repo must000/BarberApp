@@ -2,6 +2,7 @@ import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/pages/register_phone_user.dart';
 import 'package:barber/pages/registerbarber.dart';
+import 'package:barber/pages/registerhairdresser.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -166,10 +167,10 @@ class _LoginState extends State<Login> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const RegisterBarber()),
+                                          const RegisterHairdresser()),
                                 );
                               },
-                              child: const Text("ช่างตัดผม"),
+                              child: const Text("ช่างทำผม"),
                             ),
                           )
                         ],

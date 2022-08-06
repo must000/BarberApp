@@ -318,7 +318,7 @@ class _HairCutUserState extends State<HairCutUser> {
                   sectionListview(size, "ร้านที่เคยใช้บริการ"),
                   // listStoreHistory(size),
                   sectionListview(size, "ร้านที่ถูกใจ"),
-                  listStoreLike(size),
+                  // listStoreLike(size),
                 ],
               ),
             ),

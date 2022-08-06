@@ -163,12 +163,12 @@ class _RegisterUserState extends State<RegisterUser> {
   }
 
   void fc() {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RegisterPhoneUser(
-          ),
-        ),
-        (route) => false);
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RegisterPhoneUser(),
+      ),
+    );
   }
 }
