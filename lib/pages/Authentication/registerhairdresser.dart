@@ -1,7 +1,5 @@
 import 'dart:io';
-import 'dart:math';
-
-import 'package:barber/pages/register_phone_user.dart';
+import 'package:barber/pages/Authentication/register_phone_user.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -297,28 +295,48 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
   }
 
   proceedsaveData() async {
-    await FirebaseFirestore.instance
-        .collection('Hairdresser')
-        .doc(emailController.text)
-        .set({
+    await FirebaseFirestore.instance.collection('Hairdresser').add({
+      "email": emailController.text,
       "name": nameController.text,
       "lastname": lastnameController.text,
       "barberState": null,
       "idCode": randomNumeric(7)
+    }).then((newvalue) async {
+      await FirebaseFirestore.instance.collection('Service').add({}).then(
+        (value) async {
+          print(value.id);
+          await FirebaseFirestore.instance
+              .collection('Hairdresser')
+              .doc(newvalue.id)
+              .update({"serviceID": value.id});
+          debugPrint("อัพเดตเซอร์วิสไอดี สำเร็จ");
+        },
+      );
+      debugPrint("บันทึกสำเร็จ");
     });
-    debugPrint("บันทึกสำเร็จ");
-     await FirebaseFirestore.instance
-        .collection('Service').add({}).then((value) async {
-         print( value.id);
-         await FirebaseFirestore.instance
-        .collection('Hairdresser')
-        .doc(emailController.text)
-        .update({
-          "serviceID":value.id
-        });
-        debugPrint("อัพเดตเซอร์วิสไอดี สำเร็จ");
-        });
   }
+
+  //   await FirebaseFirestore.instance
+  //     .collection('Hairdresser')
+  //     .doc(emailController.text)
+  //     .set({
+  //   "name": nameController.text,
+  //   "lastname": lastnameController.text,
+  //   "barberState": null,
+  //   "idCode": randomNumeric(7)
+  // });
+  // debugPrint("บันทึกสำเร็จ");
+  //  await FirebaseFirestore.instance
+  //     .collection('Service').add({}).then((value) async {
+  //      print( value.id);
+  //      await FirebaseFirestore.instance
+  //     .collection('Hairdresser')
+  //     .doc(emailController.text)
+  //     .update({
+  //       "serviceID":value.id
+  //     });
+  //     debugPrint("อัพเดตเซอร์วิสไอดี สำเร็จ");
+  //     });
 
   void fc() {
     Navigator.pushAndRemoveUntil(

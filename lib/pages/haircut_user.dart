@@ -47,7 +47,7 @@ class _HairCutUserState extends State<HairCutUser> {
     chechpermission();
     findNameAnEmail();
     getAdvert();
-    processReadSQLite();
+    // processReadSQLite();
   }
 
   Future<Null> processReadSQLite() async {

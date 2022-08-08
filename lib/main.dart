@@ -1,10 +1,10 @@
 import 'package:barber/Constant/route_cn.dart';
+import 'package:barber/pages/Authentication/registeruser.dart';
 import 'package:barber/pages/about_developer.dart';
 import 'package:barber/pages/barberserch_user.dart';
 import 'package:barber/pages/contact_admin_user.dart';
 import 'package:barber/pages/index.dart';
-import 'package:barber/pages/login.dart';
-import 'package:barber/pages/registeruser.dart';
+import 'package:barber/pages/Authentication/login.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

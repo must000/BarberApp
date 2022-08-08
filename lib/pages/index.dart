@@ -30,7 +30,7 @@ class IndexPage extends StatefulWidget {
 
 class _IndexPageState extends State<IndexPage> {
   String? email;
-  
+
   bool load = true;
   List<BarberModel> barbershop = [];
   @override
@@ -47,30 +47,59 @@ class _IndexPageState extends State<IndexPage> {
     });
   }
 
+  // await Firebase.initializeApp().then((value) async {
+  //   await FirebaseAuth.instance.authStateChanges().listen((event) async {
+  //     setState(() {
+  //       email = event!.email;
+  //     });
+  //     final data = FirebaseFirestore.instance
+  //         .collection('Hairdresser')
+  //         .doc(event!.email);
+  //     final snapshot = await data.get();
+  //     if (snapshot.exists) {
+  //       print("snapshot +++ ${snapshot.data()} ");
+
+  //     }
+  //   });
+  // });
+
   bool? isbarber;
-var dataHairresser;
+  String? dataHairresser;
   Future<Null> findEmail() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance.authStateChanges().listen((event) async {
         setState(() {
           email = event!.email;
         });
-        final data = FirebaseFirestore.instance
+        FirebaseFirestore.instance
             .collection('Hairdresser')
-            .doc(event!.email);
-        final snapshot = await data.get();
-        if (snapshot.exists) {
-          print("snapshot +++ ${snapshot.data()} ");
-          
+            .where("email", isEqualTo: "$email")
+            .snapshots()
+            .listen((event) {
+          var doc = event.docs;
+
+          if (doc.isNotEmpty) {
+            print("listener attached ${doc[0].data()["email"]}");
+             print("listener attached ${doc[0].data()["serviceID"]}");
           setState(() {
-            dataHairresser = snapshot.data();
+              dataHairresser = doc[0].data()["serviceID"].toString();
             isbarber = true;
             load = false;
           });
-        }
+          } else {
+            print("daaaaaa");
+          }
+        }, onError: (error) => print("Listen failed: $error"));
       });
     });
   }
+
+  // final cities = [];
+  // for (var doc in event.docs) {
+  //   cities.add(doc.data()["email"]);
+  // }
+  // print("cities in CA: ${cities.join(", ")}");
 
   Future<Null> getDataBarberForUser() async {
     // get ข้อมูลBarber get Url imgfront
@@ -146,7 +175,9 @@ var dataHairresser;
                       QueueHairdresser(
                         email: email!,
                       ),
-                      ServiceBarber(serviceID: dataHairresser["serviceID"],),
+                      ServiceBarber(
+                        serviceID: dataHairresser!,
+                      ),
                       OtherHairdresser(
                         email: email!,
                       ),

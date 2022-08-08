@@ -1,6 +1,6 @@
 import 'package:barber/Constant/route_cn.dart';
+import 'package:barber/pages/Authentication/register_phone_user.dart';
 import 'package:barber/pages/index.dart';
-import 'package:barber/pages/register_phone_user.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
