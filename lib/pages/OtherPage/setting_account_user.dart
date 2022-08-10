@@ -171,7 +171,7 @@ class _SettingAccountUserState extends State<SettingAccountUser> {
                         ),
                         (route) => false))
                     .catchError((e) =>
-                        MyDialog().normalDialog(context, "เกิดข้อผิดพลาดขึ้น"));
+                        MyDialog().normalDialog(context, "เกิดข้อผิดพลาดขึ้น !! $e"));
               }));
         }
         // ร้านทำผม
@@ -186,7 +186,7 @@ class _SettingAccountUserState extends State<SettingAccountUser> {
                     ),
                     (route) => false))
                 .catchError((e) =>
-                    MyDialog().normalDialog(context, "เกิดข้อผิดพลาดขึ้น")));
+                    MyDialog().normalDialog(context, "เกิดข้อผิดพลาดขึ้น !")));
       }
       if (typebarber == false) {
         user.updateDisplayName(nameController.text);
@@ -194,7 +194,7 @@ class _SettingAccountUserState extends State<SettingAccountUser> {
         Navigator.pop(context);
       }
     }).catchError((e) {
-      MyDialog().normalDialog(context, "เกิดข้อผิดพลาดขึ้น");
+      MyDialog().normalDialog(context, "เกิดข้อผิดพลาดขึ้น $e");
     });
   }
 }

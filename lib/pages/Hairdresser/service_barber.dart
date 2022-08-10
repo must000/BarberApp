@@ -1,5 +1,6 @@
 
 
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -33,6 +34,7 @@ class _ServiceBarberState extends State<ServiceBarber> {
     double size = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Contants.myBackgroundColor,
         body: Stack(children: [
       ListView(
         children: [

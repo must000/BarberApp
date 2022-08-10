@@ -9,7 +9,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:barber/data/barbermodel.dart';
 import 'package:barber/data/queuemodel.dart';
 import 'package:barber/data/servicemodel.dart';
-import 'package:barber/pages/confirm_queue_user.dart';
+import 'package:barber/pages/User/confirm_queue_user.dart';
 import 'package:barber/utils/dialog.dart';
 
 class SelectDateTimeUser extends StatefulWidget {

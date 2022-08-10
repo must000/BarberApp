@@ -299,7 +299,7 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
       "email": emailController.text,
       "name": nameController.text,
       "lastname": lastnameController.text,
-      "barberState": null,
+      "barberState": "no",
       "idCode": randomNumeric(7)
     }).then((newvalue) async {
       await FirebaseFirestore.instance.collection('Service').add({}).then(

@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/barbermodel.dart';
-import 'package:barber/pages/other_Hairdresser.dart';
-import 'package:barber/pages/queue_Hairdresser.dart';
-import 'package:barber/pages/queue_setting_hairdresser.dart';
-import 'package:barber/pages/service_barber.dart';
+import 'package:barber/data/hairdressermodel.dart';
+import 'package:barber/pages/OtherPage/other_Hairdresser.dart';
+import 'package:barber/pages/Hairdresser/queue_Hairdresser.dart';
+import 'package:barber/pages/Hairdresser/queue_setting_hairdresser.dart';
+import 'package:barber/pages/Hairdresser/service_barber.dart';
+import 'package:barber/pages/havenophonenumber.dart';
 import 'package:barber/pages/store_barber.dart';
 import 'package:barber/utils/show_progress.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,9 +16,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:barber/pages/haircut_user.dart';
-import 'package:barber/pages/other_user.dart';
-import 'package:barber/pages/reservation_user.dart';
+import 'package:barber/pages/User/haircut_user.dart';
+import 'package:barber/pages/OtherPage/other_user.dart';
+import 'package:barber/pages/User/reservation_user.dart';
 
 class IndexPage extends StatefulWidget {
   bool? isbarber;
@@ -30,6 +33,8 @@ class IndexPage extends StatefulWidget {
 
 class _IndexPageState extends State<IndexPage> {
   String? email;
+  String? hairdresserID;
+  String phoneHairdresser = "";
 
   bool load = true;
   List<BarberModel> barbershop = [];
@@ -64,13 +69,16 @@ class _IndexPageState extends State<IndexPage> {
   // });
 
   bool? isbarber;
-  String? dataHairresser;
+  HairdresserModel? dataHairresser;
   Future<Null> findEmail() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance.authStateChanges().listen((event) async {
         setState(() {
           email = event!.email;
+          if (event.phoneNumber != null) {
+            phoneHairdresser = event.phoneNumber!;
+          }
         });
         FirebaseFirestore.instance
             .collection('Hairdresser')
@@ -80,13 +88,21 @@ class _IndexPageState extends State<IndexPage> {
           var doc = event.docs;
 
           if (doc.isNotEmpty) {
-            print("listener attached ${doc[0].data()["email"]}");
-             print("listener attached ${doc[0].data()["serviceID"]}");
-          setState(() {
-              dataHairresser = doc[0].data()["serviceID"].toString();
-            isbarber = true;
-            load = false;
-          });
+            // print("listener attached ${doc[0].data()["email"]}");
+            // print("listener attached ${doc[0].data()["serviceID"]}");
+            setState(() {
+              hairdresserID = doc[0].id;
+              dataHairresser = HairdresserModel(
+                  email: doc[0].data()["email"],
+                  idCode: doc[0].data()["idCode"],
+                  name: doc[0].data()["name"],
+                  lastname: doc[0].data()["lastname"],
+                  serviceID: doc[0].data()["serviceID"],
+                  barberStatus: doc[0].data()["barberState"]);
+              print(dataHairresser);
+              isbarber = true;
+              load = false;
+            });
           } else {
             print("daaaaaa");
           }
@@ -143,69 +159,97 @@ class _IndexPageState extends State<IndexPage> {
                     const ReservationUser(),
                     const OtherUser(),
                   ]),
-                  bottomNavigationBar: const TabBar(
-                    tabs: [
-                      Tab(
-                        child: Icon(
-                          Icons.cut,
-                          color: Colors.black,
+                  bottomNavigationBar: Container(
+                    color: Contants.colorBlack,
+                    child: TabBar(
+                      indicatorColor: Contants.colorSpringGreen,
+                      labelColor: Contants.colorSpringGreen,
+                      unselectedLabelColor: Colors.white,
+                      labelStyle: Contants().h3SpringGreen(),
+                      tabs: const [
+                        Tab(
+                          text: "ตัดผม",
+                          icon: Icon(
+                            Icons.cut,
+                            size: 30,
+                          ),
                         ),
-                      ),
-                      Tab(
-                        child: Icon(
-                          Icons.format_list_bulleted,
-                          color: Colors.black,
+                        Tab(
+                          text: "การจอง",
+                          icon: Icon(
+                            Icons.format_list_bulleted,
+                            size: 30,
+                          ),
                         ),
-                      ),
-                      Tab(
-                        child: Icon(
-                          Icons.account_box,
-                          color: Colors.black,
+                        Tab(
+                          text: "อื่นๆ",
+                          icon: Icon(
+                            Icons.account_box,
+                            size: 30,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               )
-            : DefaultTabController(
-                length: 3,
-                child: Scaffold(
-                  body: TabBarView(
-                    children: [
-                      QueueHairdresser(
-                        email: email!,
+            : phoneHairdresser == ""
+                ? const DefaultTabController(
+                    length: 1, child: HaveNoPhoneNumbar())
+                : DefaultTabController(
+                    length: 3,
+                    child: Scaffold(
+                      body: TabBarView(
+                        children: [
+                          QueueHairdresser(
+                            hairdresserID: hairdresserID!,
+                            barberState: dataHairresser!.barberStatus,
+                            idCode: dataHairresser!.idCode,
+                          ),
+                          ServiceBarber(
+                            serviceID: dataHairresser!.serviceID,
+                          ),
+                          OtherHairdresser(
+                            fullname:
+                                "${dataHairresser!.name} ${dataHairresser!.lastname}",
+                            email: email!,
+                            barberState: dataHairresser!.barberStatus,
+                          ),
+                        ],
                       ),
-                      ServiceBarber(
-                        serviceID: dataHairresser!,
-                      ),
-                      OtherHairdresser(
-                        email: email!,
-                      ),
-                    ],
-                  ),
-                  bottomNavigationBar: const TabBar(
-                    tabs: [
-                      Tab(
-                        child: Icon(
-                          Icons.table_chart_outlined,
-                          color: Colors.black,
+                      bottomNavigationBar: Container(
+                        color: Contants.colorBlack,
+                        child: TabBar(
+                          indicatorColor: Contants.colorSpringGreen,
+                          labelColor: Contants.colorSpringGreen,
+                          unselectedLabelColor: Colors.white,
+                          labelStyle: Contants().h3SpringGreen(),
+                          tabs: const [
+                            Tab(
+                              text: "การจอง",
+                              icon: Icon(
+                                Icons.table_chart_outlined,
+                                size: 30,
+                              ),
+                            ),
+                            Tab(
+                              text: "บริการ",
+                              icon: Icon(
+                                Icons.cut_sharp,
+                                size: 30,
+                              ),
+                            ),
+                            Tab(
+                              text: "อื่นๆ",
+                              icon: Icon(
+                                Icons.store,
+                                size: 30,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Tab(
-                        child: Icon(
-                          Icons.cut_sharp,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Tab(
-                        child: Icon(
-                          Icons.store,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
+                    ),
+                  );
   }
 }

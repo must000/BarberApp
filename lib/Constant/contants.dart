@@ -12,4 +12,90 @@ class Contants {
   static Color colorRed = const Color(0xffFF0000);
   static Color colorGreySilver = const Color(0xffA0A0A0);
 
+  static Color myBackgroundColor = const Color(0xff14213D);
+  static Color myBackgroundColordark = colorBlack;
+  String font = 'Itim';
+  TextStyle h1OxfordBlue() => TextStyle(
+        fontSize: 30,
+        color: colorOxfordBlue,
+        fontFamily: font,
+      );
+  TextStyle h2OxfordBlue() => TextStyle(
+        fontSize: 25,
+        color: colorOxfordBlue,
+        fontFamily: font,
+      );
+  TextStyle h3OxfordBlue() => TextStyle(
+        fontSize: 20,
+        color: colorOxfordBlue,
+        fontFamily: font,
+      );
+  TextStyle h4OxfordBlue() => TextStyle(
+        fontSize: 15,
+        color: colorOxfordBlue,
+        fontFamily: font,
+      );
+
+  TextStyle h1white() => TextStyle(
+        fontSize: 30,
+        color: Colors.white,
+        fontFamily: font,
+      );
+  TextStyle h2white() => TextStyle(
+        fontSize: 25,
+        color: Colors.white,
+        fontFamily: font,
+      );
+  TextStyle h3white() => TextStyle(
+        fontSize: 20,
+        color: Colors.white,
+        fontFamily: font,
+      );
+  TextStyle h4white() => TextStyle(
+        fontSize: 15,
+        color: Colors.white,
+        fontFamily: font,
+      );
+
+  TextStyle h1SpringGreen() => TextStyle(
+        fontSize: 30,
+        color: colorSpringGreen,
+        fontFamily: font,
+      );
+  TextStyle h2SpringGreen() => TextStyle(
+        fontSize: 25,
+        color: colorSpringGreen,
+        fontFamily: font,
+      );
+  TextStyle h3SpringGreen() => TextStyle(
+        fontSize: 20,
+        color: colorSpringGreen,
+        fontFamily: font,
+      );
+  TextStyle h4SpringGreen() => TextStyle(
+        fontSize: 15,
+        color: colorSpringGreen,
+        fontFamily: font,
+      );
+
+  TextStyle h1Red() => TextStyle(
+        fontSize: 30,
+        color: colorRed,
+        fontFamily: font,
+      );
+  TextStyle h2Red() => TextStyle(
+        fontSize: 25,
+        color: colorRed,
+        fontFamily: font,
+      );
+  TextStyle h3Red() => TextStyle(
+        fontSize: 20,
+        color: colorRed,
+        fontFamily: font,
+      );
+  TextStyle h4Red() => TextStyle(
+        fontSize: 15,
+        color: colorRed,
+        fontFamily: font,
+      );
 }

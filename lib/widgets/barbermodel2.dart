@@ -1,6 +1,6 @@
 import 'package:barber/data/barbermodel.dart';
 import 'package:barber/data/sqlite_model.dart';
-import 'package:barber/pages/barber_user.dart';
+import 'package:barber/pages/User/barber_user.dart';
 import 'package:barber/utils/sqlite_helper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

@@ -11,14 +11,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:barber/Constant/contants.dart';
-import 'package:barber/pages/barberserch_user.dart';
+import 'package:barber/pages/User/barberserch_user.dart';
 import 'package:barber/pages/test.dart';
 import 'package:barber/widgets/barbermodel1.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:intl/intl.dart';
 
-import '../Constant/route_cn.dart';
+import '../../Constant/route_cn.dart';
 
 class HairCutUser extends StatefulWidget {
   List<BarberModel> barbershop;

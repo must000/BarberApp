@@ -17,18 +17,11 @@ class _ContactAdminUserState extends State<ContactAdminUser> {
         padding: const EdgeInsets.all(8.0),
         child: ListView(
           
-          children: [
-            const Text("ข้อมูลติดต่อ"),
-            const Text("08X-XXX-XXXX"),
-            const Text("xxxxxx@hotmail.com"),
-            const Text("xxxxx@gmail.com"),
-            Container(
-              margin: EdgeInsets.all(size*0.2),
-              height: 100,
-              child: ElevatedButton(
-                  onPressed: () {},
-                  child: const Text("ต้องการติดต่อแอดมิน\nทางช่องแชท")),
-            )
+          children: const [
+            Text("ข้อมูลติดต่อ"),
+            Text("08X-XXX-XXXX"),
+            Text("xxxxxx@hotmail.com"),
+            Text("xxxxx@gmail.com"),
           ],
         ),
       ),

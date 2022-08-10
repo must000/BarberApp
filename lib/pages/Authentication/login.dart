@@ -1,3 +1,4 @@
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/Authentication/registerhairdresser.dart';
 import 'package:barber/pages/index.dart';
@@ -65,7 +66,10 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Contants.colorOxfordBlue,
+      ),
+      backgroundColor: Contants.colorOxfordBlue,
       body: SafeArea(
         child: Form(
           key: formKey,
@@ -73,11 +77,11 @@ class _LoginState extends State<Login> {
             child: GestureDetector(
               onTap: () => FocusScope.of(context).requestFocus(
                 FocusNode(),
-              ), //กดที่หน้าจอ แ้ล้วคีย์อบร์ดดรอปลง
+              ), //กดที่หน้าจอ แล้วคีย์อบร์ดดรอปลง
               behavior: HitTestBehavior.opaque,
               child: Container(
                 margin: EdgeInsets.symmetric(
-                    horizontal: size * 0.1, vertical: size * 0.25),
+                    horizontal: size * 0.1, vertical: size * 0.10),
                 child: Form(
                   child: Column(
                     children: [
@@ -91,12 +95,14 @@ class _LoginState extends State<Login> {
                           },
                           controller: emailController,
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
                             labelText: "Email",
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(30),
                             ),
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10)),
+                                borderRadius: BorderRadius.circular(30)),
                           ),
                         ),
                       ),
@@ -111,6 +117,8 @@ class _LoginState extends State<Login> {
                           obscureText: statusRedEys,
                           controller: passwordController,
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -129,37 +137,84 @@ class _LoginState extends State<Login> {
                             ),
                             labelText: "Password",
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(30),
                             ),
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10)),
+                                borderRadius: BorderRadius.circular(30)),
                           ),
                         ),
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              authen();
-                            }
-                          },
-                          child: const Text("Login")),
-                      const Text('register'),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        width: size * 0.40,
+                        height: 40,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.white,
+                              onPrimary: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(32.0),
+                              ),
+                            ),
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {
+                                authen();
+                              }
+                            },
+                            child: const Text(
+                              "เข้าสู่ระบบ",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 23),
+                            )),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      const Text(
+                        'สมัครสมาชิก',
+                        style: TextStyle(color: Colors.white, fontSize: 35),
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Container(
+                          SizedBox(
                             width: size * 0.3,
                             child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.white,
+                                onPrimary: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
                               onPressed: () {
                                 Navigator.pushNamed(
                                     context, Rount_CN.routeRegisterUser);
                               },
-                              child: const Text("ลูกค้า"),
+                              child: const Text(
+                                "ลูกค้า",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                           Container(
                             width: size * 0.3,
                             child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.white,
+                                onPrimary: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -168,34 +223,71 @@ class _LoginState extends State<Login> {
                                           const RegisterHairdresser()),
                                 );
                               },
-                              child: const Text("ช่างทำผม"),
+                              child: const Text(
+                                "ช่างทำผม",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           )
                         ],
                       ),
-                      Container(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            final provider = Provider.of<MyProviders>(context,
-                                listen: false);
-                            provider.googleLogin().then((value) =>
-                                Navigator.pushNamedAndRemoveUntil(context,
-                                    Rount_CN.routeIndex, (route) => false));
-                          },
-                          icon: const FaIcon(FontAwesomeIcons.google),
-                          label: const Text('Google'),
-                        ),
-                        width: size * 0.7,
+                      SizedBox(
+                        height: 20,
                       ),
-                      Container(
-                        child: ElevatedButton.icon(
-                          icon: const FaIcon(FontAwesomeIcons.facebook),
-                          onPressed: () {
-                            _loginwithfacebook();
-                          },
-                          label: const Text('Facebook'),
-                        ),
-                        width: size * 0.7,
+                      InkWell(
+                        onTap: () {},
+                        child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: const [
+                                FaIcon(
+                                  FontAwesomeIcons.facebook,
+                                  size: 60,
+                                  color: Colors.blue,
+                                ),
+                                Text(
+                                  "เชื่อมต่อด้วย Facebook",
+                                  style: TextStyle(
+                                      fontSize: 25, color: Colors.black),
+                                )
+                              ],
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: Colors.white)),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          final provider =
+                              Provider.of<MyProviders>(context, listen: false);
+                          provider.googleLogin().then((value) =>
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  Rount_CN.routeIndex, (route) => false));
+                        },
+                        child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: const [
+                                FaIcon(
+                                  FontAwesomeIcons.googleDrive,
+                                  size: 60,
+                                ),
+                                Text(
+                                  "เชื่อมต่อด้วย Google",
+                                  style: TextStyle(
+                                      fontSize: 25, color: Colors.black),
+                                )
+                              ],
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: Colors.white)),
                       ),
                     ],
                   ),
@@ -237,4 +329,5 @@ class _LoginState extends State<Login> {
 //       _checking = false;
 //     });
 // }
+
 }

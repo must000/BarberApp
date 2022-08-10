@@ -1,10 +1,10 @@
-import 'package:barber/pages/setting_account_user.dart';
+import 'package:barber/pages/OtherPage/setting_account_user.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../Constant/route_cn.dart';
+import '../../Constant/route_cn.dart';
 
 class OtherUser extends StatefulWidget {
   const OtherUser({Key? key}) : super(key: key);
@@ -70,8 +70,10 @@ class _OtherUserState extends State<OtherUser> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  SettingAccountUser(email: user.email!,
-                                                username: user.displayName!,typebarber: false,
+                                                  SettingAccountUser(
+                                                email: user.email!,
+                                                username: user.displayName!,
+                                                typebarber: false,
                                               ),
                                             ));
                                       },
@@ -100,13 +102,8 @@ class _OtherUserState extends State<OtherUser> {
                 },
               ),
               TextButton(
-                onPressed: () {
-                  final provider =
-                      Provider.of<MyProviders>(context, listen: false);
-                  provider.logout();
-                  Navigator.pushNamed(context, Rount_CN.routeLogin);
-                },
-                child: const Text("ต้องการเปิดร้านทำผม"),
+                onPressed: () {},
+                child: const Text("เปล่ยนเบอร์มือถือ"),
               ),
               const SizedBox(
                 height: 70,
@@ -123,7 +120,6 @@ class _OtherUserState extends State<OtherUser> {
                 },
                 child: const Text("เกี่ยวกับเรา"),
               ),
-              
             ],
           ),
         ),

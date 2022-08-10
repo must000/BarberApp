@@ -1,12 +1,12 @@
 import 'dart:collection';
-import 'package:barber/pages/barber_user.dart';
+import 'package:barber/pages/User/barber_user.dart';
 import 'package:barber/widgets/barbermodel2.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:barber/data/barbermodel.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import '../widgets/barbermodel1.dart';
+import '../../widgets/barbermodel1.dart';
 
 class BarberSerchUser extends StatefulWidget {
   final bool typeBarber;

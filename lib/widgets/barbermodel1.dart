@@ -1,4 +1,4 @@
-import 'package:barber/pages/barber_user.dart';
+import 'package:barber/pages/User/barber_user.dart';
 import 'package:flutter/material.dart';
 
 class BarberModel1 extends StatelessWidget {

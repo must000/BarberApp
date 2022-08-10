@@ -1,8 +1,8 @@
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/Authentication/registeruser.dart';
-import 'package:barber/pages/about_developer.dart';
-import 'package:barber/pages/barberserch_user.dart';
-import 'package:barber/pages/contact_admin_user.dart';
+import 'package:barber/pages/OtherPage/about_developer.dart';
+import 'package:barber/pages/User/barberserch_user.dart';
+import 'package:barber/pages/OtherPage/contact_admin_user.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/pages/Authentication/login.dart';
 import 'package:barber/provider/myproviders.dart';
@@ -32,7 +32,10 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyProviders(),
       child: MaterialApp(
-        theme: ThemeData(primaryColor: Colors.black),
+        theme: ThemeData(primaryColor: Colors.black,
+      
+       
+        ),
         routes: map,
         initialRoute: Rount_CN.routeIndex,
       ),

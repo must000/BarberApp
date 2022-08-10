@@ -1,3 +1,4 @@
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/pages/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,7 +30,10 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
     double size = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Contants.myBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: Contants.myBackgroundColordark,
+      ),
       body: Form(
         key: formKey,
         child: Column(
@@ -51,20 +55,25 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                     },
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
+                    style: Contants().h2OxfordBlue(),
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: "Phone",
+                      labelStyle: Contants().h2Red(),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(5),
                       ),
                       focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                          borderRadius: BorderRadius.circular(5)),
                     ),
                   ),
                 ),
                 SizedBox(
-                  width: size * 0.2,
+                  width: size * 0.25,
                   height: 50,
                   child: ElevatedButton(
+                     style: ElevatedButton.styleFrom(primary: Contants.colorBlack),
                     onPressed: () {
                       if (phoneController.text == "") {
                         MyDialog()
@@ -73,27 +82,31 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                         requestVerifyCode();
                       }
                     },
-                    child: const Text(
+                    child: Text(
                       "ส่งotp",
-                      style: TextStyle(fontSize: 18),
+                      style: Contants().h2white(),
                     ),
                   ),
                 ),
               ],
             ),
             Container(
+               height: 50,
               margin: EdgeInsets.only(
                   top: 15, left: size * 0.08, right: size * 0.08),
               child: TextFormField(
                 controller: smsController,
                 keyboardType: TextInputType.number,
+                style: Contants().h2OxfordBlue(),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return "กรุณากรอกหมายเลขotp";
                   }
                 },
                 decoration: InputDecoration(
-                  labelText: "Code",
+                  filled: true,
+                  fillColor: Colors.white,
+                  labelText: "Code",labelStyle: Contants().h2Red(),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -102,13 +115,24 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                 ),
               ),
             ),
-            ElevatedButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    verifyPhone();
-                  }
-                },
-                child: const Text("บันทึก"))
+            const SizedBox(
+              height: 30,
+            ),
+            SizedBox(
+              width: size * 0.5,
+              height: 50,
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: Colors.white),
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      verifyPhone();
+                    }
+                  },
+                  child: Text(
+                    "บันทึก",
+                    style: Contants().h1OxfordBlue(),
+                  )),
+            )
           ],
         ),
       ),

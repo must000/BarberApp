@@ -3,10 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:barber/Constant/route_cn.dart';
-import 'package:barber/pages/album_barber_user.dart';
-import 'package:barber/pages/comment_barber_user.dart';
-import 'package:barber/pages/select_datetime_user.dart';
-import 'package:barber/pages/detail_barber_user.dart';
+import 'package:barber/pages/User/album_barber_user.dart';
+import 'package:barber/pages/User/comment_barber_user.dart';
+import 'package:barber/pages/User/select_datetime_user.dart';
+import 'package:barber/pages/User/detail_barber_user.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class BarberUser extends StatefulWidget {

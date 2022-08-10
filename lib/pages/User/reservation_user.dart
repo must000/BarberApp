@@ -1,4 +1,4 @@
-import 'package:barber/pages/reservation_detail_user.dart';
+import 'package:barber/pages/User/reservation_detail_user.dart';
 import 'package:flutter/material.dart';
 
 class ReservationUser extends StatefulWidget {
