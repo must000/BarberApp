@@ -1,3 +1,4 @@
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/pages/OtherPage/setting_account_user.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,6 +22,7 @@ class _OtherUserState extends State<OtherUser> {
     double size = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Contants.myBackgroundColor,
         body: Container(
           margin: EdgeInsets.symmetric(horizontal: size * 0.08),
           child: ListView(

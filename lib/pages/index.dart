@@ -139,7 +139,9 @@ class _IndexPageState extends State<IndexPage> {
           lng: alldata[n]["lon"],
           districtl: alldata[n]["district"],
           subDistrict: alldata[n]["subdistrict"],
-          addressdetails: alldata[n]["addressdetails"]));
+          addressdetails: alldata[n]["addressdetails"],
+          like: false
+          ));
     }
   }
 

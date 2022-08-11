@@ -45,10 +45,10 @@ class SQLiteHelper {
   }
 
 //ลบไอดีที่เลือก
-  Future<void> deleteSQLiteWhereId(int id) async {
+  Future<void> deleteSQLiteWhereId(String id) async {
     Database database = await connectedDatabase();
     await database
-        .delete(tableDatabase, where: '$columnId = $id')
+        .delete(tableDatabase, where: '$columnEmail = "$id"')
         .then((value) => print('### Success Delete id ==> $id'));
   }
 

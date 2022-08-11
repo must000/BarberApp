@@ -1,4 +1,7 @@
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/servicemodel.dart';
+import 'package:barber/data/sqlite_model.dart';
+import 'package:barber/utils/sqlite_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +20,8 @@ class BarberUser extends StatefulWidget {
       addressdetails,
       phoneNumber,
       timeopen,
-      timeclose,nameUser;
+      timeclose,
+      nameUser;
   Map<String, dynamic> dayopen;
   final String? url, recommend;
 
@@ -49,11 +53,12 @@ class BarberUser extends StatefulWidget {
       phoneNumber: phoneNumber,
       timeopen: timeopen,
       timeclose: timeclose,
-      dayopen: dayopen,nameUser:nameUser);
+      dayopen: dayopen,
+      nameUser: nameUser);
 }
 
 class _BarberUserState extends State<BarberUser> {
-  String nameShop, email,nameUser;
+  String nameShop, email, nameUser;
   String? url, recommend;
   String lat, lon;
   String addressdetails, phoneNumber;
@@ -70,16 +75,45 @@ class _BarberUserState extends State<BarberUser> {
       required this.timeclose,
       required this.lat,
       required this.lon,
-      required this.email,required this.nameUser});
+      required this.email,
+      required this.nameUser});
   int price = 0, z = 0;
   List<ServiceModel> servicemodel = [];
   bool showlist = false;
+  bool like = false;
+  List<SQLiteModel> sqliteModels = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    processReadSQLite();
+  }
+
+  Future<Null> processReadSQLite() async {
+    if (sqliteModels.isNotEmpty) {
+      sqliteModels.clear();
+    }
+    await SQLiteHelper().readSQLite().then((value) {
+      sqliteModels = value;
+      for (var i = 0; i < value.length; i++) {
+        if (value[i].email == email) {
+          setState(() {
+            like = true;
+          });
+        }
+      }
+      // print("sqlite");
+      // print(sqliteModels);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-
     late final user = FirebaseAuth.instance.currentUser;
     return Scaffold(
+      backgroundColor: Contants.myBackgroundColor,
       appBar: AppBar(
         title: Text(nameShop),
         actions: [
@@ -112,10 +146,25 @@ class _BarberUserState extends State<BarberUser> {
                     child: Column(
                       children: [
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              if (like == false) {
+                                SQLiteModel sqLiteModel =
+                                    SQLiteModel(email: email);
+                                await SQLiteHelper()
+                                    .insertValueToSQlite(sqLiteModel);
+                                setState(() {
+                                  like = true;
+                                });
+                              } else {
+                                await SQLiteHelper().deleteSQLiteWhereId(email);
+                                setState(() {
+                                  like = false;
+                                });
+                              }
+                            },
                             icon: Icon(
                               Icons.favorite,
-                              color: Colors.red,
+                              color: like ? Colors.red : Colors.grey,
                               size: size * 0.1,
                             )),
                         Container(
@@ -178,11 +227,11 @@ class _BarberUserState extends State<BarberUser> {
                 ],
               ),
               Container(
-                child: Text("$recommend"),
+                child: Text("$recommend",style: Contants().h3white(),),
                 margin: const EdgeInsets.symmetric(horizontal: 15),
               ),
               const SizedBox(
-                height: 50,
+                height: 30,
               ),
               StreamBuilder(
                 stream: FirebaseFirestore.instance
@@ -230,7 +279,7 @@ class _BarberUserState extends State<BarberUser> {
                       itemCount: data.length,
                     );
                   }
-                 
+
                   return LoadingAnimationWidget.waveDots(
                       color: Colors.blue, size: 200);
                 },
@@ -288,11 +337,14 @@ class _BarberUserState extends State<BarberUser> {
                                                   IconButton(
                                                       onPressed: () {
                                                         setState(() {
-                                                           price = price - servicemodel[index].price.toInt();
+                                                          price = price -
+                                                              servicemodel[
+                                                                      index]
+                                                                  .price
+                                                                  .toInt();
                                                           servicemodel.remove(
                                                               servicemodel[
                                                                   index]);
-                                                                 
                                                         });
                                                       },
                                                       icon: const Icon(
@@ -368,11 +420,14 @@ class _BarberUserState extends State<BarberUser> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>SelectDateTimeUser(
-                       dayopen: dayopen,
-                       timeclose: timeclose,timeopen: timeopen,
+                      builder: (context) => SelectDateTimeUser(
+                        dayopen: dayopen,
+                        timeclose: timeclose,
+                        timeopen: timeopen,
                         servicemodel: servicemodel,
-                        email: email, nameBarber: nameShop, nameUser: nameUser,
+                        email: email,
+                        nameBarber: nameShop,
+                        nameUser: nameUser,
                       ),
                     ),
                   );

@@ -11,6 +11,7 @@ class Contants {
   static Color colorBlack = const Color(0xff1C1919);
   static Color colorRed = const Color(0xffFF0000);
   static Color colorGreySilver = const Color(0xffA0A0A0);
+    static Color colorWhite = const Color.fromARGB(255, 255, 255, 255);
 
   static Color myBackgroundColor = const Color(0xff14213D);
   static Color myBackgroundColordark = colorBlack;

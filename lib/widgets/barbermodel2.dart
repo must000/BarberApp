@@ -1,3 +1,4 @@
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/barbermodel.dart';
 import 'package:barber/data/sqlite_model.dart';
 import 'package:barber/pages/User/barber_user.dart';
@@ -47,7 +48,8 @@ class BarberModel2 extends StatelessWidget {
         );
       },
       child: Container(
-        decoration: BoxDecoration(border: Border.all()),
+        
+        decoration: BoxDecoration(border: Border.all(color: Contants.colorWhite)),
         child: ListView(
           children: [
             CachedNetworkImage(
@@ -60,27 +62,23 @@ class BarberModel2 extends StatelessWidget {
             ListTile(
               title: Text(
                 barberModel.shopname,
-                style: const TextStyle(fontSize: 30),
+                style: Contants().h1white(),
               ),
-              subtitle: Text(barberModel.shoprecommend),
-              trailing: Container(
-                  margin: const EdgeInsets.only(bottom: 15),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.favorite,
-                      color: like == true ? Colors.red : Colors.grey,
-                    ),
-                    onPressed: () async {
-                      SQLiteModel sqLiteModel =
-                          SQLiteModel(email: barberModel.email);
-                      await SQLiteHelper().insertValueToSQlite(sqLiteModel);
-                    },
-                  )),
+              subtitle: Text(
+                barberModel.shoprecommend,
+                style: Contants().h4white(),
+              ),
             ),
             Container(
               margin: const EdgeInsets.only(left: 15),
               child: Row(
-                children: const [Text("คะแนน X "), Icon(Icons.star)],
+                children: [
+                  Text(
+                    "คะแนน X ",
+                    style: Contants().h4white(),
+                  ),
+                 const Icon(Icons.star,color: Colors.amber,)
+                ],
               ),
             )
           ],

@@ -18,6 +18,7 @@ class BarberModel {
   final String districtl;
   final String subDistrict;
   final String addressdetails;
+  bool like;
   BarberModel({
     required this.email,
     required this.name,
@@ -34,6 +35,7 @@ class BarberModel {
     required this.districtl,
     required this.subDistrict,
     required this.addressdetails,
+    required this.like,
   });
 
   BarberModel copyWith({
@@ -52,6 +54,7 @@ class BarberModel {
     String? districtl,
     String? subDistrict,
     String? addressdetails,
+    bool? like,
   }) {
     return BarberModel(
       email: email ?? this.email,
@@ -69,6 +72,7 @@ class BarberModel {
       districtl: districtl ?? this.districtl,
       subDistrict: subDistrict ?? this.subDistrict,
       addressdetails: addressdetails ?? this.addressdetails,
+      like: like ?? this.like,
     );
   }
 
@@ -89,6 +93,7 @@ class BarberModel {
       'districtl': districtl,
       'subDistrict': subDistrict,
       'addressdetails': addressdetails,
+      'like': like,
     };
   }
 
@@ -109,6 +114,7 @@ class BarberModel {
       districtl: map['districtl'] ?? '',
       subDistrict: map['subDistrict'] ?? '',
       addressdetails: map['addressdetails'] ?? '',
+      like: map['like'] ?? false,
     );
   }
 
@@ -118,7 +124,7 @@ class BarberModel {
 
   @override
   String toString() {
-    return 'BarberModel(email: $email, name: $name, lasiName: $lasiName, phone: $phone, typebarber: $typebarber, shopname: $shopname, shoprecommend: $shoprecommend, dayopen: $dayopen, timeopen: $timeopen, timeclose: $timeclose, lat: $lat, lng: $lng, districtl: $districtl, subDistrict: $subDistrict, addressdetails: $addressdetails)';
+    return 'BarberModel(email: $email, name: $name, lasiName: $lasiName, phone: $phone, typebarber: $typebarber, shopname: $shopname, shoprecommend: $shoprecommend, dayopen: $dayopen, timeopen: $timeopen, timeclose: $timeclose, lat: $lat, lng: $lng, districtl: $districtl, subDistrict: $subDistrict, addressdetails: $addressdetails, like: $like)';
   }
 
   @override
@@ -140,7 +146,8 @@ class BarberModel {
       other.lng == lng &&
       other.districtl == districtl &&
       other.subDistrict == subDistrict &&
-      other.addressdetails == addressdetails;
+      other.addressdetails == addressdetails &&
+      other.like == like;
   }
 
   @override
@@ -159,6 +166,7 @@ class BarberModel {
       lng.hashCode ^
       districtl.hashCode ^
       subDistrict.hashCode ^
-      addressdetails.hashCode;
+      addressdetails.hashCode ^
+      like.hashCode;
   }
 }

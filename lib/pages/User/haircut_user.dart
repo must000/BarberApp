@@ -46,8 +46,7 @@ class _HairCutUserState extends State<HairCutUser> {
     super.initState();
     chechpermission();
     findNameAnEmail();
-    getAdvert();
-    // processReadSQLite();
+    // processReadSQLite();  [{id: 1, email: test6@gmail.com}, {id: 2, email: test2@hotmail.com}, {id: 3, email: mickgg@gmail.com}]
   }
 
   Future<Null> processReadSQLite() async {
@@ -111,23 +110,6 @@ class _HairCutUserState extends State<HairCutUser> {
     for (var n = 0; n < barbershopOpen.length; n++) {
       print(">>>>>>> ${barbershopOpen[n]} ");
     }
-  }
-
-  Future<Null> getAdvert() async {
-    final ListResult result =
-        await FirebaseStorage.instance.ref().child('advert').list();
-    final List<Reference> allFiles = result.items;
-    print(allFiles.length);
-    List<String> files = [];
-    await Future.forEach<Reference>(allFiles, (file) async {
-      final String fileUrl = await file.getDownloadURL();
-
-      files.add(fileUrl);
-      print(files);
-    });
-    setState(() {
-      imgList = files;
-    });
   }
 
   Future<Null> chechpermission() async {
@@ -212,6 +194,7 @@ class _HairCutUserState extends State<HairCutUser> {
     double size = MediaQuery.of(context).size.width;
     late final user = FirebaseAuth.instance.currentUser;
     return Scaffold(
+      backgroundColor: Contants.myBackgroundColor,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.search),
@@ -240,9 +223,12 @@ class _HairCutUserState extends State<HairCutUser> {
                   onPressed: () {
                     Navigator.pushNamed(context, Rount_CN.routeLogin);
                   },
-                  child: const Text("Login"))
+                  child: Text(
+                    "Login",
+                    style: Contants().h3SpringGreen(),
+                  ))
         ],
-        backgroundColor: Colors.grey,
+        backgroundColor: Contants.myBackgroundColordark,
       ),
       body: load == true
           ? Center(
@@ -252,68 +238,11 @@ class _HairCutUserState extends State<HairCutUser> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  Stack(
-                    children: [
-                      Container(
-                        height: 200,
-                        child: imgList == []
-                            ? const Text("ไม่มีโฆษณา")
-                            : CarouselSlider(
-                                carouselController: buttonCarouselController,
-                                items: imgList
-                                    .map((item) => Container(
-                                          child: Center(
-                                              child: Image.network(item,
-                                                  fit: BoxFit.cover,
-                                                  width: 1000)),
-                                        ))
-                                    .toList(),
-                                options: CarouselOptions(
-                                    autoPlay: true,
-                                    enlargeCenterPage: true,
-                                    autoPlayInterval:
-                                        const Duration(seconds: 3),
-                                    onPageChanged: (index, reason) {
-                                      setState(() {
-                                        _current = index;
-                                      });
-                                    }),
-                              ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 165),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: imgList.asMap().entries.map((entry) {
-                            return GestureDetector(
-                              onTap: () => buttonCarouselController
-                                  .animateToPage(entry.key),
-                              child: Container(
-                                width: 12.0,
-                                height: 12.0,
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 4.0),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: (Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black)
-                                      .withOpacity(
-                                          _current == entry.key ? 0.9 : 0.4),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        print(sqliteModels);
-                      },
-                      child: const Text("เทสส")),
+                  // ElevatedButton(
+                  //     onPressed: () {
+                  //       print(sqliteModels);
+                  //     },
+                  //     child: const Text("เทสส")),
                   buttonChooseAType(size),
                   sectionListview(size, "ร้านที่เคยใช้บริการ"),
                   // listStoreHistory(size),
@@ -381,51 +310,61 @@ class _HairCutUserState extends State<HairCutUser> {
         children: [
           SizedBox(
             child: ElevatedButton(
-                onPressed: () {
-                  List<BarberModel> barberman = [];
-                  for (var n = 0; n < barbershop!.length; n++) {
-                    if (barbershop![n].typebarber == "man") {
-                      barberman.add(barbershop![n]);
-                    }
+              onPressed: () {
+                List<BarberModel> barberman = [];
+                for (var n = 0; n < barbershop!.length; n++) {
+                  if (barbershop![n].typebarber == "man") {
+                    barberman.add(barbershop![n]);
                   }
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BarberSerchUser(
-                                nameUser: name == null ? "" : name!,
-                                typeBarber: true,
-                                barbershop: barberman,
-                                lat: lat,
-                                lon: lng,
-                              )));
-                },
-                child: const Text("ร้านตัดผมชาย")),
+                }
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BarberSerchUser(
+                              nameUser: name == null ? "" : name!,
+                              typeBarber: true,
+                              barbershop: barberman,
+                              lat: lat,
+                              lon: lng,
+                            )));
+              },
+              child: Text(
+                "ตัดผมชาย ",
+                style: Contants().h2OxfordBlue(),
+              ),
+              style: ElevatedButton.styleFrom(primary: Contants.colorWhite),
+            ),
             width: size * 0.4,
-            height: 50,
+            height: 40,
           ),
           SizedBox(
             child: ElevatedButton(
-                onPressed: () {
-                  List<BarberModel> barberwoman = [];
-                  for (var n = 0; n < barbershop!.length; n++) {
-                    if (barbershop![n].typebarber == "woman") {
-                      barberwoman.add(barbershop![n]);
-                    }
+              onPressed: () {
+                List<BarberModel> barberwoman = [];
+                for (var n = 0; n < barbershop!.length; n++) {
+                  if (barbershop![n].typebarber == "woman") {
+                    barberwoman.add(barbershop![n]);
                   }
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BarberSerchUser(
-                                nameUser: name == null ? "" : name!,
-                                typeBarber: false,
-                                barbershop: barberwoman,
-                                lat: lat,
-                                lon: lng,
-                              )));
-                },
-                child: const Text("ร้านเสริมสวย")),
+                }
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BarberSerchUser(
+                              nameUser: name == null ? "" : name!,
+                              typeBarber: false,
+                              barbershop: barberwoman,
+                              lat: lat,
+                              lon: lng,
+                            )));
+              },
+              child: Text(
+                "เสริมสวย",
+                style: Contants().h2OxfordBlue(),
+              ),
+              style: ElevatedButton.styleFrom(primary: Contants.colorWhite),
+            ),
             width: size * 0.4,
-            height: 50,
+            height: 40,
           )
         ],
       ),
