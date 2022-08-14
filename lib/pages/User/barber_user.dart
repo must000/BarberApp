@@ -1,6 +1,8 @@
 import 'package:barber/Constant/contants.dart';
+import 'package:barber/data/barbermodel.dart';
 import 'package:barber/data/servicemodel.dart';
 import 'package:barber/data/sqlite_model.dart';
+import 'package:barber/pages/User/haircut_user.dart';
 import 'package:barber/utils/sqlite_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -153,6 +155,7 @@ class _BarberUserState extends State<BarberUser> {
                                 await SQLiteHelper()
                                     .insertValueToSQlite(sqLiteModel);
                                 setState(() {
+                                  // barberLike.add(BarberModel(email: email, name: nameShop, lasiName: last, phone: phone, typebarber: typebarber, shopname: shopname, shoprecommend: shoprecommend, dayopen: dayopen, timeopen: timeopen, timeclose: timeclose, lat: lat, lng: lng, districtl: districtl, subDistrict: subDistrict, addressdetails: addressdetails, like: like))
                                   like = true;
                                 });
                               } else {

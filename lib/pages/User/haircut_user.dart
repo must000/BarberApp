@@ -3,6 +3,7 @@ import 'package:barber/data/sqlite_model.dart';
 import 'package:barber/pages/search_user.dart';
 import 'package:barber/utils/sqlite_helper.dart';
 import 'package:barber/widgets/barbermodel2.dart';
+import 'package:barber/widgets/barbermodel3.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
@@ -19,6 +20,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:intl/intl.dart';
 
 import '../../Constant/route_cn.dart';
+
+  List<BarberModel> barberLike = [];
 
 class HairCutUser extends StatefulWidget {
   List<BarberModel> barbershop;
@@ -40,77 +43,102 @@ class _HairCutUserState extends State<HairCutUser> {
   double? lat, lng;
   String? dataPositionUser;
   bool? load = true;
-  List<BarberModel> barbershopOpen = [];
+  bool? getSqlite = false;
+  Map<String, String>? urlImgFront;
+
   @override
   void initState() {
     super.initState();
     chechpermission();
     findNameAnEmail();
-    // processReadSQLite();  [{id: 1, email: test6@gmail.com}, {id: 2, email: test2@hotmail.com}, {id: 3, email: mickgg@gmail.com}]
+    processReadSQLite().then((value) => getURL());
   }
 
   Future<Null> processReadSQLite() async {
     if (sqliteModels.isNotEmpty) {
       sqliteModels.clear();
     }
-
+    List<BarberModel> data = [];
     await SQLiteHelper().readSQLite().then((value) {
+      for (var i = 0; i < value.length; i++) {
+        for (var n = 0; n < barbershop!.length; n++) {
+          if (value[i].email == barbershop![n].email) {
+            data.add(barbershop![n]);
+          }
+        }
+      }
+      print("daa");
+      print(barberLike);
       setState(() {
-        sqliteModels = value;
-        // findDetailSeller();
+        barberLike = data;
       });
     });
   }
 
-  checkBarberOpen() {
-    DateTime mydatetime = DateTime.now();
-    String getnameday = DateFormat('EEEE').format(mydatetime);
-    String nameday = "";
-    DateTime timeopen;
-    DateTime timeclose;
-
-    // print("${mydatetime.toString()} 999999");
-    // print("ชื่อวัน ${DateFormat('EEEE').format(mydatetime)}");
-    switch (getnameday) {
-      case "Sunday":
-        nameday = "su";
-        break;
-      case "Monday":
-        nameday = "mo";
-        break;
-      case "Tuesday":
-        nameday = "tu";
-        break;
-      case "Wednesday":
-        nameday = "we";
-        break;
-      case "Thursday":
-        nameday = "th";
-        break;
-      case "Friday":
-        nameday = "fr";
-        break;
-      case "Saturday":
-        nameday = "sa";
-        break;
-      default:
+  Future<Null> getURL() async {
+    Map<String, String>? urlImgFrontModel = {};
+    for (var i = 0; i < barberLike.length; i++) {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child("imgfront/${barberLike[i].email}");
+      var url = await ref.getDownloadURL().then((value) {
+        urlImgFrontModel[barberLike[i].email] = value;
+      }).catchError((c) => print(c + "is an error"));
     }
-    for (var i = 0; i < barbershop!.length; i++) {
-      // *** เช็คว่าวันที่ร้านนี้เปิด ตรงกับวันที่ ณ ตอนนี้ไหม
-      if (barbershop![i].dayopen[nameday] == true) {
-        timeopen = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
-            '2020-04-03 ${barbershop![i].timeopen.replaceAll(' ', '')}:00');
-        timeclose = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
-            '2020-04-03 ${barbershop![i].timeopen.replaceAll(' ', '')}:00');
-        mydatetime.isBefore(timeclose);
-        barbershopOpen.add(barbershop![i]);
-      }
-    }
-
-    for (var n = 0; n < barbershopOpen.length; n++) {
-      print(">>>>>>> ${barbershopOpen[n]} ");
-    }
+    setState(() {
+      urlImgFront = urlImgFrontModel;
+      getSqlite = true;
+    });
   }
+  // checkBarberOpen() {
+  //   DateTime mydatetime = DateTime.now();
+  //   String getnameday = DateFormat('EEEE').format(mydatetime);
+  //   String nameday = "";
+  //   DateTime timeopen;
+  //   DateTime timeclose;
+
+  //   // print("${mydatetime.toString()} 999999");
+  //   // print("ชื่อวัน ${DateFormat('EEEE').format(mydatetime)}");
+  //   switch (getnameday) {
+  //     case "Sunday":
+  //       nameday = "su";
+  //       break;
+  //     case "Monday":
+  //       nameday = "mo";
+  //       break;
+  //     case "Tuesday":
+  //       nameday = "tu";
+  //       break;
+  //     case "Wednesday":
+  //       nameday = "we";
+  //       break;
+  //     case "Thursday":
+  //       nameday = "th";
+  //       break;
+  //     case "Friday":
+  //       nameday = "fr";
+  //       break;
+  //     case "Saturday":
+  //       nameday = "sa";
+  //       break;
+  //     default:
+  //   }
+  //   for (var i = 0; i < barbershop!.length; i++) {
+  //     // *** เช็คว่าวันที่ร้านนี้เปิด ตรงกับวันที่ ณ ตอนนี้ไหม
+  //     if (barbershop![i].dayopen[nameday] == true) {
+  //       timeopen = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
+  //           '2020-04-03 ${barbershop![i].timeopen.replaceAll(' ', '')}:00');
+  //       timeclose = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
+  //           '2020-04-03 ${barbershop![i].timeopen.replaceAll(' ', '')}:00');
+  //       mydatetime.isBefore(timeclose);
+  //       barbershopOpen.add(barbershop![i]);
+  //     }
+  //   }
+
+  //   for (var n = 0; n < barbershopOpen.length; n++) {
+  //     print(">>>>>>> ${barbershopOpen[n]} ");
+  //   }
+  // }
 
   Future<Null> chechpermission() async {
     bool locationService;
@@ -246,28 +274,58 @@ class _HairCutUserState extends State<HairCutUser> {
                   buttonChooseAType(size),
                   sectionListview(size, "ร้านที่เคยใช้บริการ"),
                   // listStoreHistory(size),
-                  sectionListview(size, "ร้านที่ถูกใจ"),
-                  // listStoreLike(size),
+                  getSqlite!
+                      ? sectionListview(size, "ร้านที่ถูกใจ")
+                      : const SizedBox(child: Text("")),
+                  getSqlite!
+                      ? listStoreLike(size)
+                      : const SizedBox(
+                          child: Text(""),
+                        ),
                 ],
               ),
             ),
     );
   }
 
-  Container listStoreLike(double size) {
+  Widget listStoreLike(double size) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      height: 180,
+      // margin: const EdgeInsets.only(bottom: 20,right: 10),
+      height: 120,
       child: Expanded(
         flex: 3,
         child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 20,
-            itemBuilder: (context, index) => BarberModel2(
-                  barberModel: barbershop![index],
-                  url: "",
-                  nameUser: name!,
-                )),
+          // itemExtent: 100,
+          scrollDirection: Axis.horizontal,
+          itemCount: barberLike.length,
+          itemBuilder: (context, index) => Stack(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                width: 120,
+                height: 120,
+                child: BarberModel3(
+                    nameUser: name == null ? "" : name!,
+                    barberModel: barberLike[index],
+                    url: urlImgFront![barberLike[index].email]!),
+              ),
+              Center(
+                child: Container(
+                    margin: const EdgeInsets.only(),
+                    child: IconButton(
+                      icon: const Icon(Icons.favorite, color: Colors.red),
+                      onPressed: () async {
+                        await SQLiteHelper()
+                            .deleteSQLiteWhereId(barberLike[index].email);
+                        setState(() {
+                          barberLike.removeAt(index);
+                        });
+                      },
+                    )),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -295,7 +353,7 @@ class _HairCutUserState extends State<HairCutUser> {
     return Container(
       child: Text(
         title,
-        style: TextStyle(fontSize: 20),
+        style: Contants().h2white(),
       ),
       width: size,
       padding: EdgeInsets.symmetric(horizontal: size * 0.1),
