@@ -1,34 +1,34 @@
-import 'package:barber/data/barbermodel.dart';
-import 'package:barber/data/sqlite_model.dart';
-import 'package:barber/pages/search_user.dart';
-import 'package:barber/utils/sqlite_helper.dart';
-import 'package:barber/widgets/barbermodel2.dart';
-import 'package:barber/widgets/barbermodel3.dart';
+import 'dart:async';
+import 'package:barber/pages/User/barber_user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:barber/Constant/contants.dart';
-import 'package:barber/pages/User/barberserch_user.dart';
-import 'package:barber/pages/test.dart';
-import 'package:barber/widgets/barbermodel1.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:intl/intl.dart';
+import 'package:barber/Constant/contants.dart';
+import 'package:barber/data/barbermodel.dart';
+import 'package:barber/data/sqlite_model.dart';
+import 'package:barber/pages/User/barberserch_user.dart';
+import 'package:barber/pages/search_user.dart';
+import 'package:barber/utils/sqlite_helper.dart';
+import 'package:barber/widgets/barbermodel3.dart';
 
 import '../../Constant/route_cn.dart';
 
-  List<BarberModel> barberLike = [];
+List<BarberModel> barberLike = [];
+Map<String, String>? urlImgLike;
+
+StreamController<BarberModel> streamController2 =
+    StreamController<BarberModel>();
 
 class HairCutUser extends StatefulWidget {
   List<BarberModel> barbershop;
-  HairCutUser({
-    Key? key,
-    required this.barbershop,
-  }) : super(key: key);
+  final Stream<BarberModel> stream2;
+  HairCutUser({Key? key, required this.barbershop, required this.stream2})
+      : super(key: key);
 
   @override
   State<HairCutUser> createState() =>
@@ -44,7 +44,19 @@ class _HairCutUserState extends State<HairCutUser> {
   String? dataPositionUser;
   bool? load = true;
   bool? getSqlite = false;
-  Map<String, String>? urlImgFront;
+
+  BarberUser? barberUser;
+  Widget? currentUser;
+  String menuName = 'A';
+
+  void mySetState2(BarberModel barberModel) {
+    setState(() {});
+  }
+  // void mySetStateDelete(BarberModel barberModel){
+  //    setState(() {
+  //     barberLike.remove(barberModel);
+  //   });
+  // }
 
   @override
   void initState() {
@@ -52,6 +64,10 @@ class _HairCutUserState extends State<HairCutUser> {
     chechpermission();
     findNameAnEmail();
     processReadSQLite().then((value) => getURL());
+
+    widget.stream2.listen((barberModel) {
+      mySetState2(barberModel);
+    });
   }
 
   Future<Null> processReadSQLite() async {
@@ -86,7 +102,7 @@ class _HairCutUserState extends State<HairCutUser> {
       }).catchError((c) => print(c + "is an error"));
     }
     setState(() {
-      urlImgFront = urlImgFrontModel;
+      urlImgLike = urlImgFrontModel;
       getSqlite = true;
     });
   }
@@ -266,11 +282,25 @@ class _HairCutUserState extends State<HairCutUser> {
           : SingleChildScrollView(
               child: Column(
                 children: [
+                  // Padding(
+                  //   padding: const EdgeInsets.all(10.0),
+                  //   child: Text(
+                  //     'Combo ' + menuName,
+                  //     style: TextStyle(fontSize: 30, color: Colors.blue),
+                  //   ),
+                  // ),
                   // ElevatedButton(
-                  //     onPressed: () {
-                  //       print(sqliteModels);
-                  //     },
-                  //     child: const Text("เทสส")),
+                  //   child: Text(
+                  //     'Settings',
+                  //     style: TextStyle(color: Colors.white),
+                  //   ),
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(builder: (context) => SecondPage()),
+                  //     );
+                  //   },
+                  // ),
                   buttonChooseAType(size),
                   sectionListview(size, "ร้านที่เคยใช้บริการ"),
                   // listStoreHistory(size),
@@ -307,7 +337,7 @@ class _HairCutUserState extends State<HairCutUser> {
                 child: BarberModel3(
                     nameUser: name == null ? "" : name!,
                     barberModel: barberLike[index],
-                    url: urlImgFront![barberLike[index].email]!),
+                    url: urlImgLike![barberLike[index].email]!),
               ),
               Center(
                 child: Container(

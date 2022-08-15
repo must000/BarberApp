@@ -8,6 +8,7 @@ import 'package:barber/pages/OtherPage/other_Hairdresser.dart';
 import 'package:barber/pages/Hairdresser/queue_Hairdresser.dart';
 import 'package:barber/pages/Hairdresser/queue_setting_hairdresser.dart';
 import 'package:barber/pages/Hairdresser/service_barber.dart';
+import 'package:barber/pages/User/haircut_user.dart';
 import 'package:barber/pages/havenophonenumber.dart';
 import 'package:barber/pages/store_barber.dart';
 import 'package:barber/utils/show_progress.dart';
@@ -157,6 +158,8 @@ class _IndexPageState extends State<IndexPage> {
                   body: TabBarView(children: [
                     HairCutUser(
                       barbershop: barbershop,
+                     
+                      stream2: streamController2.stream,
                     ),
                     const ReservationUser(),
                     const OtherUser(),

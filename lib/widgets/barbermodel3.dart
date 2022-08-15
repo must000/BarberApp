@@ -32,17 +32,8 @@ class BarberModel3 extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => BarberUser(
               nameUser: nameUser,
-              email: barberModel.email,
-              nameShop: barberModel.shopname,
               url: url,
-              recommend: barberModel.shoprecommend,
-              addressdetails: barberModel.addressdetails,
-              dayopen: barberModel.dayopen,
-              lat: barberModel.lat,
-              lon: barberModel.lng,
-              phoneNumber: barberModel.phone,
-              timeopen: barberModel.timeopen,
-              timeclose: barberModel.timeclose,
+              barberModel: barberModel,
             ),
           ),
         );
@@ -61,14 +52,16 @@ class BarberModel3 extends StatelessWidget {
             ),
             Center(
               child: Text(
-                  barberModel.shopname,
-                  style: Contants().h4white(),
-                ),
+                barberModel.shopname,
+                style: Contants().h4white(),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(child: Text("5"),),
+                SizedBox(
+                  child: Text("5"),
+                ),
                 Container(
                   child: Row(
                     children: [

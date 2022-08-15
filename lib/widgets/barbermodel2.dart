@@ -32,17 +32,9 @@ class BarberModel2 extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => BarberUser(
               nameUser: nameUser,
-              email: barberModel.email,
-              nameShop: barberModel.shopname,
+  
               url: url,
-              recommend: barberModel.shoprecommend,
-              addressdetails: barberModel.addressdetails,
-              dayopen: barberModel.dayopen,
-              lat: barberModel.lat,
-              lon: barberModel.lng,
-              phoneNumber: barberModel.phone,
-              timeopen: barberModel.timeopen,
-              timeclose: barberModel.timeclose,
+barberModel: barberModel,
             ),
           ),
         );

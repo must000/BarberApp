@@ -1,3 +1,4 @@
+import 'package:barber/data/barbermodel.dart';
 import 'package:barber/pages/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
 
 class MyProviders extends ChangeNotifier {
   final googleSignIn = GoogleSignIn();
@@ -53,4 +55,9 @@ class MyProviders extends ChangeNotifier {
   Future facebookLogin() async {
     final LoginResult result = await FacebookAuth.instance.login();
   }
+
+  // Future rebarberLike(BarberModel barberModel)async{
+  //   barberLike.add(barberModel);
+  //      notifyListeners();
+  // }
 }

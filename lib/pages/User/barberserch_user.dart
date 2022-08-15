@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/sqlite_model.dart';
 import 'package:barber/pages/User/barber_user.dart';
+import 'package:barber/pages/User/haircut_user.dart';
 import 'package:barber/utils/sqlite_helper.dart';
 import 'package:barber/widgets/barbermodel2.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -138,7 +139,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
               //     child: Text("เทส")),
               const SizedBox(height: 20),
               sectionListview(size, "ร้านยอดฮิต"),
-              listStoreHistory(size),
+              // listStoreHistory(size),
               // sectionListview(size, "ร้านที่เคยใช้บริการ"),
               // listStoreHistory(size),
               // sectionListview(size, "ร้านที่ถูกใจ"),
@@ -183,16 +184,34 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                                   barberResult![index].email);
                                           await SQLiteHelper()
                                               .insertValueToSQlite(sqLiteModel);
+                                          print(barberResult![index].email);
+
                                           setState(() {
                                             barberResult![index].like = true;
+                                            barberLike
+                                                .add(barberResult![index]);
+                                            urlImgLike!.addAll({
+                                              barberResult![index].email:
+                                                  urlImgFront![
+                                                      barberResult![index]
+                                                          .email]!
+                                            });
                                           });
+                                          streamController2
+                                              .add(barberResult![index]);
                                         } else {
                                           await SQLiteHelper()
                                               .deleteSQLiteWhereId(
                                                   barberResult![index].email);
                                           setState(() {
                                             barberResult![index].like = false;
+                                            barberLike
+                                                .remove(barberResult![index]);
+                                            urlImgLike!.remove(
+                                                barberResult![index].email);
                                           });
+                                          streamController2
+                                              .add(barberResult![index]);
                                         }
                                       },
                                     )),
@@ -252,59 +271,59 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     );
   }
 
-  Container listStoreLike(double size) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      height: 140,
-      child: Expanded(
-        flex: 3,
-        child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 20,
-            itemBuilder: (context, index) => BarberModel1(
-                  nameUser: nameUser,
-                  size: size,
-                  nameBarber: "ร้านที่ถูกใจ",
-                  addressdetails: '',
-                  dayopen: barberResult![0].dayopen,
-                  lat: '',
-                  lon: '',
-                  phoneNumber: '',
-                  recommend: '',
-                  timeclose: '',
-                  timeopen: '',
-                )),
-      ),
-    );
-  }
+  // Container listStoreLike(double size) {
+  //   return Container(
+  //     margin: const EdgeInsets.only(bottom: 20),
+  //     height: 140,
+  //     child: Expanded(
+  //       flex: 3,
+  //       child: ListView.builder(
+  //           scrollDirection: Axis.horizontal,
+  //           itemCount: 20,
+  //           itemBuilder: (context, index) => BarberModel1(
+  //                 nameUser: nameUser,
+  //                 size: size,
+  //                 nameBarber: "ร้านที่ถูกใจ",
+  //                 addressdetails: '',
+  //                 dayopen: barberResult![0].dayopen,
+  //                 lat: '',
+  //                 lon: '',
+  //                 phoneNumber: '',
+  //                 recommend: '',
+  //                 timeclose: '',
+  //                 timeopen: '',
+  //               )),
+  //     ),
+  //   );
+  // }
 
-  Container listStoreHistory(double size) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      height: 140,
-      child: Expanded(
-        flex: 3,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: 20,
-          itemBuilder: (context, index) => BarberModel1(
-            nameUser: nameUser,
-            size: size,
-            nameBarber: "ชื่อร้าน",
-            img:
-                "https://images.ctfassets.net/81iqaqpfd8fy/3r4flvP8Z26WmkMwAEWEco/870554ed7577541c5f3bc04942a47b95/78745131.jpg?w=1200&h=1200&fm=jpg&fit=fill",
-            score: "4",
-            addressdetails: '',
-            dayopen: barberResult![0].dayopen,
-            lat: '',
-            lon: '',
-            phoneNumber: '',
-            recommend: '',
-            timeclose: '',
-            timeopen: '',
-          ),
-        ),
-      ),
-    );
-  }
+  // Container listStoreHistory(double size) {
+  //   return Container(
+  //     margin: const EdgeInsets.only(bottom: 20),
+  //     height: 140,
+  //     child: Expanded(
+  //       flex: 3,
+  //       child: ListView.builder(
+  //         scrollDirection: Axis.horizontal,
+  //         itemCount: 20,
+  //         itemBuilder: (context, index) => BarberModel1(
+  //           nameUser: nameUser,
+  //           size: size,
+  //           nameBarber: "ชื่อร้าน",
+  //           img:
+  //               "https://images.ctfassets.net/81iqaqpfd8fy/3r4flvP8Z26WmkMwAEWEco/870554ed7577541c5f3bc04942a47b95/78745131.jpg?w=1200&h=1200&fm=jpg&fit=fill",
+  //           score: "4",
+  //           addressdetails: '',
+  //           dayopen: barberResult![0].dayopen,
+  //           lat: '',
+  //           lon: '',
+  //           phoneNumber: '',
+  //           recommend: '',
+  //           timeclose: '',
+  //           timeopen: '',
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

@@ -169,4 +169,6 @@ class BarberModel {
       addressdetails.hashCode ^
       like.hashCode;
   }
+
+  void add(BarberModel barberModel) {}
 }

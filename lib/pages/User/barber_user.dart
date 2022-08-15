@@ -1,84 +1,53 @@
-import 'package:barber/Constant/contants.dart';
-import 'package:barber/data/barbermodel.dart';
-import 'package:barber/data/servicemodel.dart';
-import 'package:barber/data/sqlite_model.dart';
-import 'package:barber/pages/User/haircut_user.dart';
-import 'package:barber/utils/sqlite_helper.dart';
+import 'package:barber/provider/myproviders.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:barber/Constant/route_cn.dart';
-import 'package:barber/pages/User/album_barber_user.dart';
-import 'package:barber/pages/User/comment_barber_user.dart';
-import 'package:barber/pages/User/select_datetime_user.dart';
-import 'package:barber/pages/User/detail_barber_user.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class BarberUser extends StatefulWidget {
-  final String nameShop,
-      lat,
-      email,
-      lon,
-      addressdetails,
-      phoneNumber,
-      timeopen,
-      timeclose,
-      nameUser;
-  Map<String, dynamic> dayopen;
-  final String? url, recommend;
+import 'package:barber/Constant/contants.dart';
+import 'package:barber/Constant/route_cn.dart';
+import 'package:barber/data/barbermodel.dart';
+import 'package:barber/data/servicemodel.dart';
+import 'package:barber/data/sqlite_model.dart';
+import 'package:barber/pages/User/album_barber_user.dart';
+import 'package:barber/pages/User/comment_barber_user.dart';
+import 'package:barber/pages/User/detail_barber_user.dart';
+import 'package:barber/pages/User/haircut_user.dart';
+import 'package:barber/pages/User/select_datetime_user.dart';
+import 'package:barber/utils/sqlite_helper.dart';
+import 'package:provider/provider.dart';
 
-  BarberUser({
-    Key? key,
-    required this.dayopen,
-    required this.recommend,
-    required this.email,
-    required this.nameShop,
-    required this.lat,
-    required this.lon,
-    required this.addressdetails,
-    required this.phoneNumber,
-    required this.timeopen,
-    required this.timeclose,
-    required this.nameUser,
-    this.url,
-  }) : super(key: key);
+class BarberUser extends StatefulWidget {
+  final String nameUser;
+  BarberModel barberModel;
+  String? url;
+  Function? callback;
+  BarberUser(
+      {Key? key,
+      required this.barberModel,
+      required this.nameUser,
+      this.url,
+      this.callback})
+      : super(key: key);
 
   @override
   State<BarberUser> createState() => _BarberUserState(
-      nameShop: nameShop,
-      email: email,
-      url: url,
-      recommend: recommend,
-      lat: lat,
-      lon: lon,
-      addressdetails: addressdetails,
-      phoneNumber: phoneNumber,
-      timeopen: timeopen,
-      timeclose: timeclose,
-      dayopen: dayopen,
-      nameUser: nameUser);
+        barberModel: barberModel,
+        nameUser: nameUser,
+        url: url,
+      );
 }
 
 class _BarberUserState extends State<BarberUser> {
-  String nameShop, email, nameUser;
-  String? url, recommend;
-  String lat, lon;
-  String addressdetails, phoneNumber;
-  Map<String, dynamic> dayopen;
-  String timeopen, timeclose;
-  _BarberUserState(
-      {required this.nameShop,
-      this.url,
-      this.recommend,
-      required this.addressdetails,
-      required this.phoneNumber,
-      required this.dayopen,
-      required this.timeopen,
-      required this.timeclose,
-      required this.lat,
-      required this.lon,
-      required this.email,
-      required this.nameUser});
+  String nameUser;
+  BarberModel barberModel;
+  String? url;
+
+  _BarberUserState({
+    required this.barberModel,
+    required this.nameUser,
+    this.url,
+  });
   int price = 0, z = 0;
   List<ServiceModel> servicemodel = [];
   bool showlist = false;
@@ -99,7 +68,7 @@ class _BarberUserState extends State<BarberUser> {
     await SQLiteHelper().readSQLite().then((value) {
       sqliteModels = value;
       for (var i = 0; i < value.length; i++) {
-        if (value[i].email == email) {
+        if (value[i].email == barberModel.email) {
           setState(() {
             like = true;
           });
@@ -117,7 +86,7 @@ class _BarberUserState extends State<BarberUser> {
     return Scaffold(
       backgroundColor: Contants.myBackgroundColor,
       appBar: AppBar(
-        title: Text(nameShop),
+        title: Text(barberModel.shopname),
         actions: [
           buildUsername_Login(user),
         ],
@@ -151,18 +120,29 @@ class _BarberUserState extends State<BarberUser> {
                             onPressed: () async {
                               if (like == false) {
                                 SQLiteModel sqLiteModel =
-                                    SQLiteModel(email: email);
+                                    SQLiteModel(email: barberModel.email);
                                 await SQLiteHelper()
                                     .insertValueToSQlite(sqLiteModel);
                                 setState(() {
-                                  // barberLike.add(BarberModel(email: email, name: nameShop, lasiName: last, phone: phone, typebarber: typebarber, shopname: shopname, shoprecommend: shoprecommend, dayopen: dayopen, timeopen: timeopen, timeclose: timeclose, lat: lat, lng: lng, districtl: districtl, subDistrict: subDistrict, addressdetails: addressdetails, like: like))
+                                  barberLike.add(barberModel);
+                                  urlImgLike!
+                                      .addAll({barberModel.email: url!});
+                                  print("Like ======> $barberLike");
                                   like = true;
                                 });
+                                //รีเฟรช
+                                print(barberModel);
+                                print(url);
+                                streamController2.add(barberModel);
                               } else {
-                                await SQLiteHelper().deleteSQLiteWhereId(email);
+                                await SQLiteHelper()
+                                    .deleteSQLiteWhereId(barberModel.email);
                                 setState(() {
                                   like = false;
+                                  barberLike.remove(barberModel);
+                                  urlImgLike!.remove(barberModel.email);
                                 });
+                                streamController2.add(barberModel);
                               }
                             },
                             icon: Icon(
@@ -178,14 +158,14 @@ class _BarberUserState extends State<BarberUser> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => DetailBarberUser(
-                                    nameShop: nameShop,
-                                    addressdetails: addressdetails,
-                                    dayopen: dayopen,
-                                    lat: lat,
-                                    lon: lon,
-                                    phoneNumber: phoneNumber,
-                                    timeclose: timeclose,
-                                    timeopen: timeopen,
+                                    nameShop: barberModel.shopname,
+                                    addressdetails: barberModel.addressdetails,
+                                    dayopen: barberModel.dayopen,
+                                    lat: barberModel.lat,
+                                    lon: barberModel.lng,
+                                    phoneNumber: barberModel.phone,
+                                    timeclose: barberModel.timeclose,
+                                    timeopen: barberModel.timeopen,
                                   ),
                                 ),
                               );
@@ -201,7 +181,7 @@ class _BarberUserState extends State<BarberUser> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => AlbumBarberUser(
-                                    email: email,
+                                    email: barberModel.email,
                                   ),
                                 ),
                               );
@@ -230,7 +210,10 @@ class _BarberUserState extends State<BarberUser> {
                 ],
               ),
               Container(
-                child: Text("$recommend",style: Contants().h3white(),),
+                child: Text(
+                  barberModel.shoprecommend,
+                  style: Contants().h3white(),
+                ),
                 margin: const EdgeInsets.symmetric(horizontal: 15),
               ),
               const SizedBox(
@@ -239,7 +222,7 @@ class _BarberUserState extends State<BarberUser> {
               StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('Barber')
-                    .doc(email)
+                    .doc(barberModel.email)
                     .collection("service")
                     .snapshots(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -424,12 +407,12 @@ class _BarberUserState extends State<BarberUser> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => SelectDateTimeUser(
-                        dayopen: dayopen,
-                        timeclose: timeclose,
-                        timeopen: timeopen,
+                        dayopen: barberModel.dayopen,
+                        timeclose: barberModel.timeclose,
+                        timeopen: barberModel.timeopen,
                         servicemodel: servicemodel,
-                        email: email,
-                        nameBarber: nameShop,
+                        email: barberModel.email,
+                        nameBarber: barberModel.shopname,
                         nameUser: nameUser,
                       ),
                     ),

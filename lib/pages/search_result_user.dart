@@ -71,17 +71,10 @@ class _SearchResultUserState extends State<SearchResultUser> {
                   MaterialPageRoute(
                     builder: (context) => BarberUser(
                       nameUser: nameUser,
-                      email: barberModel[index].email,
-                      nameShop: barberModel[index].shopname,
+
                       url: urlImgFront![barberModel[index].email]!,
-                      recommend: barberModel[index].shoprecommend,
-                      addressdetails: barberModel[index].addressdetails,
-                      dayopen: barberModel[index].dayopen,
-                      lat: barberModel[index].lat,
-                      lon: barberModel[index].lng,
-                      phoneNumber: barberModel[index].phone,
-                      timeopen: barberModel[index].timeopen,
-                      timeclose: barberModel[index].timeclose,
+
+barberModel: barberModel[index],
                     ),
                   ),
                 );
