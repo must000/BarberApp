@@ -58,6 +58,7 @@ dependencies:
   sqflite: ^2.0.2
   random_string: ^2.3.1
   url_launcher: ^6.1.5
+  flutter_facebook_login: ^3.0.0
 
 
 dev_dependencies:

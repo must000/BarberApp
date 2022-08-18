@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+// import 'com.facebook.FacebookSdk';
+// import 'com.facebook.appevents.AppEventsLogger';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -26,6 +28,7 @@ class _LoginState extends State<Login> {
   bool statusRedEys = true;
 
   var loading = false;
+
   void _loginwithfacebook() async {
     setState(() {
       loading = true;
@@ -147,7 +150,7 @@ class _LoginState extends State<Login> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Container(
+                      SizedBox(
                         width: size * 0.40,
                         height: 40,
                         child: ElevatedButton(
@@ -205,7 +208,7 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             width: size * 0.3,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -234,11 +237,22 @@ class _LoginState extends State<Login> {
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
+                      // ElevatedButton(onPressed: (){
+                      //     test();
+                      // }, child: Text("ดเำพเำเ")),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          signInWithFacebook()
+                              .then((value) => Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => IndexPage(),
+                                  ),
+                                  (route) => false));
+                        },
                         child: Container(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -313,9 +327,45 @@ class _LoginState extends State<Login> {
     });
   }
 
+  Future<Null> signInWithFacebook() async {
+    setState(() {
+      loading = true;
+    });
+    try {
+      final facebookLoginResult = await FacebookAuth.instance.login();
+      final userData = await FacebookAuth.instance.getUserData();
+      final facebookAuthCredential = FacebookAuthProvider.credential(
+          facebookLoginResult.accessToken!.token);
+      await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+
+      await FirebaseFirestore.instance.collection('users').add({
+        'email': userData["email"],
+        'inageUrl': userData['picture']['data']['url'],
+        'name': userData['name']
+      });
+    } on FirebaseAuthException catch (e) {
+      var title = e;
+      MyDialog().normalDialog(context, "$e");
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  Future<Future<UserCredential>> test() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login();
+
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+    // Once signed in, return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  }
 //  Future loginWithFacebook(BuildContext context) async {
 //    final LoginResult result = await FacebookAuth.instance.login();
-
 //     if (result.status == LoginStatus.success) {
 //       _accessToken = result.accessToken;
 

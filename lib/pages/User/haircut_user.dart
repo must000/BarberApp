@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:barber/main.dart';
 import 'package:barber/pages/User/barber_user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
@@ -18,16 +19,12 @@ import 'package:barber/widgets/barbermodel3.dart';
 
 import '../../Constant/route_cn.dart';
 
-List<BarberModel> barberLike = [];
-Map<String, String>? urlImgLike;
 
-StreamController<BarberModel> streamController2 =
-    StreamController<BarberModel>();
 
 class HairCutUser extends StatefulWidget {
   List<BarberModel> barbershop;
-  final Stream<BarberModel> stream2;
-  HairCutUser({Key? key, required this.barbershop, required this.stream2})
+  Stream<BarberModel> stream2;
+  HairCutUser({Key? key, required this.barbershop,required this.stream2})
       : super(key: key);
 
   @override
@@ -39,7 +36,7 @@ class _HairCutUserState extends State<HairCutUser> {
   List<SQLiteModel> sqliteModels = [];
   List<BarberModel>? barbershop;
   _HairCutUserState({required this.barbershop});
-  String? name, email, phone;
+  String? name, email,phone;
   double? lat, lng;
   String? dataPositionUser;
   bool? load = true;
@@ -49,25 +46,25 @@ class _HairCutUserState extends State<HairCutUser> {
   Widget? currentUser;
   String menuName = 'A';
 
-  void mySetState2(BarberModel barberModel) {
+  void mySetState2() {
     setState(() {});
   }
-  // void mySetStateDelete(BarberModel barberModel){
-  //    setState(() {
-  //     barberLike.remove(barberModel);
-  //   });
-  // }
 
   @override
   void initState() {
     super.initState();
+        widget.stream2.listen((barberModel) {
+      print("is an error");
+      print(barberModel);
+      mySetState2();
+    });
     chechpermission();
     findNameAnEmail();
     processReadSQLite().then((value) => getURL());
 
-    widget.stream2.listen((barberModel) {
-      mySetState2(barberModel);
-    });
+// print("stream2 ==== > ${stream2.hashCode}");
+
+
   }
 
   Future<Null> processReadSQLite() async {
@@ -106,55 +103,6 @@ class _HairCutUserState extends State<HairCutUser> {
       getSqlite = true;
     });
   }
-  // checkBarberOpen() {
-  //   DateTime mydatetime = DateTime.now();
-  //   String getnameday = DateFormat('EEEE').format(mydatetime);
-  //   String nameday = "";
-  //   DateTime timeopen;
-  //   DateTime timeclose;
-
-  //   // print("${mydatetime.toString()} 999999");
-  //   // print("ชื่อวัน ${DateFormat('EEEE').format(mydatetime)}");
-  //   switch (getnameday) {
-  //     case "Sunday":
-  //       nameday = "su";
-  //       break;
-  //     case "Monday":
-  //       nameday = "mo";
-  //       break;
-  //     case "Tuesday":
-  //       nameday = "tu";
-  //       break;
-  //     case "Wednesday":
-  //       nameday = "we";
-  //       break;
-  //     case "Thursday":
-  //       nameday = "th";
-  //       break;
-  //     case "Friday":
-  //       nameday = "fr";
-  //       break;
-  //     case "Saturday":
-  //       nameday = "sa";
-  //       break;
-  //     default:
-  //   }
-  //   for (var i = 0; i < barbershop!.length; i++) {
-  //     // *** เช็คว่าวันที่ร้านนี้เปิด ตรงกับวันที่ ณ ตอนนี้ไหม
-  //     if (barbershop![i].dayopen[nameday] == true) {
-  //       timeopen = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
-  //           '2020-04-03 ${barbershop![i].timeopen.replaceAll(' ', '')}:00');
-  //       timeclose = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
-  //           '2020-04-03 ${barbershop![i].timeopen.replaceAll(' ', '')}:00');
-  //       mydatetime.isBefore(timeclose);
-  //       barbershopOpen.add(barbershop![i]);
-  //     }
-  //   }
-
-  //   for (var n = 0; n < barbershopOpen.length; n++) {
-  //     print(">>>>>>> ${barbershopOpen[n]} ");
-  //   }
-  // }
 
   Future<Null> chechpermission() async {
     bool locationService;
@@ -220,10 +168,14 @@ class _HairCutUserState extends State<HairCutUser> {
   Future<Null> findNameAnEmail() async {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance.authStateChanges().listen((event) {
+        print("is an event");
+        print(event);
+        print(event!.phoneNumber);
         setState(() {
-          name = event!.displayName!;
+          name = event.displayName!;
           email = event.email!;
-          phone = event.phoneNumber;
+          phone =event.phoneNumber!;
+         
         });
       });
     });
@@ -337,7 +289,7 @@ class _HairCutUserState extends State<HairCutUser> {
                 child: BarberModel3(
                     nameUser: name == null ? "" : name!,
                     barberModel: barberLike[index],
-                    url: urlImgLike![barberLike[index].email]!),
+                    url: urlImgLike[barberLike[index].email]!),
               ),
               Center(
                 child: Container(

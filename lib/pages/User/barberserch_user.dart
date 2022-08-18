@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/sqlite_model.dart';
+import 'package:barber/main.dart';
 import 'package:barber/pages/User/barber_user.dart';
 import 'package:barber/pages/User/haircut_user.dart';
 import 'package:barber/utils/sqlite_helper.dart';
@@ -190,7 +191,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                             barberResult![index].like = true;
                                             barberLike
                                                 .add(barberResult![index]);
-                                            urlImgLike!.addAll({
+                                            urlImgLike.addAll({
                                               barberResult![index].email:
                                                   urlImgFront![
                                                       barberResult![index]
@@ -207,7 +208,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                             barberResult![index].like = false;
                                             barberLike
                                                 .remove(barberResult![index]);
-                                            urlImgLike!.remove(
+                                            urlImgLike.remove(
                                                 barberResult![index].email);
                                           });
                                           streamController2

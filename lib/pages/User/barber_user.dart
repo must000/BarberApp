@@ -1,3 +1,4 @@
+import 'package:barber/main.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -125,7 +126,7 @@ class _BarberUserState extends State<BarberUser> {
                                     .insertValueToSQlite(sqLiteModel);
                                 setState(() {
                                   barberLike.add(barberModel);
-                                  urlImgLike!
+                                  urlImgLike
                                       .addAll({barberModel.email: url!});
                                   print("Like ======> $barberLike");
                                   like = true;
@@ -140,7 +141,7 @@ class _BarberUserState extends State<BarberUser> {
                                 setState(() {
                                   like = false;
                                   barberLike.remove(barberModel);
-                                  urlImgLike!.remove(barberModel.email);
+                                  urlImgLike.remove(barberModel.email);
                                 });
                                 streamController2.add(barberModel);
                               }

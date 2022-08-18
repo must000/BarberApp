@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/barbermodel.dart';
 import 'package:barber/data/hairdressermodel.dart';
+import 'package:barber/main.dart';
 import 'package:barber/pages/OtherPage/other_Hairdresser.dart';
 import 'package:barber/pages/Hairdresser/queue_Hairdresser.dart';
 import 'package:barber/pages/Hairdresser/queue_setting_hairdresser.dart';
@@ -52,22 +53,6 @@ class _IndexPageState extends State<IndexPage> {
       }
     });
   }
-
-  // await Firebase.initializeApp().then((value) async {
-  //   await FirebaseAuth.instance.authStateChanges().listen((event) async {
-  //     setState(() {
-  //       email = event!.email;
-  //     });
-  //     final data = FirebaseFirestore.instance
-  //         .collection('Hairdresser')
-  //         .doc(event!.email);
-  //     final snapshot = await data.get();
-  //     if (snapshot.exists) {
-  //       print("snapshot +++ ${snapshot.data()} ");
-
-  //     }
-  //   });
-  // });
 
   bool? isbarber;
   HairdresserModel? dataHairresser;
@@ -158,7 +143,6 @@ class _IndexPageState extends State<IndexPage> {
                   body: TabBarView(children: [
                     HairCutUser(
                       barbershop: barbershop,
-                     
                       stream2: streamController2.stream,
                     ),
                     const ReservationUser(),

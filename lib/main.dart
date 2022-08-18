@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:barber/Constant/route_cn.dart';
+import 'package:barber/data/barbermodel.dart';
 import 'package:barber/pages/Authentication/registeruser.dart';
 import 'package:barber/pages/OtherPage/about_developer.dart';
 import 'package:barber/pages/User/barberserch_user.dart';
@@ -9,7 +12,11 @@ import 'package:barber/provider/myproviders.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+List<BarberModel> barberLike = [];
+Map<String, String> urlImgLike = {};
 
+StreamController<BarberModel> streamController2 =
+    StreamController<BarberModel>.broadcast();
 final Map<String, WidgetBuilder> map = {
   '/Login': (BuildContext context) => const Login(),
   '/index': (BuildContext context) => IndexPage(),
@@ -33,8 +40,6 @@ class MyApp extends StatelessWidget {
       create: (context) => MyProviders(),
       child: MaterialApp(
         theme: ThemeData(primaryColor: Colors.black,
-      
-       
         ),
         routes: map,
         initialRoute: Rount_CN.routeIndex,

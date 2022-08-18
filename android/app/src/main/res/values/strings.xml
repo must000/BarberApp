@@ -3,4 +3,5 @@
     <string name="app_name">BarberApp</string>
     <string name="facebook_app_id">320392350034546</string>
     <string name="fb_login_protocol_scheme">fb320392350034546</string>
+    <string name="facebook_client_token">a290564fbb71eb1aaf0044d7f2b71cd2</string>
 </resources>
