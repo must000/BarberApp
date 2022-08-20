@@ -57,7 +57,6 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     calculateLatLon(barbershop);
     getURL();
     processReadSQLite();
-    //  [{id: 1, email: test6@gmail.com}, {id: 2, email: test2@hotmail.com}, {id: 3, email: mickgg@gmail.com}]
   }
 
   Future<Null> processReadSQLite() async {
@@ -73,8 +72,6 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
           }
         }
       }
-      // print("sqlite");
-      // print(sqliteModels);
     });
   }
 
@@ -124,27 +121,14 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     return Scaffold(
         backgroundColor: Contants.myBackgroundColor,
         appBar: AppBar(
+          backgroundColor: Contants.myBackgroundColordark,
           title: Text(typeBarber == true ? "ร้านตัดผมชาย" : "ร้านเสริมสวย"),
         ),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              // ElevatedButton(
-              //     onPressed: () async {
-              //       // print(sqliteModels);
-              //       // for (var x = 0; x < sqliteModels.length; x++) {
-              //       //   print("$x ${sqliteModels[x].email}");
-              //       // }
-              //       await SQLiteHelper().emptySQLite();
-              //     },
-              //     child: Text("เทส")),
               const SizedBox(height: 20),
-              sectionListview(size, "ร้านยอดฮิต"),
-              // listStoreHistory(size),
-              // sectionListview(size, "ร้านที่เคยใช้บริการ"),
-              // listStoreHistory(size),
-              // sectionListview(size, "ร้านที่ถูกใจ"),
-              // listStoreLike(size),
+              // sectionListview(size, "ร้านยอดฮิต"),
               urlImgFront == null
                   ? Container()
                   : Padding(
@@ -186,7 +170,6 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                           await SQLiteHelper()
                                               .insertValueToSQlite(sqLiteModel);
                                           print(barberResult![index].email);
-
                                           setState(() {
                                             barberResult![index].like = true;
                                             barberLike

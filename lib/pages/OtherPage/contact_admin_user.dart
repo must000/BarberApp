@@ -15,11 +15,10 @@ class _ContactAdminUserState extends State<ContactAdminUser> {
       appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          
+        child: Column(
           children: const [
-            Text("ข้อมูลติดต่อ"),
-            Text("08X-XXX-XXXX"),
+            Text("ข้อมูลติดต่อ "),
+            Text("08X-XXX-XXXX "),
             Text("xxxxxx@hotmail.com"),
             Text("xxxxx@gmail.com"),
           ],

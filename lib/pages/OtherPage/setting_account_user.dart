@@ -185,6 +185,15 @@ class _SettingAccountUserState extends State<SettingAccountUser> {
                   width: size * 0.3,
                 ),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 200.0,
+                  height: 200.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
               )
             : avertarIng == null
                 ? const Icon(
@@ -198,9 +207,11 @@ class _SettingAccountUserState extends State<SettingAccountUser> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.black),
                     ),
-                    child: Image.file(
-                      avertarIng!,
-                      fit: BoxFit.fill,
+                    child: ClipOval(
+                      child: Image.file(
+                        avertarIng!,
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
       ),

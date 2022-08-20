@@ -49,9 +49,7 @@ class _OtherUserState extends State<OtherUser> {
                                 children: [
                                   Text(
                                     user!.displayName!,
-                                    style: const TextStyle(
-                                        color: Color.fromARGB(255, 0, 0, 0),
-                                        fontSize: 15),
+                                    style:Contants().h4white()
                                   ),
                                   logout(context)
                                 ],
@@ -59,7 +57,7 @@ class _OtherUserState extends State<OtherUser> {
                               Row(
                                 children: [
                                   Container(
-                                    child: const Text("คะแนนสะสม"),
+                                    child: Text("คะแนนสะสม",style: Contants().h4SpringGreen(),),
                                     margin: const EdgeInsets.only(
                                         top: 10, bottom: 70),
                                   ),
@@ -79,7 +77,7 @@ class _OtherUserState extends State<OtherUser> {
                                               ),
                                             ));
                                       },
-                                      child: const Text("ตั้งค่าข้อมูลผู้ใช้ "),
+                                      child:Text("ตั้งค่าข้อมูลผู้ใช้ ",style: Contants().h3white()),
                                     )
                                   : const SizedBox(
                                       child: Text(""),
@@ -97,7 +95,7 @@ class _OtherUserState extends State<OtherUser> {
                             onPressed: () {
                               Navigator.pushNamed(context, Rount_CN.routeLogin);
                             },
-                            child: const Text("Login")),
+                            child: Text("Login",style: Contants().h3SpringGreen(),)),
                       ],
                     );
                   }
@@ -105,7 +103,7 @@ class _OtherUserState extends State<OtherUser> {
               ),
               TextButton(
                 onPressed: () {},
-                child: const Text("เปล่ยนเบอร์มือถือ"),
+                child: Text("เปล่ยนเบอร์มือถือ",style: Contants().h3white(),),
               ),
               const SizedBox(
                 height: 70,
@@ -114,13 +112,13 @@ class _OtherUserState extends State<OtherUser> {
                 onPressed: () {
                   Navigator.pushNamed(context, Rount_CN.routeContactAdminUser);
                 },
-                child: const Text("ขอความช่วยเหลือ"),
+                child: Text("ขอความช่วยเหลือ",style: Contants().h3white()),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, Rount_CN.routeAboutDeveloper);
                 },
-                child: const Text("เกี่ยวกับเรา"),
+                child: Text("เกี่ยวกับเรา",style: Contants().h3white()),
               ),
             ],
           ),
@@ -130,11 +128,11 @@ class _OtherUserState extends State<OtherUser> {
   }
 
   logout(BuildContext context) {
-    return ElevatedButton(
+    return TextButton(
         onPressed: () {
           final provider = Provider.of<MyProviders>(context, listen: false);
           provider.logout();
         },
-        child: const Text("logout"));
+        child:Text("logout",style: Contants().h3Red(),));
   }
 }

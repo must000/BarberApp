@@ -19,12 +19,10 @@ import 'package:barber/widgets/barbermodel3.dart';
 
 import '../../Constant/route_cn.dart';
 
-
-
 class HairCutUser extends StatefulWidget {
   List<BarberModel> barbershop;
   Stream<BarberModel> stream2;
-  HairCutUser({Key? key, required this.barbershop,required this.stream2})
+  HairCutUser({Key? key, required this.barbershop, required this.stream2})
       : super(key: key);
 
   @override
@@ -36,7 +34,7 @@ class _HairCutUserState extends State<HairCutUser> {
   List<SQLiteModel> sqliteModels = [];
   List<BarberModel>? barbershop;
   _HairCutUserState({required this.barbershop});
-  String? name, email,phone;
+  String? name, email, phone;
   double? lat, lng;
   String? dataPositionUser;
   bool? load = true;
@@ -53,7 +51,7 @@ class _HairCutUserState extends State<HairCutUser> {
   @override
   void initState() {
     super.initState();
-        widget.stream2.listen((barberModel) {
+    widget.stream2.listen((barberModel) {
       print("is an error");
       print(barberModel);
       mySetState2();
@@ -63,8 +61,6 @@ class _HairCutUserState extends State<HairCutUser> {
     processReadSQLite().then((value) => getURL());
 
 // print("stream2 ==== > ${stream2.hashCode}");
-
-
   }
 
   Future<Null> processReadSQLite() async {
@@ -100,7 +96,9 @@ class _HairCutUserState extends State<HairCutUser> {
     }
     setState(() {
       urlImgLike = urlImgFrontModel;
-      getSqlite = true;
+      if (barberLike.isNotEmpty) {
+        getSqlite = true;
+      }
     });
   }
 
@@ -174,8 +172,7 @@ class _HairCutUserState extends State<HairCutUser> {
         setState(() {
           name = event.displayName!;
           email = event.email!;
-          phone =event.phoneNumber!;
-         
+          phone = event.phoneNumber!;
         });
       });
     });
@@ -254,7 +251,7 @@ class _HairCutUserState extends State<HairCutUser> {
                   //   },
                   // ),
                   buttonChooseAType(size),
-                  sectionListview(size, "ร้านที่เคยใช้บริการ"),
+                  // sectionListview(size, "ร้านที่เคยใช้บริการ"),
                   // listStoreHistory(size),
                   getSqlite!
                       ? sectionListview(size, "ร้านที่ถูกใจ")

@@ -1,3 +1,4 @@
+import 'package:barber/Constant/contants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,8 @@ class _AlbumBarberUserState extends State<AlbumBarberUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Contants.myBackgroundColor,
+      appBar: AppBar( backgroundColor: Contants.myBackgroundColordark,),
       body: filess!.length == 0
           ? const Center(
               child: Text("ไม่มีรูปภาพในอัลบั้ม"),

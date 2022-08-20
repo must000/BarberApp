@@ -1,7 +1,12 @@
+import 'package:barber/data/hairdressermodel.dart';
 import 'package:barber/main.dart';
 import 'package:barber/provider/myproviders.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -43,7 +48,7 @@ class _BarberUserState extends State<BarberUser> {
   String nameUser;
   BarberModel barberModel;
   String? url;
-
+  List<HairdresserModel> hairdressermodel = [];
   _BarberUserState({
     required this.barberModel,
     required this.nameUser,
@@ -54,12 +59,55 @@ class _BarberUserState extends State<BarberUser> {
   bool showlist = false;
   bool like = false;
   List<SQLiteModel> sqliteModels = [];
-
+  Map<String, String> urlImgHairdresser = {};
+  bool loadingHairdresser = true;
+  int numberUserSelect = 0;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getHairdresser();
     processReadSQLite();
+  }
+
+  Future<Null> getHairdresser() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    await FirebaseFirestore.instance
+        .collection('Hairdresser')
+        .where("barberState", isEqualTo: barberModel.email)
+        .snapshots()
+        .listen((event) async {
+      var doc = event.docs;
+      if (doc.isNotEmpty) {
+        List<HairdresserModel> data = [];
+        for (var i = 0; i < doc.length; i++) {
+          data.add(HairdresserModel(
+              email: doc[i].data()["email"],
+              idCode: doc[i].data()["idCode"],
+              name: doc[i].data()["name"],
+              lastname: doc[i].data()["lastname"],
+              serviceID: doc[i].data()["serviceID"],
+              barberStatus: doc[i].data()["barberState"]));
+        }
+        Map<String, String>? urlImgFront = {};
+        for (var i = 0; i < data.length; i++) {
+          Reference ref = FirebaseStorage.instance
+              .ref()
+              .child("avatar/${doc[i].data()["email"]}");
+          var url = await ref.getDownloadURL().then((value) {
+            urlImgFront[doc[i].data()["email"]] = value;
+            // print(value);
+          }).catchError((c) => print(c + "is an error"));
+        }
+        setState(() {
+          hairdressermodel = data;
+          urlImgHairdresser = urlImgFront;
+          loadingHairdresser = false;
+        });
+      } else {
+        // print("daaaaaa");
+      }
+    }, onError: (error) => print("Listen failed: $error"));
   }
 
   Future<Null> processReadSQLite() async {
@@ -87,6 +135,7 @@ class _BarberUserState extends State<BarberUser> {
     return Scaffold(
       backgroundColor: Contants.myBackgroundColor,
       appBar: AppBar(
+        backgroundColor: Contants.myBackgroundColordark,
         title: Text(barberModel.shopname),
         actions: [
           buildUsername_Login(user),
@@ -126,8 +175,7 @@ class _BarberUserState extends State<BarberUser> {
                                     .insertValueToSQlite(sqLiteModel);
                                 setState(() {
                                   barberLike.add(barberModel);
-                                  urlImgLike
-                                      .addAll({barberModel.email: url!});
+                                  urlImgLike.addAll({barberModel.email: url!});
                                   print("Like ======> $barberLike");
                                   like = true;
                                 });
@@ -220,61 +268,66 @@ class _BarberUserState extends State<BarberUser> {
               const SizedBox(
                 height: 30,
               ),
-              StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('Barber')
-                    .doc(barberModel.email)
-                    .collection("service")
-                    .snapshots(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
-                    var data = snapshot.data.docs;
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (_, index) {
-                        var userData = data[index];
-                        return InkWell(
-                          child: Card(
-                            child: ListTile(
-                              title: Text(userData['name']),
-                              subtitle: Text(userData['detail']),
-                              trailing: Wrap(children: [
+              loadingHairdresser
+                  ? const SizedBox()
+                  : SizedBox(
+                      height: 120,
+                      child: Expanded(
+                        flex: 3,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: hairdressermodel.length,
+                          itemBuilder: (context, index) => InkWell(
+                            onTap: () {
+                              setState(() {
+                                numberUserSelect = index;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  height: 80,
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.black),
+                                  ),
+                                  child: CachedNetworkImage(
+                                    imageUrl: urlImgHairdresser[
+                                        hairdressermodel[index].email]!,
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      width: 80.0,
+                                      height: 80.0,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover),
+                                      ),
+                                    ),
+                                    placeholder: (context, url) =>
+                                        LoadingAnimationWidget.inkDrop(
+                                            color: Colors.black, size: 20),
+                                  ),
+                                ),
                                 Text(
-                                    "${userData['time'].toString()} นาที / ${userData["price"].toString()} บาท"),
-                              ]),
+                                  hairdressermodel[index].name,
+                                  style: Contants().h4white(),
+                                )
+                              ],
                             ),
                           ),
-                          onTap: () {
-                            int x = userData['price'].toInt();
-                            setState(() {
-                              z += 1;
-                              price = price + x;
-                              servicemodel.add(
-                                ServiceModel(
-                                    id: userData.id,
-                                    name: userData['name'],
-                                    detail: userData['detail'],
-                                    time: userData['time'],
-                                    price: userData['price']),
-                              );
-                              // print("${price.toString()}");
-                            });
-                          },
-                        );
-                      },
-                      itemCount: data.length,
-                    );
-                  }
-
-                  return LoadingAnimationWidget.waveDots(
-                      color: Colors.blue, size: 200);
-                },
-              ),
+                        ),
+                      ),
+                    ),
+              loadingHairdresser ? const SizedBox() : serviceList(),
             ],
           ),
           showlist == false
-              ? SizedBox()
+              ? const SizedBox()
               : Positioned(
                   child: servicemodel.isEmpty
                       ? const Text('')
@@ -324,6 +377,7 @@ class _BarberUserState extends State<BarberUser> {
                                                   IconButton(
                                                       onPressed: () {
                                                         setState(() {
+                                                          z = z - 1;
                                                           price = price -
                                                               servicemodel[
                                                                       index]
@@ -424,6 +478,59 @@ class _BarberUserState extends State<BarberUser> {
           ),
         ),
       ),
+    );
+  }
+
+  StreamBuilder<QuerySnapshot<Map<String, dynamic>>> serviceList() {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('Service')
+          .doc(hairdressermodel[numberUserSelect].serviceID)
+          .collection("service")
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          var data = snapshot.data.docs;
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (_, index) {
+              var userData = data[index];
+              return InkWell(
+                child: Card(
+                  child: ListTile(
+                    title: Text(userData['name']),
+                    subtitle: Text(userData['detail']),
+                    trailing: Wrap(children: [
+                      Text(
+                          "${userData['time'].toString()} นาที / ${userData["price"].toString()} บาท"),
+                    ]),
+                  ),
+                ),
+                onTap: () {
+                  int x = userData['price'].toInt();
+                  setState(() {
+                    z += 1;
+                    price = price + x;
+                    servicemodel.add(
+                      ServiceModel(
+                          id: userData.id,
+                          name: userData['name'],
+                          detail: userData['detail'],
+                          time: userData['time'],
+                          price: userData['price']),
+                    );
+                    // print("${price.toString()}");
+                  });
+                },
+              );
+            },
+            itemCount: data.length,
+          );
+        }
+
+        return LoadingAnimationWidget.waveDots(color: Colors.blue, size: 200);
+      },
     );
   }
 

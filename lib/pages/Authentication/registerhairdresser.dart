@@ -243,9 +243,11 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.black),
                 ),
-                child: Image.file(
-                  avertarIng!,
-                  fit: BoxFit.fill,
+                child: ClipOval(
+                  child: Image.file(
+                    avertarIng!,
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
       ),

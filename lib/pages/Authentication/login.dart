@@ -29,41 +29,41 @@ class _LoginState extends State<Login> {
 
   var loading = false;
 
-  void _loginwithfacebook() async {
-    setState(() {
-      loading = true;
-    });
-    try {
-      final facebookLoginResult = await FacebookAuth.instance.login();
-      final userData = await FacebookAuth.instance.getUserData();
-      final facebookAuthCredential = FacebookAuthProvider.credential(
-          facebookLoginResult.accessToken!.token);
-      await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-      Navigator.pushNamedAndRemoveUntil(
-          context, Rount_CN.routeIndex, (route) => false);
-    } on FirebaseAuthException catch (e) {
-      var title = '';
-      switch (e.code) {
-        case 'account-exists-with-different-credential':
-          title = 'This account exists with a different sign in provider';
-          break;
-        case 'invalid-credential':
-          title = 'Unknown error has occurred';
-          break;
-        case 'user-disabled':
-          title = 'The user you tried to log intp is disabled';
-          break;
-        case 'user-not-found':
-          title = 'The user you tried to log into was not found';
-          break;
-      }
-      // normalDialog(context, title);
-    } finally {
-      setState(() {
-        loading = false;
-      });
-    }
-  }
+  // void _loginwithfacebook() async {
+  //   setState(() {
+  //     loading = true;
+  //   });
+  //   try {
+  //     final facebookLoginResult = await FacebookAuth.instance.login();
+  //     final userData = await FacebookAuth.instance.getUserData();
+  //     final facebookAuthCredential = FacebookAuthProvider.credential(
+  //         facebookLoginResult.accessToken!.token);
+  //     await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  //     Navigator.pushNamedAndRemoveUntil(
+  //         context, Rount_CN.routeIndex, (route) => false);
+  //   } on FirebaseAuthException catch (e) {
+  //     var title = '';
+  //     switch (e.code) {
+  //       case 'account-exists-with-different-credential':
+  //         title = 'This account exists with a different sign in provider';
+  //         break;
+  //       case 'invalid-credential':
+  //         title = 'Unknown error has occurred';
+  //         break;
+  //       case 'user-disabled':
+  //         title = 'The user you tried to log intp is disabled';
+  //         break;
+  //       case 'user-not-found':
+  //         title = 'The user you tried to log into was not found';
+  //         break;
+  //     }
+  //     // normalDialog(context, title);
+  //   } finally {
+  //     setState(() {
+  //       loading = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +186,7 @@ class _LoginState extends State<Login> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           SizedBox(
-                            width: size * 0.3,
+                            width: size * 0.35,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.white,
@@ -209,7 +209,7 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           SizedBox(
-                            width: size * 0.3,
+                            width: size * 0.35,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.white,
@@ -227,7 +227,7 @@ class _LoginState extends State<Login> {
                                 );
                               },
                               child: const Text(
-                                "ช่างทำผม",
+                                "ช่างทำผม ",
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 20,
@@ -240,9 +240,6 @@ class _LoginState extends State<Login> {
                       const SizedBox(
                         height: 20,
                       ),
-                      // ElevatedButton(onPressed: (){
-                      //     test();
-                      // }, child: Text("ดเำพเำเ")),
                       InkWell(
                         onTap: () {
                           signInWithFacebook()
@@ -263,9 +260,9 @@ class _LoginState extends State<Login> {
                                   color: Colors.blue,
                                 ),
                                 Text(
-                                  "เชื่อมต่อด้วย Facebook",
+                                  "เข้าสู่ระบบด้วย Facebook",
                                   style: TextStyle(
-                                      fontSize: 25, color: Colors.black),
+                                      fontSize: 20, color: Colors.black),
                                 )
                               ],
                             ),
@@ -293,9 +290,9 @@ class _LoginState extends State<Login> {
                                   size: 60,
                                 ),
                                 Text(
-                                  "เชื่อมต่อด้วย Google",
+                                  "เข้าสู่ระบบด้วย Google",
                                   style: TextStyle(
-                                      fontSize: 25, color: Colors.black),
+                                      fontSize: 20, color: Colors.black),
                                 )
                               ],
                             ),
@@ -332,6 +329,9 @@ class _LoginState extends State<Login> {
       loading = true;
     });
     try {
+
+
+
       final facebookLoginResult = await FacebookAuth.instance.login();
       final userData = await FacebookAuth.instance.getUserData();
       final facebookAuthCredential = FacebookAuthProvider.credential(
