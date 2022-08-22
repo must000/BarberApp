@@ -1,4 +1,5 @@
 import 'package:barber/Constant/contants.dart';
+import 'package:barber/pages/Hairdresser/queue_setting_hairdresser.dart';
 import 'package:flutter/material.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,25 +39,44 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                     Text(
+                      Text(
                         "ยังไม่มีร้านทำผมสำหรับไอดีนี้",
                         style: Contants().h2white(),
                       ),
-                      Text(idCode, style: Contants().h3white(),),
-                      TextButton(onPressed: (){
-                        _launchUrl();
-                      }, child: Text("เข้าสู่หน้าผู้จัดการร้าน",style: TextStyle(color: Contants.colorRed),))
+                      Text(
+                        idCode,
+                        style: Contants().h3white(),
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            _launchUrl();
+                          },
+                          child: Text(
+                            "เข้าสู่หน้าผู้จัดการร้าน",
+                            style: TextStyle(color: Contants.colorRed),
+                          ))
                     ],
                   ),
                 )
-              : Column(
-                  children: [],
+              : Center(
+                  child: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => QueueSettingHairdresser(
+                                  emailBarber: barberState,
+                                  idHairdresser: hairdresserID),
+                            ));
+                      },
+                      icon: Icon(Icons.settings)),
                 )),
     );
   }
-Future<void> _launchUrl() async {
-  if (!await launchUrl(_url)) {
-    throw 'Could not launch $_url';
+
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(_url)) {
+      throw 'Could not launch $_url';
+    }
   }
-}
 }

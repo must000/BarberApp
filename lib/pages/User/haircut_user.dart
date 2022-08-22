@@ -268,7 +268,7 @@ class _HairCutUserState extends State<HairCutUser> {
   }
 
   Widget listStoreLike(double size) {
-    return Container(
+    return SizedBox(
       // margin: const EdgeInsets.only(bottom: 20,right: 10),
       height: 120,
       child: Expanded(

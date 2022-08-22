@@ -281,6 +281,9 @@ class _BarberUserState extends State<BarberUser> {
                             onTap: () {
                               setState(() {
                                 numberUserSelect = index;
+                                servicemodel = [];
+                                z = 0;
+                                price = 0;
                               });
                             },
                             child: Column(
@@ -292,7 +295,10 @@ class _BarberUserState extends State<BarberUser> {
                                   width: 80,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.black),
+                                    border: Border.all(
+                                        color: index == numberUserSelect
+                                            ? Contants.colorSpringGreen
+                                            : Contants.colorBlack),
                                   ),
                                   child: CachedNetworkImage(
                                     imageUrl: urlImgHairdresser[
@@ -315,7 +321,9 @@ class _BarberUserState extends State<BarberUser> {
                                 ),
                                 Text(
                                   hairdressermodel[index].name,
-                                  style: Contants().h4white(),
+                                  style: index == numberUserSelect
+                                      ? Contants().h4SpringGreen()
+                                      : Contants().h4white(),
                                 )
                               ],
                             ),
