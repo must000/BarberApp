@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/pages/Authentication/login.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,70 @@ class MyDialog {
         ],
       ),
     );
+  }
+
+  Future<Null> confirmBreakTimeDialog(
+      BuildContext context, List<String> list) async {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(
+                "ยืนยันเวลาพัก",
+                style: Contants().h2OxfordBlue(),
+              ),
+              content: SingleChildScrollView(
+                  child: Container(
+                width: double.maxFinite,
+                child: Column(
+                  children: const [
+                    // ConstrainedBox(
+                    //   constraints: BoxConstraints(
+                    //     maxHeight: MediaQuery.of(context).size.height * 0.5,
+                    //   ),
+                    //   child: ListView.builder(
+                    //     shrinkWrap: true,
+                    //     itemBuilder: (context, index) {
+                    //       String day = list[index].substring(0, 2);
+                    //       if (day == "mo") {
+                    //         day = "จันทร์ ";
+                    //       } else if (day == "tu") {
+                    //         day = "อังคาร ";
+                    //       } else if (day == "we") {
+                    //         day = "พุธ ";
+                    //       } else if (day == "th") {
+                    //         day = "พฤหัสบดี ";
+                    //       } else if (day == "fr") {
+                    //         day = "ศุกร์ ";
+                    //       } else if (day == "sa") {
+                    //         day = "เสาร์ ";
+                    //       } else if (day == "su") {
+                    //         day = "อาทิตย์ ";
+                    //       }
+                    //       return Text("$day ${list[index].substring(3)}");
+                    //     },
+                    //     itemCount: list.length,
+                    //   ),
+                    // ),
+                  ],
+                ),
+              )),
+              actions: [
+                TextButton(
+                    onPressed: funcAction,
+                    child: Text(
+                      "ยืนยัน",
+                      style: Contants().h3SpringGreen(),
+                    )),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "ยกเลิก",
+                      style: Contants().h3Red(),
+                    ))
+              ],
+            ));
   }
 
   Future<Null> hardDialog(

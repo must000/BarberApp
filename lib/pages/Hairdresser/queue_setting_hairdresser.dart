@@ -1,13 +1,10 @@
+import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
 import 'package:barber/Constant/contants.dart';
-import 'package:barber/pages/test.dart';
 
 class QueueSettingHairdresser extends StatefulWidget {
   String emailBarber;
@@ -67,6 +64,8 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
   DateTime? timeOpen;
   List<Widget> listdata = [];
   List<String> bleaktimemockup = [];
+  List<String> prepareInsert = [];
+  List<String> preparedelete = [];
   Future<Null> getDataDayopenandTimeopen() async {
     print("dwdwrwr");
     final data =
@@ -170,11 +169,69 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
     }
   }
 
+  Future<Null> process() async {
+    for (var n = 0; n < preparedelete.length; n++) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('Hairdresser')
+            .doc(idHairdresser)
+            .collection('breakTime')
+            .where("break", isEqualTo: preparedelete[n])
+            .get()
+            .then((value) {
+          value.docs[0].reference.delete();
+          print("ลบสำเร็จ");
+        });
+      } catch (e) {
+        print("is an error $e");
+      }
+    }
+    for (var i = 0; i < prepareInsert.length; i++) {
+      await FirebaseFirestore.instance
+          .collection('Hairdresser')
+          .doc(idHairdresser)
+          .collection('breakTime')
+          .add({"break": prepareInsert[i]});
+    }
+  }
+
+  void fc() {
+    process().then((value) {
+      bleaktimemockup.clear();
+      prepareInsert.clear();
+      Navigator.pop(context);
+      getbreakTime();
+      MyDialog().normalDialog(context, "บันทึกเวลาพักสำเร็จ");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Contants.myBackgroundColordark,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  if (prepareInsert.isNotEmpty && preparedelete.isEmpty) {
+                    // เพิ่มข้อมูล อย่างเดียว
+                    MyDialog(funcAction: fc)
+                        .confirmBreakTimeDialog(context, prepareInsert);
+                  } else if (prepareInsert.isEmpty &&
+                      preparedelete.isNotEmpty) {
+                    MyDialog(funcAction: fc)
+                        .confirmBreakTimeDialog(context, prepareInsert);
+                    // ลบอย่างเดียว
+                  } else if (prepareInsert.isNotEmpty &&
+                      preparedelete.isNotEmpty) {
+                    MyDialog(funcAction: fc)
+                        .confirmBreakTimeDialog(context, prepareInsert);
+                  } else {
+                    print("ไม่มีข้อมูล ที่จะinsert");
+                  }
+                },
+                icon: const Icon(Icons.save))
+          ],
         ),
         backgroundColor: Contants.myBackgroundColor,
         body: timediff == null
@@ -208,22 +265,41 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
           "${listdayOpen[i]} ${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}")) {
         value = true;
       }
-      listdata.add(SizedBox(
+      listdata.add(Container(
+          width: 70,
+          height: 56,
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
         child: Checkbox(
             value: value,
             onChanged: (newvalue) {
-              print(
-                  "${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}");
-              print(listdayOpen[i]);
               if (newvalue == true) {
                 setState(() {
                   bleaktimemockup.add(
                       "${listdayOpen[i]} ${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}");
-                  // value = true;
+                  prepareInsert.add(
+                      "${listdayOpen[i]} ${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}");
+                  preparedelete.remove(
+                      "${listdayOpen[i]} ${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}"); 
                 });
+                print(bleaktimemockup);
+                print(prepareInsert);
+                print(preparedelete);
+              } else {
+                setState(() {
+                  bleaktimemockup.remove(
+                      "${listdayOpen[i]} ${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}");
+                  prepareInsert.remove(
+                      "${listdayOpen[i]} ${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}");
+
+                  preparedelete.add(
+                      "${listdayOpen[i]} ${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}");
+                });
+                print(bleaktimemockup);
+                print(prepareInsert);
+                print(preparedelete);
               }
             }),
-            width: 100,height: 52,
       ));
     }
     return Row(children: listdata);
