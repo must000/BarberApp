@@ -286,7 +286,7 @@ class _LoginState extends State<Login> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: const [
                                 FaIcon(
-                                  FontAwesomeIcons.googleDrive,
+                                  FontAwesomeIcons.google,
                                   size: 60,
                                 ),
                                 Text(

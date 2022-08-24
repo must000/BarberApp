@@ -1,8 +1,5 @@
 import 'package:barber/pages/OtherPage/barber_hairdresser.dart';
 import 'package:barber/utils/dialog.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +7,6 @@ import 'package:barber/Constant/contants.dart';
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/Authentication/register_phone_user.dart';
 import 'package:barber/pages/OtherPage/setting_account_user.dart';
-import 'package:barber/pages/index.dart';
 import 'package:barber/provider/myproviders.dart';
 
 class OtherHairdresser extends StatefulWidget {
@@ -87,11 +83,11 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
               children: [
                 TextButton(
                   onPressed: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => RegisterPhoneUser(),
-                    //     ));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RegisterPhoneUser(),
+                        ));
                   },
                   child: Text(
                     "เปลี่ยนเบอร์มือถือ",

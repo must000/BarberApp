@@ -1,24 +1,18 @@
 import 'dart:async';
-import 'dart:collection';
-
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/barbermodel.dart';
 import 'package:barber/data/hairdressermodel.dart';
 import 'package:barber/main.dart';
 import 'package:barber/pages/OtherPage/other_Hairdresser.dart';
 import 'package:barber/pages/Hairdresser/queue_Hairdresser.dart';
-import 'package:barber/pages/Hairdresser/queue_setting_hairdresser.dart';
 import 'package:barber/pages/Hairdresser/service_barber.dart';
 import 'package:barber/pages/User/haircut_user.dart';
 import 'package:barber/pages/havenophonenumber.dart';
-import 'package:barber/pages/store_barber.dart';
 import 'package:barber/utils/show_progress.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:barber/pages/User/haircut_user.dart';
 import 'package:barber/pages/OtherPage/other_user.dart';
 import 'package:barber/pages/User/reservation_user.dart';
 

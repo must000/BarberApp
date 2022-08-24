@@ -1,7 +1,6 @@
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/pages/Hairdresser/queue_setting_hairdresser.dart';
 import 'package:flutter/material.dart';
-import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class QueueHairdresser extends StatefulWidget {
