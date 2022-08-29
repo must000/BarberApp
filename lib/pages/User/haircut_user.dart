@@ -45,14 +45,15 @@ class _HairCutUserState extends State<HairCutUser> {
   String menuName = 'A';
 
   void mySetState2() {
-    setState(() {});
+    setState(() {
+      barberLike;
+    });
   }
 
   @override
   void initState() {
     super.initState();
     widget.stream2.listen((barberModel) {
-      print("is an error");
       print(barberModel);
       mySetState2();
     });
@@ -92,7 +93,7 @@ class _HairCutUserState extends State<HairCutUser> {
           .child("imgfront/${barberLike[i].email}");
       var url = await ref.getDownloadURL().then((value) {
         urlImgFrontModel[barberLike[i].email] = value;
-      }).catchError((c) => print(c + "is an error"));
+      }).catchError((c) => print(c + "is an error getURL $c"));
     }
     setState(() {
       urlImgLike = urlImgFrontModel;
@@ -231,32 +232,13 @@ class _HairCutUserState extends State<HairCutUser> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  // Padding(
-                  //   padding: const EdgeInsets.all(10.0),
-                  //   child: Text(
-                  //     'Combo ' + menuName,
-                  //     style: TextStyle(fontSize: 30, color: Colors.blue),
-                  //   ),
-                  // ),
-                  // ElevatedButton(
-                  //   child: Text(
-                  //     'Settings',
-                  //     style: TextStyle(color: Colors.white),
-                  //   ),
-                  //   onPressed: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(builder: (context) => SecondPage()),
-                  //     );
-                  //   },
-                  // ),
                   buttonChooseAType(size),
                   // sectionListview(size, "ร้านที่เคยใช้บริการ"),
                   // listStoreHistory(size),
-                  getSqlite!
+                  urlImgLike.isNotEmpty
                       ? sectionListview(size, "ร้านที่ถูกใจ")
                       : const SizedBox(child: Text("")),
-                  getSqlite!
+                   urlImgLike.isNotEmpty
                       ? listStoreLike(size)
                       : const SizedBox(
                           child: Text(""),
@@ -362,7 +344,7 @@ class _HairCutUserState extends State<HairCutUser> {
                               typeBarber: true,
                               barbershop: barberman,
                               lat: lat,
-                              lon: lng,
+                              lon: lng, stream2: streamController2.stream,
                             )));
               },
               child: Text(
@@ -391,7 +373,7 @@ class _HairCutUserState extends State<HairCutUser> {
                               typeBarber: false,
                               barbershop: barberwoman,
                               lat: lat,
-                              lon: lng,
+                              lon: lng, stream2: streamController2.stream,
                             )));
               },
               child: Text(

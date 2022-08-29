@@ -197,6 +197,7 @@ class _IndexPageState extends State<IndexPage> {
                                 "${dataHairresser!.name} ${dataHairresser!.lastname}",
                             email: email!,
                             barberState: dataHairresser!.barberStatus,
+                            idHairdresser: hairdresserID!,
                           ),
                         ],
                       ),

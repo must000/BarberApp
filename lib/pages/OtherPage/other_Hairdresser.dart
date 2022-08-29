@@ -13,23 +13,26 @@ class OtherHairdresser extends StatefulWidget {
   String email;
   String fullname;
   String barberState;
+  String idHairdresser;
   OtherHairdresser({
     Key? key,
     required this.email,
     required this.fullname,
     required this.barberState,
+    required this.idHairdresser
   }) : super(key: key);
 
   @override
   State<OtherHairdresser> createState() =>
-      _OtherHairdresserState(email: this.email, fullname: this.fullname,barberState: this.barberState);
+      _OtherHairdresserState(email: this.email, fullname: this.fullname,barberState: this.barberState,idHairdresser: idHairdresser);
 }
 
 class _OtherHairdresserState extends State<OtherHairdresser> {
   String? email;
   String? fullname;
   String? barberState;
-  _OtherHairdresserState({required this.email, required this.fullname,required this.barberState});
+  String? idHairdresser;
+  _OtherHairdresserState({required this.email, required this.fullname,required this.barberState,required this.idHairdresser});
 
   @override
   void initState() {
@@ -105,7 +108,7 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
                       MyDialog().normalDialog(context, "ยังไม่มีร้านทำผม");
                     }
                     else{
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const BarberHairdresser(),));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => BarberHairdresser(barberState: barberState!,idHairdresser: idHairdresser!,),));
                     }
                   },
                   child: Text(

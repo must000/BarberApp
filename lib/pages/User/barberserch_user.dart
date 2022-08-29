@@ -18,13 +18,15 @@ class BarberSerchUser extends StatefulWidget {
   List<BarberModel> barbershop;
   double? lat, lon;
   String nameUser;
+  
+  Stream<BarberModel> stream2;
   BarberSerchUser(
       {Key? key,
       required this.typeBarber,
       required this.barbershop,
       this.lat,
       this.lon,
-      required this.nameUser})
+      required this.nameUser, required this.stream2})
       : super(key: key);
 
   @override
@@ -52,28 +54,62 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
   List<SQLiteModel> sqliteModels = [];
   @override
   void initState() {
+    widget.stream2.listen((barberModel) {
+      print(barberModel);
+      mySetState2();
+    });
     // TODO: implement initState
     super.initState();
     calculateLatLon(barbershop);
     getURL();
-    processReadSQLite();
+    // processReadSQLite();
+    // readSQLite();
   }
 
-  Future<Null> processReadSQLite() async {
-    if (sqliteModels.isNotEmpty) {
-      sqliteModels.clear();
-    }
-    await SQLiteHelper().readSQLite().then((value) {
-      sqliteModels = value;
-      for (var i = 0; i < value.length; i++) {
-        for (var n = 0; n < barberResult!.length; n++) {
-          if (value[i].email == barberResult![n].email) {
-            barberResult![n].like = true;
-          }
-        }
-      }
+   void mySetState2() {
+    setState(() {
+      barberLike;
     });
   }
+
+  // Future<Null> processReadSQLite() async {
+  //   if (sqliteModels.isNotEmpty) {
+  //     sqliteModels.clear();
+  //   }
+  //   await SQLiteHelper().readSQLite().then((value) {
+  //     sqliteModels = value;
+  //     for (var i = 0; i < value.length; i++) {
+  //       for (var n = 0; n < barberResult!.length; n++) {
+  //         if (value[i].email == barberResult![n].email) {
+  //           barberResult![n].like = true;
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
+
+  // Future<Null> readSQLite() async {
+  //   if (sqliteModels.isNotEmpty) {
+  //     sqliteModels.clear();
+  //   }
+  //   List<BarberModel> data = [];
+  //   await SQLiteHelper().readSQLite().then((value) {
+  //     for (var i = 0; i < value.length; i++) {
+  //       for (var n = 0; n < barbershop.length; n++) {
+  //         if (value[i].email == barbershop[n].email) {
+  //           data.add(barbershop[n]);
+  //         }
+  //       }
+  //     }
+  //     print("daa");
+  //     print(barberLike);
+  //     setState(() {
+  //       barberLike = data;
+        
+  //     });
+  //     streamController2.add(barberResult![0]);
+  //   });
+  // }
 
   calculateLatLon(List<BarberModel> barber) {
     var mapBarber = SplayTreeMap<double, BarberModel>();
@@ -157,21 +193,23 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                     child: IconButton(
                                       icon: Icon(
                                         Icons.favorite,
-                                        color: barberResult![index].like
+                                        color: barberLike
+                                                .contains(barberResult![index])
                                             ? Colors.red
                                             : Colors.white,
                                       ),
                                       onPressed: () async {
-                                        if (barberResult![index].like ==
+                                        if (barberLike.contains(
+                                                barberResult![index]) ==
                                             false) {
                                           SQLiteModel sqLiteModel = SQLiteModel(
                                               email:
                                                   barberResult![index].email);
                                           await SQLiteHelper()
                                               .insertValueToSQlite(sqLiteModel);
-                                          print(barberResult![index].email);
+                                          // print(barberResult![index].email);
                                           setState(() {
-                                            barberResult![index].like = true;
+                                            // barberResult![index].like = true;
                                             barberLike
                                                 .add(barberResult![index]);
                                             urlImgLike.addAll({
@@ -188,7 +226,6 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                               .deleteSQLiteWhereId(
                                                   barberResult![index].email);
                                           setState(() {
-                                            barberResult![index].like = false;
                                             barberLike
                                                 .remove(barberResult![index]);
                                             urlImgLike.remove(

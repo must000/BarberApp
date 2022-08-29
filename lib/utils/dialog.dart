@@ -115,6 +115,34 @@ class MyDialog {
     );
   }
 
+  Future<Null> superDialog(
+    BuildContext context,
+    String string,
+    String title,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: ListTile(
+          title: Text(title, style: const TextStyle(color: Colors.black)),
+          subtitle: Text(string),
+        ),
+        children: [
+          TextButton(
+            onPressed: funcAction,
+            child: const Text("ยืนยัน"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("ยกเลิก"),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<Null> checkLoginDialog(BuildContext context) async {
     showDialog(
       context: context,

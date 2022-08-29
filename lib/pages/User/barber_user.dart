@@ -4,9 +4,7 @@ import 'package:barber/provider/myproviders.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -18,10 +16,8 @@ import 'package:barber/data/sqlite_model.dart';
 import 'package:barber/pages/User/album_barber_user.dart';
 import 'package:barber/pages/User/comment_barber_user.dart';
 import 'package:barber/pages/User/detail_barber_user.dart';
-import 'package:barber/pages/User/haircut_user.dart';
 import 'package:barber/pages/User/select_datetime_user.dart';
 import 'package:barber/utils/sqlite_helper.dart';
-import 'package:provider/provider.dart';
 
 class BarberUser extends StatefulWidget {
   final String nameUser;
@@ -123,8 +119,6 @@ class _BarberUserState extends State<BarberUser> {
           });
         }
       }
-      // print("sqlite");
-      // print(sqliteModels);
     });
   }
 
@@ -563,7 +557,7 @@ class _BarberUserState extends State<BarberUser> {
               onPressed: () {
                 Navigator.pushNamed(context, Rount_CN.routeLogin);
               },
-              child: const Text("Login"));
+              child: Text("Login",style: Contants().h3SpringGreen(),));
         }
       },
     );
