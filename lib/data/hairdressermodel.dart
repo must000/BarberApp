@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class HairdresserModel {
+  String hairdresserID;
   String email;
   String idCode;
   String name;
@@ -8,6 +9,7 @@ class HairdresserModel {
   String serviceID;
   String barberStatus;
   HairdresserModel({
+    required this.hairdresserID,
     required this.email,
     required this.idCode,
     required this.name,
@@ -15,8 +17,10 @@ class HairdresserModel {
     required this.serviceID,
     required this.barberStatus,
   });
+  
 
   HairdresserModel copyWith({
+    String? hairdresserID,
     String? email,
     String? idCode,
     String? name,
@@ -25,6 +29,7 @@ class HairdresserModel {
     String? barberStatus,
   }) {
     return HairdresserModel(
+      hairdresserID: hairdresserID ?? this.hairdresserID,
       email: email ?? this.email,
       idCode: idCode ?? this.idCode,
       name: name ?? this.name,
@@ -36,6 +41,7 @@ class HairdresserModel {
 
   Map<String, dynamic> toMap() {
     return {
+      'hairdresserID': hairdresserID,
       'email': email,
       'idCode': idCode,
       'name': name,
@@ -47,6 +53,7 @@ class HairdresserModel {
 
   factory HairdresserModel.fromMap(Map<String, dynamic> map) {
     return HairdresserModel(
+      hairdresserID: map['hairdresserID'] ?? '',
       email: map['email'] ?? '',
       idCode: map['idCode'] ?? '',
       name: map['name'] ?? '',
@@ -62,7 +69,7 @@ class HairdresserModel {
 
   @override
   String toString() {
-    return 'HairdresserModel(email: $email, idCode: $idCode, name: $name, lastname: $lastname, serviceID: $serviceID, barberStatus: $barberStatus)';
+    return 'HairdresserModel(hairdresserID: $hairdresserID, email: $email, idCode: $idCode, name: $name, lastname: $lastname, serviceID: $serviceID, barberStatus: $barberStatus)';
   }
 
   @override
@@ -70,6 +77,7 @@ class HairdresserModel {
     if (identical(this, other)) return true;
   
     return other is HairdresserModel &&
+      other.hairdresserID == hairdresserID &&
       other.email == email &&
       other.idCode == idCode &&
       other.name == name &&
@@ -80,7 +88,8 @@ class HairdresserModel {
 
   @override
   int get hashCode {
-    return email.hashCode ^
+    return hairdresserID.hashCode ^
+      email.hashCode ^
       idCode.hashCode ^
       name.hashCode ^
       lastname.hashCode ^

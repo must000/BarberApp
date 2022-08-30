@@ -1,12 +1,11 @@
+import 'package:barber/Constant/contants.dart';
+import 'package:barber/data/breaktimemodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
-import 'package:barber/data/barbermodel.dart';
 import 'package:barber/data/queuemodel.dart';
 import 'package:barber/data/servicemodel.dart';
 import 'package:barber/pages/User/confirm_queue_user.dart';
@@ -18,17 +17,18 @@ class SelectDateTimeUser extends StatefulWidget {
   String timeopen;
   String timeclose;
   String email;
-  String nameUser, nameBarber;
-  SelectDateTimeUser({
-    Key? key,
-    required this.servicemodel,
-    required this.dayopen,
-    required this.timeopen,
-    required this.timeclose,
-    required this.email,
-    required this.nameUser,
-    required this.nameBarber,
-  }) : super(key: key);
+  String nameUser, nameBarber, hairdresserID;
+  SelectDateTimeUser(
+      {Key? key,
+      required this.servicemodel,
+      required this.dayopen,
+      required this.timeopen,
+      required this.timeclose,
+      required this.email,
+      required this.nameUser,
+      required this.nameBarber,
+      required this.hairdresserID})
+      : super(key: key);
 
   @override
   State<SelectDateTimeUser> createState() => _SelectDateTimeUserState(
@@ -38,7 +38,8 @@ class SelectDateTimeUser extends StatefulWidget {
       timeopen: timeopen,
       email: email,
       nameUser: nameUser,
-      nameBarber: nameBarber);
+      nameBarber: nameBarber,
+      hairdresserID: hairdresserID);
 }
 
 class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
@@ -47,7 +48,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
   String timeopen;
   String timeclose;
   String email;
-  String nameUser, nameBarber;
+  String nameUser, nameBarber, hairdresserID;
 
   _SelectDateTimeUserState(
       {required this.servicemodel,
@@ -56,7 +57,8 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
       required this.timeclose,
       required this.email,
       required this.nameUser,
-      required this.nameBarber});
+      required this.nameBarber,
+      required this.hairdresserID});
   DateTime selectedDate = DateTime.now();
   String? uid;
   bool load = true;
@@ -76,6 +78,35 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
       },
     );
     totalTimeAndPrice();
+    print("this is an ID");
+    print(hairdresserID);
+    getBreakTime().then((value) => print(breakTime));
+  }
+
+  List<BreakTimeModel> breakTime = [];
+
+  Future<Null> getBreakTime() async {
+    var queryS = await FirebaseFirestore.instance
+        .collection("Hairdresser")
+        .doc(hairdresserID)
+        .collection("breakTime")
+        .get();
+    var alldata2 = queryS.docs.map((e) => e.data()).toList();
+    List<BreakTimeModel> dataEx2 = [];
+    print(alldata2);
+    if (alldata2.isNotEmpty) {
+      for (int n = 0; n < alldata2.length; n++) {
+        dataEx2.add(BreakTimeModel(
+            day: alldata2[n]["break"].toString().substring(0, 2),
+            time: alldata2[n]["break"].toString().substring(3)));
+      }
+    } else {
+      print("ไม่มีค่า breakTime");
+    }
+
+    setState(() {
+      breakTime = dataEx2;
+    });
   }
 
   List<DateTime>? dateData;
@@ -197,9 +228,11 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Contants.myBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: Contants.myBackgroundColordark,
+      ),
       body: load == true
           ? Center(
               child:
@@ -207,24 +240,42 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width * 0.2,
-                        height: 30,
-                        child: Text(
-                            " ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}"),
-                        decoration: BoxDecoration(border: Border.all()),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          _selectedDate(context);
-                        },
-                        child: const Text("เปลี่ยนวันที่ "),
-                      )
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          height: 30,
+                          child: Text(
+                            " ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
+                            style: Contants().h3SpringGreen(),
+                          ),
+                          decoration: BoxDecoration(
+                            border:
+                                Border.all(color: Contants.colorSpringGreen),
+                          ),
+                        ),
+                        Container(
+                          height: 30,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Contants.colorSpringGreen),
+                            ),
+                            onPressed: () {
+                              _selectedDate(context);
+                            },
+                            child: Text(
+                              "เปลี่ยนวันที่ ",
+                              style: Contants().h3Red(),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                   open
                       ? SizedBox(
@@ -232,20 +283,61 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                           child: ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemBuilder: (context, index) => ElevatedButton(
-                              onPressed: () {
-                                checkReserve(dateResult!
-                                    .add(Duration(minutes: index * 30)));
-                              },
-                              child: Text(
-                                "${dateResult!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}:${dateResult!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")} - ${dateResult!.add(Duration(minutes: (index + 1) * 30)).hour.toString().padLeft(2, "0")}:${dateResult!.add(Duration(minutes: (index + 1) * 30)).minute.toString().padLeft(2, "0")}",
-                                style: const TextStyle(fontSize: 20),
-                              ),
-                            ),
+                            itemBuilder: (context, index) {
+                              String nameday = "";
+                              String x =
+                                  DateFormat('EEEE').format(selectedDate);
+                              if (x == "Sunday") {
+                                nameday = "su";
+                              } else if (x == "Monday") {
+                                nameday = "mo";
+                              } else if (x == "Tuesday") {
+                                nameday = "tu";
+                              } else if (x == "Wednesday") {
+                                nameday = "we";
+                              } else if (x == "Thursday") {
+                                nameday = "th";
+                              } else if (x == "Friday") {
+                                nameday = "fr";
+                              } else if (x == "Saturday") {
+                                nameday = "sa";
+                              }
+                              return Container(
+                                height: 55,
+                                margin: EdgeInsets.symmetric(vertical: 8),
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<
+                                        Color>(breakTime.contains(BreakTimeModel(
+                                            day: nameday,
+                                            time:
+                                                "${dateResult!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${dateResult!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}"))
+                                        ? Contants.colorGreySilver
+                                        : Contants.colorWhite),
+                                  ),
+                                  onPressed: breakTime.contains(BreakTimeModel(
+                                          day: nameday,
+                                          time:
+                                              "${dateResult!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${dateResult!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}"))
+                                      ? null
+                                      : () {
+                                          checkReserve(dateResult!.add(
+                                              Duration(minutes: index * 30)));
+                                        },
+                                  child: Text(
+                                    "${dateResult!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}:${dateResult!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")} - ${dateResult!.add(Duration(minutes: (index + 1) * 30)).hour.toString().padLeft(2, "0")}:${dateResult!.add(Duration(minutes: (index + 1) * 30)).minute.toString().padLeft(2, "0")}",
+                                    style: Contants().h1OxfordBlue(),
+                                  ),
+                                ),
+                              );
+                            },
                             itemCount: timediff! * 2,
                           ),
                         )
-                      : const Text("ร้านปิดทำการในวันนี้"),
+                      : Text(
+                          "ร้านปิดทำการในวันนี้",
+                          style: Contants().h2white(),
+                        ),
                 ],
               ),
             ),

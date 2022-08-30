@@ -78,6 +78,7 @@ class _BarberUserState extends State<BarberUser> {
         List<HairdresserModel> data = [];
         for (var i = 0; i < doc.length; i++) {
           data.add(HairdresserModel(
+            hairdresserID: doc[i].id,
               email: doc[i].data()["email"],
               idCode: doc[i].data()["idCode"],
               name: doc[i].data()["name"],
@@ -471,6 +472,7 @@ class _BarberUserState extends State<BarberUser> {
                         email: barberModel.email,
                         nameBarber: barberModel.shopname,
                         nameUser: nameUser,
+                        hairdresserID: hairdressermodel[numberUserSelect].hairdresserID,
                       ),
                     ),
                   );

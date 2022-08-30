@@ -73,6 +73,7 @@ class _IndexPageState extends State<IndexPage> {
             setState(() {
               hairdresserID = doc[0].id;
               dataHairresser = HairdresserModel(
+                hairdresserID: doc[0].id,
                   email: doc[0].data()["email"],
                   idCode: doc[0].data()["idCode"],
                   name: doc[0].data()["name"],
