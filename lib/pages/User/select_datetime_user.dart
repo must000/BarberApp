@@ -1,5 +1,6 @@
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/breaktimemodel.dart';
+import 'package:barber/pages/Authentication/register_phone_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -197,6 +198,9 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
       } else {
         print("ไม่มีข้อมูลวันหยุด");
       }
+      print("ดึงข้อมูล");
+      // ดึงข้อมูลคิวในวันนั้น ๆ มาเช็ค
+      getQueueWhareDate();
     } else {
       setState(() {
         dateResult = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
@@ -206,16 +210,50 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
     }
   }
 
+  Future getQueueWhareDate() async {
+    FirebaseFirestore.instance
+        .collection('Queue')
+        .where(
+          "timestart",
+          isEqualTo: '%September'
+        )
+        .snapshots()
+        .listen((event) {
+      var doc = event.docs;
+      if (doc.isNotEmpty) {
+        print("this is a queue");
+        print(event);
+      } else {
+        print("ไม่มีข้อมูลคิว");
+      }
+    });
+  }
+
+  void fc() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RegisterPhoneUser(),
+        ));
+  }
+
   Future<Null> findEmail() async {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance.authStateChanges().listen(
         (event) async {
+          //เช็คว่าล็อคอินรึยัง
           if (event == null) {
             MyDialog().checkLoginDialog(context);
           } else {
-            setState(() {
-              uid = event.uid;
-            });
+            //เช็คว่ามีเบอร์ไหม
+            if (event.phoneNumber!.isEmpty) {
+              MyDialog(funcAction: fc).hardDialog(context,
+                  "กรุณาเบอร์โทรศัพท์ของคุณ", "ยังไม่ได้ยืนยันเบอร์โทรศัพท์");
+            } else {
+              setState(() {
+                uid = event.uid;
+              });
+            }
           }
         },
         onError: (e) {
@@ -304,7 +342,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                               }
                               return Container(
                                 height: 55,
-                                margin: EdgeInsets.symmetric(vertical: 8),
+                                margin: const EdgeInsets.symmetric(vertical: 8),
                                 child: ElevatedButton(
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all<
@@ -353,12 +391,14 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
           context,
           MaterialPageRoute(
             builder: (context) => ConfirmQueueUser(
-                datetime: selectime,
-                nameUser: nameUser,
-                nameBarber: nameBarber,
-                emailBarber: email,
-                idUser: uid!,
-                servicemodel: servicemodel),
+              datetime: selectime,
+              nameUser: nameUser,
+              nameBarber: nameBarber,
+              emailBarber: email,
+              idUser: uid!,
+              servicemodel: servicemodel,
+              hairdresserID: hairdresserID,
+            ),
           ));
     }
   }

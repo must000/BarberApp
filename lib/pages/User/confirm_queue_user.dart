@@ -9,7 +9,7 @@ import 'package:barber/data/servicemodel.dart';
 class ConfirmQueueUser extends StatefulWidget {
   DateTime datetime;
   String nameUser, nameBarber;
-  String emailBarber, idUser;
+  String emailBarber, idUser, hairdresserID;
   List<ServiceModel> servicemodel;
 
   ConfirmQueueUser({
@@ -20,6 +20,7 @@ class ConfirmQueueUser extends StatefulWidget {
     required this.emailBarber,
     required this.idUser,
     required this.servicemodel,
+    required this.hairdresserID,
   }) : super(key: key);
 
   @override
@@ -30,13 +31,14 @@ class ConfirmQueueUser extends StatefulWidget {
       idUser: idUser,
       nameBarber: nameBarber,
       nameUser: nameUser,
-      servicemodel: servicemodel);
+      servicemodel: servicemodel,
+      hairdresserID: hairdresserID);
 }
 
 class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
   DateTime datetime;
   String nameUser, nameBarber;
-  String emailBarber, idUser;
+  String emailBarber, idUser, hairdresserID;
   List<ServiceModel> servicemodel;
   _ConfirmQueueUserState(
       {required this.datetime,
@@ -44,7 +46,8 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
       required this.nameBarber,
       required this.emailBarber,
       required this.idUser,
-      required this.servicemodel});
+      required this.servicemodel,
+      required this.hairdresserID});
 
   // เวลาที่ใช้ แบบตัดเป็น ชม.
   String time = "";
@@ -179,7 +182,8 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
                           ),
                           onPressed: () {
                             // insertQueue();
-                            checkQueueInDatabase2();
+                            // checkQueueInDatabase2();
+                            insertQueueOnDatabase();
                           },
                           child: const Text("ยืนยัน"),
                         ),
@@ -302,12 +306,12 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
     }
   }
 
- void f1() {
+  void f1() {
     Navigator.pop(context);
     Navigator.pop(context);
   }
 
- void f2() {
+  void f2() {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -359,6 +363,36 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
         "timeService": listtime,
       }).then((value) => MyDialog(funcAction: f2).hardDialog(
               context, "ขอบคุณที่ใช้บริการจองคิวของเรา", "บันทึกสำเร็จ"));
+    });
+  }
+
+  Future<void> insertQueueOnDatabase() async {
+    List<ServiceModel> items = [];
+    for (var i = 0; i < servicemodel.length; i++) {
+      items.add(ServiceModel(
+          id: servicemodel[i].id,
+          name: servicemodel[i].name,
+          detail: servicemodel[i].detail,
+          time: servicemodel[i].time,
+          price: servicemodel[i].price));
+    }
+    print("is an items");
+    print(items);
+
+    await FirebaseFirestore.instance.collection('Queue').add({
+      "barberEmail": emailBarber,
+      "hairdresserID": hairdresserID,
+      "UserID": idUser,
+      "timestart": datetime,
+      "timeend": datetime.add(Duration(minutes: timeint)),
+      "service": items.map<Map>((e) => e.toMap()).toList()
+    }).then((value) {
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+        builder: (context) {
+          return IndexPage();
+        }
+        
+      ), (route) => false);
     });
   }
 }

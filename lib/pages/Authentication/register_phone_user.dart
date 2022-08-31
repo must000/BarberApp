@@ -73,7 +73,8 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                   width: size * 0.25,
                   height: 50,
                   child: ElevatedButton(
-                     style: ElevatedButton.styleFrom(primary: Contants.colorBlack),
+                    style:
+                        ElevatedButton.styleFrom(primary: Contants.colorBlack),
                     onPressed: () {
                       if (phoneController.text == "") {
                         MyDialog()
@@ -91,7 +92,7 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
               ],
             ),
             Container(
-               height: 50,
+              height: 50,
               margin: EdgeInsets.only(
                   top: 15, left: size * 0.08, right: size * 0.08),
               child: TextFormField(
@@ -106,7 +107,8 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
-                  labelText: "Code",labelStyle: Contants().h2Red(),
+                  labelText: "Code",
+                  labelStyle: Contants().h2Red(),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -163,11 +165,12 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
     user!
         .updatePhoneNumber(PhoneAuthProvider.credential(
             verificationId: _verificationId!, smsCode: smsController.text))
-        .then((value) => Navigator.push(
+        .then((value) => Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
               builder: (context) => IndexPage(),
-            )));
+            ),
+            (route) => false));
     // await _auth
     //     .signInWithCredential(PhoneAuthProvider.credential(
     //         verificationId: _verificationId!, smsCode: smsController.text))

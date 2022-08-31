@@ -66,7 +66,6 @@ class _IndexPageState extends State<IndexPage> {
             .snapshots()
             .listen((event) {
           var doc = event.docs;
-
           if (doc.isNotEmpty) {
             // print("listener attached ${doc[0].data()["email"]}");
             // print("listener attached ${doc[0].data()["serviceID"]}");
@@ -85,7 +84,7 @@ class _IndexPageState extends State<IndexPage> {
               load = false;
             });
           } else {
-            print("daaaaaa");
+            print("ไม่มี data");
           }
         }, onError: (error) => print("Listen failed: $error"));
       });
@@ -133,6 +132,7 @@ class _IndexPageState extends State<IndexPage> {
         ? const ShowProgress()
         : isbarber == null
             ? DefaultTabController(
+              // initialIndex: tabsele,
                 length: 3,
                 child: Scaffold(
                   body: TabBarView(children: [
