@@ -1,5 +1,6 @@
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/breaktimemodel.dart';
+import 'package:barber/data/queuemodel2.dart';
 import 'package:barber/pages/Authentication/register_phone_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -63,7 +64,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
   DateTime selectedDate = DateTime.now();
   String? uid;
   bool load = true;
-  int time = 0, price = 0;
+  double time = 0, price = 0;
   String? o;
   bool open = false;
   DateTime? timeOpen;
@@ -79,9 +80,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
       },
     );
     totalTimeAndPrice();
-    print("this is an ID");
-    print(hairdresserID);
-    getBreakTime().then((value) => print(breakTime));
+    getBreakTime();
   }
 
   List<BreakTimeModel> breakTime = [];
@@ -148,6 +147,9 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
     Duration diff = tClose.difference(tOpen);
     timeOpen = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
         '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} ${timeopen.replaceAll(' ', '')}:00');
+    for (var i = 0; i < servicemodel.length; i++) {
+      time += servicemodel[i].time;
+    }
     setState(() {
       timediff = diff.inHours;
       load = false;
@@ -210,23 +212,32 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
     }
   }
 
+  List<QueueModel2> listQueue = [];
   Future getQueueWhareDate() async {
     FirebaseFirestore.instance
         .collection('Queue')
-        .where(
-          "timestart",
-          isEqualTo: '%September'
-        )
+        .where("status", isEqualTo: "on")
+        .orderBy("timestart")
+        .startAt([(DateFormat('yyyy-MM-dd').format(selectedDate))])
         .snapshots()
         .listen((event) {
-      var doc = event.docs;
-      if (doc.isNotEmpty) {
-        print("this is a queue");
-        print(event);
-      } else {
-        print("ไม่มีข้อมูลคิว");
-      }
-    });
+          var doc = event.docs;
+          List<QueueModel2> list = [];
+          if (doc.isNotEmpty) {
+            print("this is a queue");
+            for (int i = 0; i < doc.length; i++) {
+              list.add(QueueModel2(
+                  timestart: DateTime.parse(doc[i].data()["timestart"]),
+                  timeend: DateTime.parse(doc[i].data()["timeend"])));
+            }
+            setState(() {
+              listQueue = list;
+            });
+          } else {
+            print("ไม่มีข้อมูลคิว");
+          }
+        });
+    // .onError((e) => print("$e error"));
   }
 
   void fc() {
@@ -340,6 +351,54 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                               } else if (x == "Saturday") {
                                 nameday = "sa";
                               }
+                              bool emptyQueue = true;
+                              int o = 0;
+                              while (o < listQueue.length && emptyQueue) {
+                                if (dateResult!
+                                        .add(Duration(minutes: index * 30)) ==
+                                    listQueue[o].timestart) {
+                                  emptyQueue = false;
+                                }
+                                if (dateResult!
+                                        .add(Duration(minutes: index * 30))
+                                        .isAfter(listQueue[o].timestart) &&
+                                    dateResult!
+                                        .add(Duration(minutes: index * 30))
+                                        .isBefore(listQueue[o].timeend)) {
+                                  emptyQueue = false;
+                                }
+                                o++;
+                              }
+
+                              bool canReserved = true;
+                              double count = time / 30;
+                              int ko = 0;
+                              while (ko < listQueue.length && canReserved) {
+                                int y = 1;
+                                while (y < count && canReserved) {
+                                  if (dateResult!.add(Duration(
+                                          minutes: (index * 30) + (y * 30))) ==
+                                      listQueue[ko].timestart) {
+                                    canReserved = false;
+                                  } else if (dateResult!
+                                      .add(Duration(
+                                          minutes: (index * 30) + (y * 30)))
+                                      .isAfter(DateFormat(
+                                              'yyyyy-MM-dd HH:mm:ss')
+                                          .parse(
+                                              '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} ${timeclose.replaceAll(' ', '')}:00'))) {
+                                    canReserved = false;
+                                  } else if (dateResult!.add(Duration(
+                                          minutes: (index * 30) + (y * 30))) ==
+                                      DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
+                                          '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} ${timeclose.replaceAll(' ', '')}:00')) {
+                                            canReserved = false;
+                                          }
+                                  y++;
+                                }
+                                ko++;
+                              }
+
                               return Container(
                                 height: 55,
                                 margin: const EdgeInsets.symmetric(vertical: 8),
@@ -351,17 +410,29 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                                             time:
                                                 "${dateResult!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${dateResult!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}"))
                                         ? Contants.colorGreySilver
-                                        : Contants.colorWhite),
+                                        : emptyQueue == false
+                                            ? Contants.colorGreySilver
+                                            : Contants.colorWhite),
                                   ),
                                   onPressed: breakTime.contains(BreakTimeModel(
                                           day: nameday,
                                           time:
                                               "${dateResult!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${dateResult!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}"))
                                       ? null
-                                      : () {
-                                          checkReserve(dateResult!.add(
-                                              Duration(minutes: index * 30)));
-                                        },
+                                      : emptyQueue == false &&
+                                              emptyQueue == true
+                                          ? null
+                                          : () {
+                                              canReserved
+                                                  ? checkReserve(dateResult!
+                                                      .add(Duration(
+                                                          minutes: index * 30)))
+                                                  : MyDialog(funcAction: fc1)
+                                                      .hardDialog(
+                                                          context,
+                                                          "เนื่องจากเวลาที่ต้องการรับบริการของท่าน เกินเวลาที่ช่างทำผมคนนี้ว่าง",
+                                                          "ไม่สามารถจองได้");
+                                            },
                                   child: Text(
                                     "${dateResult!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}:${dateResult!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")} - ${dateResult!.add(Duration(minutes: (index + 1) * 30)).hour.toString().padLeft(2, "0")}:${dateResult!.add(Duration(minutes: (index + 1) * 30)).minute.toString().padLeft(2, "0")}",
                                     style: Contants().h1OxfordBlue(),
@@ -380,6 +451,10 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
               ),
             ),
     );
+  }
+
+  void fc1() {
+    Navigator.pop(context);
   }
 
   checkReserve(DateTime selectime) {
@@ -413,20 +488,5 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
       selectedDate = picked;
       checkdayclose();
     }
-  }
-
-  Future<Null> savedata(List<QueueModel> listQueue) async {
-    listQueue.forEach((element) async {
-      await FirebaseFirestore.instance
-          .collection('reservation')
-          .doc(email)
-          .collection('queue')
-          .add({
-        "datetime": element.datetime,
-        "emailBarber": element.emailBarber,
-        "idUser": element.idUser
-      }).then(((value) {}));
-      debugPrint("สำเร็จ");
-    });
   }
 }
