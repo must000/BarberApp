@@ -121,7 +121,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
         .get();
     var alldata2 = queryS.docs.map((e) => e.data()).toList();
     List<DateTime> dataEx2 = [];
-    print(alldata2);
+    // print(alldata2);
     if (alldata2.isNotEmpty) {
       for (int n = 0; n < alldata2.length; n++) {
         dataEx2.add((alldata2[n]["dayclosed"] as Timestamp).toDate());
@@ -202,7 +202,8 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
       }
       print("ดึงข้อมูล");
       // ดึงข้อมูลคิวในวันนั้น ๆ มาเช็ค
-      getQueueWhareDate();
+      // getQueueWhareDate();
+      getQueueWhareDate2();
     } else {
       setState(() {
         dateResult = DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
@@ -213,30 +214,35 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
   }
 
   List<QueueModel2> listQueue = [];
-  Future getQueueWhareDate() async {
-    FirebaseFirestore.instance
+
+  Future getQueueWhareDate2() async {
+    var datadate = await FirebaseFirestore.instance
         .collection('Queue')
         .where("status", isEqualTo: "on")
-        .orderBy("timestart")
-        .startAt([(DateFormat('yyyy-MM-dd').format(selectedDate))])
-        .snapshots()
-        .listen((event) {
-          var doc = event.docs;
-          List<QueueModel2> list = [];
-          if (doc.isNotEmpty) {
-            print("this is a queue");
-            for (int i = 0; i < doc.length; i++) {
-              list.add(QueueModel2(
-                  timestart: DateTime.parse(doc[i].data()["timestart"]),
-                  timeend: DateTime.parse(doc[i].data()["timeend"])));
-            }
-            setState(() {
-              listQueue = list;
-            });
-          } else {
-            print("ไม่มีข้อมูลคิว");
-          }
+        .orderBy("time.timestart")
+        .startAt([(DateFormat('yyyy-MM-dd').format(selectedDate))]).endAt([
+      (DateFormat('yyyy-MM-dd')
+          .format(selectedDate.add(const Duration(days: 1))))
+    ]).get();
+    var alldata = datadate.docs.map((e) => e.data()).toList();
+    if (alldata.isNotEmpty) {
+      List<QueueModel2> list = [];
+      if (alldata.isNotEmpty) {
+        for (int i = 0; i < alldata.length; i++) {
+          list.add(QueueModel2(
+              timestart: DateTime.parse(alldata[i]["time"]['timestart']),
+              timeend: DateTime.parse(alldata[i]["time"]['timeend'])));
+        }
+        setState(() {
+          listQueue = list;
         });
+      } else {
+        print("ไม่มีข้อมูลคิว");
+      }
+    } else {
+      print("ไม่มีค่า 2");
+    }
+
     // .onError((e) => print("$e error"));
   }
 
@@ -370,35 +376,6 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                                 o++;
                               }
 
-                              bool canReserved = true;
-                              double count = time / 30;
-                              int ko = 0;
-                              while (ko < listQueue.length && canReserved) {
-                                int y = 1;
-                                while (y < count && canReserved) {
-                                  if (dateResult!.add(Duration(
-                                          minutes: (index * 30) + (y * 30))) ==
-                                      listQueue[ko].timestart) {
-                                    canReserved = false;
-                                  } else if (dateResult!
-                                      .add(Duration(
-                                          minutes: (index * 30) + (y * 30)))
-                                      .isAfter(DateFormat(
-                                              'yyyyy-MM-dd HH:mm:ss')
-                                          .parse(
-                                              '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} ${timeclose.replaceAll(' ', '')}:00'))) {
-                                    canReserved = false;
-                                  } else if (dateResult!.add(Duration(
-                                          minutes: (index * 30) + (y * 30))) ==
-                                      DateFormat('yyyyy-MM-dd HH:mm:ss').parse(
-                                          '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} ${timeclose.replaceAll(' ', '')}:00')) {
-                                            canReserved = false;
-                                          }
-                                  y++;
-                                }
-                                ko++;
-                              }
-
                               return Container(
                                 height: 55,
                                 margin: const EdgeInsets.symmetric(vertical: 8),
@@ -419,10 +396,65 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                                           time:
                                               "${dateResult!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${dateResult!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}"))
                                       ? null
-                                      : emptyQueue == false &&
-                                              emptyQueue == true
+                                      : emptyQueue ==
+                                              true //อันนี้ต้องเป็น false เป็น true เพื่อการทดลอง
                                           ? null
                                           : () {
+                                              print("dwr");
+                                              bool canReserved = true;
+                                              double count = time / 30;
+                                              int ko = 0;
+                                              int jo = 1;
+                                              while (
+                                                  jo < count && canReserved) {
+                                                if (breakTime.contains(
+                                                    BreakTimeModel(
+                                                        day: nameday,
+                                                        time:
+                                                            "${dateResult!.add(Duration(minutes: (index * 30) + (jo * 30))).hour.toString().padLeft(2, "0")}.${dateResult!.add(Duration(minutes: (index * 30) + (jo * 30))).minute.toString().padLeft(2, "0")}"))) {
+                                                  canReserved = false;
+                                                }
+                                                jo++;
+                                              }
+                                              while (ko < listQueue.length &&
+                                                  canReserved) {
+                                                int y = 1;
+                                                while (
+                                                    y < count && canReserved) {
+                                                  if (dateResult!.add(Duration(
+                                                          minutes:
+                                                              (index * 30) +
+                                                                  (y * 30))) ==
+                                                      listQueue[ko].timestart) {
+                                                    print("1");
+                                                    canReserved = false;
+                                                  } else if (dateResult!
+                                                      .add(Duration(
+                                                          minutes:
+                                                              (index * 30) +
+                                                                  (y * 30)))
+                                                      .isAfter(DateFormat(
+                                                              'yyyyy-MM-dd HH:mm:ss')
+                                                          .parse(
+                                                              '${dateResult!.year}-${dateResult!.month}-${dateResult!.day} ${timeclose.replaceAll(' ', '')}:00'))) {
+                                                    canReserved = false;
+                                                    print("2");
+                                                  } else if (dateResult!.add(
+                                                          Duration(
+                                                              minutes: (index *
+                                                                      30) +
+                                                                  (y * 30))) ==
+                                                      DateFormat(
+                                                              'yyyyy-MM-dd HH:mm:ss')
+                                                          .parse(
+                                                              '${dateResult!.year}-${dateResult!.month}-${dateResult!.day} ${timeclose.replaceAll(' ', '')}:00')) {
+                                                    canReserved = false;
+                                                    print("3");
+                                                  }
+                                                  y++;
+                                                }
+                                                ko++;
+                                              }
                                               canReserved
                                                   ? checkReserve(dateResult!
                                                       .add(Duration(

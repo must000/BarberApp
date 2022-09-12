@@ -40,6 +40,9 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
   String nameUser, nameBarber;
   String emailBarber, idUser, hairdresserID;
   List<ServiceModel> servicemodel;
+
+  List<Object> listdateStart = [];
+  List<Object> listdateend = [];
   _ConfirmQueueUserState(
       {required this.datetime,
       required this.nameUser,
@@ -53,11 +56,27 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
   String time = "";
   //เวลาที่ใช้รวมนาที รวมราคาที่ยูเซอร์ต้องจ่าย
   int timeint = 0, price = 0;
+  bool caninsert = true;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    setdata();
+    checkQueueInDatabase();
     calculatorTimeandprice();
+  }
+
+  setdata() {
+    for (var i = 0; i < servicemodel.length; i++) {
+      timeint += servicemodel[i].time.toInt();
+    }
+    double count = timeint / 30;
+    for (var i = 0; i < count; i++) {
+      listdateStart.add(datetime.add(Duration(minutes: i * 30)).toString());
+      if (i != 0) {
+        listdateend.add(datetime.add(Duration(minutes: i * 30)).toString());
+      }
+    }
   }
 
   calculatorTimeandprice() {
@@ -181,7 +200,6 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
                             primary: const Color.fromARGB(255, 67, 165, 58),
                           ),
                           onPressed: () {
-                            checkQueueInDatabase();
                             // insertQueueOnDatabase();
                           },
                           child: const Text("ยืนยัน"),
@@ -209,87 +227,34 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
   }
 
   Future<void> checkQueueInDatabase() async {
-  
-    List<Object> listdate = [];
-    double count = timeint / 30;
-    for (var i = 0; i < count; i++) {
-      listdate.add(datetime.add(Duration(minutes: i * 30)).toString());
-    }
-    print(listdate);
+    // print(listdateStart);
     var data = await FirebaseFirestore.instance
         .collection('Queue')
         .where("status", isEqualTo: "on")
-        .where("timestart",whereIn: listdate)
+        .orderBy("time.timestart")
+        .startAt([(DateFormat('yyyy-MM-dd').format(datetime))])
+        .endAt([
+          (DateFormat('yyyy-MM-dd')
+              .format(datetime.add(const Duration(days: 1))))
+        ])
         .snapshots()
         .listen((event) {
           if (event.docs.isNotEmpty) {
-            print(event);
-          } else {
-            print("คิวว่าง ไม่มีค่า");
+            int o = 0;
+            while (o < event.docs.length && caninsert) {
+              if (listdateStart.contains(event.docs[o]["time"]["timestart"]) ||
+                  listdateend.contains(event.docs[o]["time"]["timeend"])) {
+                // caninsert = false;
+                print("มีคิว");
+              } else {
+                print("ไม่มี");
+              }
+              o++;
+            }
+            
           }
         });
   }
-
-  // Future<void> checkQueueInDatabase2() async {
-  //   DateTime timee = DateFormat('yyyyy-MM-dd HH:mm:ss')
-  //       .parse('${datetime.year}-${datetime.month}-${datetime.day} 00:00:00');
-  //   var data = await FirebaseFirestore.instance
-  //       .collection('Barber')
-  //       .doc(emailBarber)
-  //       .collection('queue')
-  //       .doc("$timee")
-  //       .collection("time")
-  //       .get();
-  //   var alldata = data.docs.map((e) => e.data()).toList();
-  //   bool queue = true;
-  //   if (alldata.isNotEmpty) {
-  //     int i = 0;
-  //     while (i < alldata.length) {
-  //       if ((alldata[i]["timestart"] as Timestamp).toDate() == datetime) {
-  //         print("คิวไม่ว่าง เวลาตรงกัน");
-  //         i = alldata.length;
-  //         queue = false;
-  //       } else {
-  //         int n = 0;
-  //         while (n < timeint / 30) {
-  //           if ((alldata[i]["timestart"] as Timestamp).toDate() ==
-  //               datetime.add(Duration(minutes: n * 30))) {
-  //             print('คิวไม่ว่่าง มีเวลาที่อยู่ในคิว *');
-  //             n = 200;
-  //             i = alldata.length;
-  //             queue = false;
-  //           } else if (n != 0) {
-  //             if ((alldata[i]["timeend"] as Timestamp).toDate() ==
-  //                 datetime.add(Duration(minutes: (n) * 30))) {
-  //               print('คิวไม่ว่่าง มีเวลาที่อยู่ในคิว **');
-  //               n = 200;
-  //               i = alldata.length;
-  //               queue = false;
-  //             }
-  //           } else {
-  //             print("คิวว่าง");
-  //           }
-  //           n++;
-  //         }
-  //       }
-  //       i++;
-  //     }
-  //   } else {
-  //     print("คิวว่าง ไม่มีค่า");
-  //     queue = false;
-  //   }
-  //   if (queue) {
-  //     // print("บันทึกคิวลงในระบบ");
-  //     // insertQueue();
-  //   } else {
-  //     // print("ไม่บันทึกคิวลงในระบบ");
-  //     MyDialog(funcAction: f1).hardDialog(
-  //       context,
-  //       "กรุณาเปลี่ยนเวลาที่ต้องการจอง",
-  //       "คิวไม่ว่าง",
-  //     );
-  //   }
-  // }
 
   void f1() {
     Navigator.pop(context);
@@ -322,8 +287,10 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
       "barberEmail": emailBarber,
       "hairdresserID": hairdresserID,
       "UserID": idUser,
-      "timestart": datetime.toString(),
-      "timeend": datetime.add(Duration(minutes: timeint)).toString(),
+      "time": {
+        "timestart": datetime.toString(),
+        "timeend": datetime.add(Duration(minutes: timeint)).toString(),
+      },
       "service": items.map<Map>((e) => e.toMap()).toList()
     }).then((value) {
       Navigator.pushAndRemoveUntil(context,

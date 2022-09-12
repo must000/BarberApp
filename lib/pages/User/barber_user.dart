@@ -78,7 +78,7 @@ class _BarberUserState extends State<BarberUser> {
         List<HairdresserModel> data = [];
         for (var i = 0; i < doc.length; i++) {
           data.add(HairdresserModel(
-            hairdresserID: doc[i].id,
+              hairdresserID: doc[i].id,
               email: doc[i].data()["email"],
               idCode: doc[i].data()["idCode"],
               name: doc[i].data()["name"],
@@ -337,7 +337,7 @@ class _BarberUserState extends State<BarberUser> {
                       : Container(
                           decoration: const BoxDecoration(color: Colors.grey),
                           height: 50 + 75 * servicemodel.length.toDouble(),
-                          width: 330,
+                          width: size,
                           child: Column(
                             children: [
                               Container(
@@ -362,24 +362,30 @@ class _BarberUserState extends State<BarberUser> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) => Card(
+                                    child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(25, 0, 0, 2),
                                   child: Column(
                                     children: [
                                       Row(
                                         children: [
                                           Expanded(
-                                            flex: 2,
                                             child: Text(
-                                                "  ${servicemodel[index].name}"),
+                                              servicemodel[index].name,
+                                              style: Contants().h3OxfordBlue(),
+                                            ),
+                                            flex: 2,
                                           ),
                                           Expanded(
-                                              flex: 1,
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                      "${servicemodel[index].price.toString()} บาท"),
-                                                  IconButton(
-                                                      onPressed: () {
-                                                        setState(() {
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "${servicemodel[index].time.toString()} นาที",
+                                                  style:
+                                                      Contants().h4OxfordBlue(),
+                                                ),
+                                                IconButton(onPressed: (){
+                                                     setState(() {
                                                           z = z - 1;
                                                           price = price -
                                                               servicemodel[
@@ -390,39 +396,41 @@ class _BarberUserState extends State<BarberUser> {
                                                               servicemodel[
                                                                   index]);
                                                         });
-                                                      },
-                                                      icon: const Icon(
-                                                        Icons.delete,
-                                                        size: 20,
-                                                        color: Colors.red,
-                                                      ))
-                                                ],
-                                              )),
+                                                }, icon: const Icon(Icons.delete,
+                                                        color: Colors.red,size: 25,))
+                                              ],
+                                            ),
+                                            flex: 1,
+                                          )
                                         ],
                                       ),
                                       Row(
                                         children: [
                                           Expanded(
-                                            flex: 2,
                                             child: Text(
-                                                "  ${servicemodel[index].detail}"),
+                                              servicemodel[index].detail,
+                                              style: Contants().h4OxfordBlue(),
+                                            ),
+                                            flex: 2,
                                           ),
                                           Expanded(
-                                              flex: 1,
-                                              child: Text(
-                                                  "${servicemodel[index].time.toString()} นาที"))
+                                            child: Text(
+                                              "${servicemodel[index].price.toString()} บาท",
+                                              style: Contants().h4OxfordBlue(),
+                                            ),
+                                            flex: 1,
+                                          )
                                         ],
                                       )
                                     ],
                                   ),
-                                ),
+                                )),
                                 itemCount: servicemodel.length,
                               ),
                             ],
                           ),
                         ),
                   bottom: 4,
-                  left: 20,
                 )
         ],
       ),
@@ -433,10 +441,7 @@ class _BarberUserState extends State<BarberUser> {
           child: ListTile(
             title: Row(
               children: [
-                Text(
-                  "ยอดรวม ${price.toString()}",
-                  style: const TextStyle(color: Colors.black),
-                ),
+                Text("ยอดรวม ${price.toString()}", style: Contants().h2white()),
                 IconButton(
                     onPressed: () {
                       setState(() {
@@ -472,7 +477,8 @@ class _BarberUserState extends State<BarberUser> {
                         email: barberModel.email,
                         nameBarber: barberModel.shopname,
                         nameUser: nameUser,
-                        hairdresserID: hairdressermodel[numberUserSelect].hairdresserID,
+                        hairdresserID:
+                            hairdressermodel[numberUserSelect].hairdresserID,
                       ),
                     ),
                   );
@@ -502,15 +508,57 @@ class _BarberUserState extends State<BarberUser> {
               var userData = data[index];
               return InkWell(
                 child: Card(
-                  child: ListTile(
-                    title: Text(userData['name']),
-                    subtitle: Text(userData['detail']),
-                    trailing: Wrap(children: [
-                      Text(
-                          "${userData['time'].toString()} นาที / ${userData["price"].toString()} บาท"),
-                    ]),
+                    child: Padding(
+                  padding: const EdgeInsets.fromLTRB(25, 10, 0, 10),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              userData['name'],
+                              style: Contants().h3OxfordBlue(),
+                            ),
+                            flex: 2,
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Text(
+                                  "${userData['time'].toString()} นาที",
+                                  style: Contants().h3OxfordBlue(),
+                                ),
+                                const Icon(Icons.add_shopping_cart)
+                              ],
+                            ),
+                            flex: 1,
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              userData['detail'],
+                              style: Contants().h3OxfordBlue(),
+                            ),
+                            flex: 2,
+                          ),
+                          Expanded(
+                            child: Text(
+                              "${userData['price'].toString()} บาท",
+                              style: Contants().h3OxfordBlue(),
+                            ),
+                            flex: 1,
+                          )
+                        ],
+                      )
+                    ],
                   ),
-                ),
+                )),
                 onTap: () {
                   int x = userData['price'].toInt();
                   setState(() {
@@ -559,7 +607,10 @@ class _BarberUserState extends State<BarberUser> {
               onPressed: () {
                 Navigator.pushNamed(context, Rount_CN.routeLogin);
               },
-              child: Text("Login",style: Contants().h3SpringGreen(),));
+              child: Text(
+                "Login",
+                style: Contants().h3SpringGreen(),
+              ));
         }
       },
     );
