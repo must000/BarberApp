@@ -72,7 +72,7 @@ class _IndexPageState extends State<IndexPage> {
             setState(() {
               hairdresserID = doc[0].id;
               dataHairresser = HairdresserModel(
-                hairdresserID: doc[0].id,
+                  hairdresserID: doc[0].id,
                   email: doc[0].data()["email"],
                   idCode: doc[0].data()["idCode"],
                   name: doc[0].data()["name"],
@@ -120,8 +120,7 @@ class _IndexPageState extends State<IndexPage> {
           districtl: alldata[n]["district"],
           subDistrict: alldata[n]["subdistrict"],
           addressdetails: alldata[n]["addressdetails"],
-          like: false
-          ));
+          like: false));
     }
   }
 
@@ -132,7 +131,7 @@ class _IndexPageState extends State<IndexPage> {
         ? const ShowProgress()
         : isbarber == null
             ? DefaultTabController(
-              // initialIndex: tabsele,
+                // initialIndex: tabsele,
                 length: 3,
                 child: Scaffold(
                   body: TabBarView(children: [

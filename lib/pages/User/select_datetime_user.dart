@@ -19,7 +19,7 @@ class SelectDateTimeUser extends StatefulWidget {
   String timeopen;
   String timeclose;
   String email;
-  String nameUser, nameBarber, hairdresserID;
+  String nameUser, nameBarber, hairdresserID,nameHairresser;
   SelectDateTimeUser(
       {Key? key,
       required this.servicemodel,
@@ -29,7 +29,7 @@ class SelectDateTimeUser extends StatefulWidget {
       required this.email,
       required this.nameUser,
       required this.nameBarber,
-      required this.hairdresserID})
+      required this.hairdresserID,required this.nameHairresser})
       : super(key: key);
 
   @override
@@ -41,7 +41,7 @@ class SelectDateTimeUser extends StatefulWidget {
       email: email,
       nameUser: nameUser,
       nameBarber: nameBarber,
-      hairdresserID: hairdresserID);
+      hairdresserID: hairdresserID,nameHairresser:nameHairresser);
 }
 
 class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
@@ -50,7 +50,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
   String timeopen;
   String timeclose;
   String email;
-  String nameUser, nameBarber, hairdresserID;
+  String nameUser, nameBarber, hairdresserID,nameHairresser;
 
   _SelectDateTimeUserState(
       {required this.servicemodel,
@@ -60,7 +60,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
       required this.email,
       required this.nameUser,
       required this.nameBarber,
-      required this.hairdresserID});
+      required this.hairdresserID,required this.nameHairresser});
   DateTime selectedDate = DateTime.now();
   String? uid;
   bool load = true;
@@ -218,6 +218,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
   Future getQueueWhareDate2() async {
     var datadate = await FirebaseFirestore.instance
         .collection('Queue')
+        .where("hairdresserID",isEqualTo: hairdresserID)
         .where("status", isEqualTo: "on")
         .orderBy("time.timestart")
         .startAt([(DateFormat('yyyy-MM-dd').format(selectedDate))]).endAt([
@@ -397,7 +398,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                                               "${dateResult!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${dateResult!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}"))
                                       ? null
                                       : emptyQueue ==
-                                              true //อันนี้ต้องเป็น false เป็น true เพื่อการทดลอง
+                                              false //อันนี้ต้องเป็น false เป็น true เพื่อการทดลอง
                                           ? null
                                           : () {
                                               print("dwr");
@@ -505,6 +506,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
               idUser: uid!,
               servicemodel: servicemodel,
               hairdresserID: hairdresserID,
+              nameHairresser: nameHairresser,
             ),
           ));
     }

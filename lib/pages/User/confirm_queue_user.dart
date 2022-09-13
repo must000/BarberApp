@@ -1,3 +1,4 @@
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,7 +9,7 @@ import 'package:barber/data/servicemodel.dart';
 
 class ConfirmQueueUser extends StatefulWidget {
   DateTime datetime;
-  String nameUser, nameBarber;
+  String nameUser, nameBarber,nameHairresser;
   String emailBarber, idUser, hairdresserID;
   List<ServiceModel> servicemodel;
 
@@ -21,6 +22,7 @@ class ConfirmQueueUser extends StatefulWidget {
     required this.idUser,
     required this.servicemodel,
     required this.hairdresserID,
+    required this.nameHairresser,
   }) : super(key: key);
 
   @override
@@ -32,12 +34,12 @@ class ConfirmQueueUser extends StatefulWidget {
       nameBarber: nameBarber,
       nameUser: nameUser,
       servicemodel: servicemodel,
-      hairdresserID: hairdresserID);
+      hairdresserID: hairdresserID,nameHairresser:nameHairresser);
 }
 
 class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
   DateTime datetime;
-  String nameUser, nameBarber;
+  String nameUser, nameBarber,nameHairresser;
   String emailBarber, idUser, hairdresserID;
   List<ServiceModel> servicemodel;
 
@@ -50,7 +52,7 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
       required this.emailBarber,
       required this.idUser,
       required this.servicemodel,
-      required this.hairdresserID});
+      required this.hairdresserID,required this.nameHairresser});
 
   // เวลาที่ใช้ แบบตัดเป็น ชม.
   String time = "";
@@ -101,135 +103,178 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-    double fontSize = 17;
     return Scaffold(
-        appBar: AppBar(),
-        body: Column(children: [
-          const SizedBox(
-            height: 20,
-          ),
-          Column(
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: size * 0.16),
-                child: ListView(
-                  shrinkWrap: true,
+        backgroundColor: Contants.myBackgroundColor,
+        appBar: AppBar(
+          backgroundColor: Contants.myBackgroundColordark,
+          title: const Text("สรุปรายการ"),
+        ),
+        body: Padding(
+          padding:  EdgeInsets.symmetric(horizontal:size*0.07),
+          child: ListView(shrinkWrap: true, children: [
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                Text(
+                  "ชื่อ : ",
+                  style: Contants().h2white(),
+                ),
+                Text(
+                  nameUser,
+                  style: Contants().h2SpringGreen(),
+                )
+              ],
+            ),
+            line(),
+            Text(
+              "ร้าน : $nameBarber",
+              style: Contants().h2white(),
+            ),
+            Text(
+              "ช่างทำผม : $nameHairresser",
+              style: Contants().h2white(),
+            ),
+            line(),
+            Text(
+              "เวลาการใช้บริการ",
+              style: Contants().h2white(),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Text(
+                "วันที่   ${datetime.day.toString().padLeft(2, "0")} / ${datetime.month.toString().padLeft(2, "0")} / ${datetime.year}",
+                style: Contants().h3white(),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Text(
+                "เวลา   ${datetime.hour.toString().padLeft(2, "0")}.${datetime.minute.toString().padLeft(2, "0")} -  ${datetime.add(Duration(minutes: timeint)).hour.toString().padLeft(2, "0")}.${datetime.add(Duration(minutes: timeint)).minute.toString().padLeft(2, "0")}",
+                style: Contants().h3white(),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Text(
+                "ใช้เวลาโดยประมาณ   $time ชม.",
+                style: Contants().h3white(),
+              ),
+            ),
+            line(),
+            Text(
+              "บริการ",
+              style: Contants().h2white(),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: size * 0.05),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (context, index) => Card(
+                  color: Contants.colorWhite,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          servicemodel[index].name,
+                          style: Contants().h2OxfordBlue(),
+                        ),
+                        Text(
+                          "${servicemodel[index].price.toInt().toString()} บาท",
+                          style: Contants().h2OxfordBlue(),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                itemCount: servicemodel.length,
+              ),
+            ),
+            line(),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: size * 0.05),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    const Text(""),
                     Text(
-                      "วันที่ ${datetime.day.toString().padLeft(2, "0")} / ${datetime.month.toString().padLeft(2, "0")} / ${datetime.year}",
-                      style: TextStyle(fontSize: fontSize),
+                      "รวม : $price บาท",
+                      style: Contants().h2white(),
+                    )
+                  ]),
+            ),
+            line()
+          ]),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: Container(
+              color: Contants.colorOxfordBlue,
+              height: 100,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.red,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "ยกเลิก",
+                            style: Contants().h2white(),
+                          )),
+                      width: size * 0.38,
+                      height: 55,
                     ),
-                    Text(
-                      "ระยะเวลา $time ชม.    ${datetime.hour.toString().padLeft(2, "0")}.${datetime.minute.toString().padLeft(2, "0")} -  ${datetime.add(Duration(minutes: timeint)).hour.toString().padLeft(2, "0")}.${datetime.add(Duration(minutes: timeint)).minute.toString().padLeft(2, "0")}",
-                      style: TextStyle(fontSize: fontSize),
-                    ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    Text(
-                      nameUser,
-                      style: TextStyle(fontSize: fontSize),
-                    ),
-                    Text(
-                      "ร้าน " + nameBarber,
-                      style: TextStyle(fontSize: fontSize),
+                    SizedBox(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Contants.colorSpringGreen,
+                        ),
+                        onPressed: () {
+                          
+                          if (caninsert) {
+                            insertQueueOnDatabase();
+                          } else {
+                            MyDialog(funcAction: f3).hardDialog(
+                                context,
+                                "อาจมีผู้ใช้ท่านอื่น บันทึกคิวเข้าสู่ระบบเมื่อไม่นานมานี้ ขออภัยในความไม่สะดวก",
+                                "ไม่สามารถบันทึกคิวได้");
+                          }
+                        },
+                        child: Text("ยืนยัน", style: Contants().h2OxfordBlue()),
+                      ),
+                      width: size * 0.38,
+                      height: 55,
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: size * 0.16),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        servicemodel[index].name,
-                        style: TextStyle(fontSize: fontSize),
-                      ),
-                      Text(
-                        servicemodel[index].price.toInt().toString(),
-                        style: TextStyle(fontSize: fontSize),
-                      )
-                    ],
-                  ),
-                  itemCount: servicemodel.length,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: size * 0.16),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(""),
-                      Text(
-                        "$price",
-                        style: TextStyle(fontSize: fontSize),
-                      )
-                    ]),
-              ),
-            ],
-          )
-        ]),
-        bottomNavigationBar: BottomAppBar(
-          child: SizedBox(
-              height: 100,
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: size * 0.10),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(""),
-                          Text(
-                            "ยอมรวม $price",
-                            style: const TextStyle(fontSize: 33),
-                          )
-                        ]),
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: const Color.fromARGB(255, 67, 165, 58),
-                          ),
-                          onPressed: () {
-                            // insertQueueOnDatabase();
-                          },
-                          child: const Text("ยืนยัน"),
-                        ),
-                        width: size * 0.5,
-                        height: 55,
-                      ),
-                      SizedBox(
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red,
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text("ยกเลิก")),
-                        width: size * 0.5,
-                        height: 55,
-                      ),
-                    ],
-                  ),
-                ],
               )),
         ));
   }
 
+  Widget line() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Divider(
+        thickness: 2,
+        color: Colors.white,
+      ),
+    );
+  }
+
   Future<void> checkQueueInDatabase() async {
-    // print(listdateStart);
+
     var data = await FirebaseFirestore.instance
         .collection('Queue')
+         .where("hairdresserID",isEqualTo: hairdresserID)
         .where("status", isEqualTo: "on")
         .orderBy("time.timestart")
         .startAt([(DateFormat('yyyy-MM-dd').format(datetime))])
@@ -244,14 +289,13 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
             while (o < event.docs.length && caninsert) {
               if (listdateStart.contains(event.docs[o]["time"]["timestart"]) ||
                   listdateend.contains(event.docs[o]["time"]["timeend"])) {
-                // caninsert = false;
+                caninsert = false;
                 print("มีคิว");
               } else {
                 print("ไม่มี");
               }
               o++;
             }
-            
           }
         });
   }
@@ -269,6 +313,10 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
         ));
   }
 
+  void f3() {
+    Navigator.pop(context);
+  }
+
   Future<void> insertQueueOnDatabase() async {
     List<ServiceModel> items = [];
     for (var i = 0; i < servicemodel.length; i++) {
@@ -279,9 +327,6 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
           time: servicemodel[i].time,
           price: servicemodel[i].price));
     }
-    print("is an items");
-    print(items);
-
     await FirebaseFirestore.instance.collection('Queue').add({
       "status": "on",
       "barberEmail": emailBarber,

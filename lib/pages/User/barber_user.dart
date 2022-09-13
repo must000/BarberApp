@@ -384,20 +384,24 @@ class _BarberUserState extends State<BarberUser> {
                                                   style:
                                                       Contants().h4OxfordBlue(),
                                                 ),
-                                                IconButton(onPressed: (){
-                                                     setState(() {
-                                                          z = z - 1;
-                                                          price = price -
-                                                              servicemodel[
-                                                                      index]
-                                                                  .price
-                                                                  .toInt();
-                                                          servicemodel.remove(
-                                                              servicemodel[
-                                                                  index]);
-                                                        });
-                                                }, icon: const Icon(Icons.delete,
-                                                        color: Colors.red,size: 25,))
+                                                IconButton(
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        z = z - 1;
+                                                        price = price -
+                                                            servicemodel[index]
+                                                                .price
+                                                                .toInt();
+                                                        servicemodel.remove(
+                                                            servicemodel[
+                                                                index]);
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.delete,
+                                                      color: Colors.red,
+                                                      size: 25,
+                                                    ))
                                               ],
                                             ),
                                             flex: 1,
@@ -479,6 +483,8 @@ class _BarberUserState extends State<BarberUser> {
                         nameUser: nameUser,
                         hairdresserID:
                             hairdressermodel[numberUserSelect].hairdresserID,
+                        nameHairresser:
+                            "${hairdressermodel[numberUserSelect].name} ${hairdressermodel[numberUserSelect].lastname}",
                       ),
                     ),
                   );
