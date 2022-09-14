@@ -31,7 +31,7 @@ class _IndexPageState extends State<IndexPage> {
   String? email;
   String? hairdresserID;
   String phoneHairdresser = "";
-
+String userID = "";
   bool load = true;
   List<BarberModel> barbershop = [];
   @override
@@ -56,6 +56,7 @@ class _IndexPageState extends State<IndexPage> {
       await FirebaseAuth.instance.authStateChanges().listen((event) async {
         setState(() {
           email = event!.email;
+userID = event.uid;
           if (event.phoneNumber != null) {
             phoneHairdresser = event.phoneNumber!;
           }
@@ -67,19 +68,16 @@ class _IndexPageState extends State<IndexPage> {
             .listen((event) {
           var doc = event.docs;
           if (doc.isNotEmpty) {
-            // print("listener attached ${doc[0].data()["email"]}");
-            // print("listener attached ${doc[0].data()["serviceID"]}");
             setState(() {
               hairdresserID = doc[0].id;
               dataHairresser = HairdresserModel(
-                  hairdresserID: doc[0].id,
+                hairdresserID: doc[0].id,
                   email: doc[0].data()["email"],
                   idCode: doc[0].data()["idCode"],
                   name: doc[0].data()["name"],
                   lastname: doc[0].data()["lastname"],
                   serviceID: doc[0].data()["serviceID"],
                   barberStatus: doc[0].data()["barberState"]);
-              print(dataHairresser);
               isbarber = true;
               load = false;
             });
@@ -120,7 +118,8 @@ class _IndexPageState extends State<IndexPage> {
           districtl: alldata[n]["district"],
           subDistrict: alldata[n]["subdistrict"],
           addressdetails: alldata[n]["addressdetails"],
-          like: false));
+          like: false
+          ));
     }
   }
 
@@ -131,7 +130,7 @@ class _IndexPageState extends State<IndexPage> {
         ? const ShowProgress()
         : isbarber == null
             ? DefaultTabController(
-                // initialIndex: tabsele,
+              // initialIndex: tabsele,
                 length: 3,
                 child: Scaffold(
                   body: TabBarView(children: [
@@ -139,7 +138,10 @@ class _IndexPageState extends State<IndexPage> {
                       barbershop: barbershop,
                       stream2: streamController2.stream,
                     ),
-                    const ReservationUser(),
+                    ReservationUser(
+                      userID: userID,
+
+                    ),
                     const OtherUser(),
                   ]),
                   bottomNavigationBar: Container(

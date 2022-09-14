@@ -201,8 +201,6 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
         print("ไม่มีข้อมูลวันหยุด");
       }
       print("ดึงข้อมูล");
-      // ดึงข้อมูลคิวในวันนั้น ๆ มาเช็ค
-      // getQueueWhareDate();
       getQueueWhareDate2();
     } else {
       setState(() {

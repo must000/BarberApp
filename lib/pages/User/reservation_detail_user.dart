@@ -1,3 +1,5 @@
+import 'package:barber/Constant/contants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ReservationDetailUser extends StatefulWidget {
@@ -17,10 +19,12 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
         padding: const EdgeInsets.all(15.0),
         child: ListView(
           children: [
-            Text("ชื่อร้าน"),
-            Text("เวลาที่ใช้บริการ"),
+            Text("ชื่อ : ",style: Contants().h2white(),),
+            CachedNetworkImage(imageUrl: ""),
+            Text("เวลาที่ใช้บริการ : ",style: Contants().h3white(),),
+            Text("ช่างทำผม : ",style: Contants().h3white(),),
             Container(
-              margin: EdgeInsets.only(top: 20),
+              margin: const EdgeInsets.only(top: 20),
               child: Column(children: [
                 const SizedBox(
                   height: 40,

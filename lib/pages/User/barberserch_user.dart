@@ -62,8 +62,6 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     super.initState();
     calculateLatLon(barbershop);
     getURL();
-    // processReadSQLite();
-    // readSQLite();
   }
 
    void mySetState2() {
@@ -72,44 +70,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     });
   }
 
-  // Future<Null> processReadSQLite() async {
-  //   if (sqliteModels.isNotEmpty) {
-  //     sqliteModels.clear();
-  //   }
-  //   await SQLiteHelper().readSQLite().then((value) {
-  //     sqliteModels = value;
-  //     for (var i = 0; i < value.length; i++) {
-  //       for (var n = 0; n < barberResult!.length; n++) {
-  //         if (value[i].email == barberResult![n].email) {
-  //           barberResult![n].like = true;
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
-
-  // Future<Null> readSQLite() async {
-  //   if (sqliteModels.isNotEmpty) {
-  //     sqliteModels.clear();
-  //   }
-  //   List<BarberModel> data = [];
-  //   await SQLiteHelper().readSQLite().then((value) {
-  //     for (var i = 0; i < value.length; i++) {
-  //       for (var n = 0; n < barbershop.length; n++) {
-  //         if (value[i].email == barbershop[n].email) {
-  //           data.add(barbershop[n]);
-  //         }
-  //       }
-  //     }
-  //     print("daa");
-  //     print(barberLike);
-  //     setState(() {
-  //       barberLike = data;
-        
-  //     });
-  //     streamController2.add(barberResult![0]);
-  //   });
-  // }
+ 
 
   calculateLatLon(List<BarberModel> barber) {
     var mapBarber = SplayTreeMap<double, BarberModel>();
@@ -248,39 +209,6 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
         ));
   }
 
-  // Padding(
-  //                             padding: const EdgeInsets.symmetric(
-  //                                 vertical: 4, horizontal: 5),
-  //                             child: Container(
-  //                               decoration: BoxDecoration(border: Border.all()),
-  //                               child: Column(
-  //                                 children: [
-  //                                   CachedNetworkImage(
-  //                                     height: 60,
-  //                                     fit: BoxFit.fill,
-  //                                     imageUrl: urlImgFront![
-  //                                         barberResult![index].email]!,
-  //                                     placeholder: (context, url) =>
-  //                                         LoadingAnimationWidget.inkDrop(
-  //                                             color: Colors.black, size: 20),
-  //                                   ),
-  //                                   ListTile(
-  //                                     title:
-  //                                         Text(barberResult![index].shopname),
-  //                                     subtitle: Text(
-  //                                         barberResult![index].shoprecommend),
-  //                                   ),
-  //                                   Row(
-  //                                     children: const [
-  //                                       Text("คะแนน X "),
-  //                                       Icon(Icons.star)
-  //                                     ],
-  //                                   )
-  //                                 ],
-  //                               ),
-  //                             ),
-  //                           ),
-
   Container sectionListview(double size, String title) {
     return Container(
       child: Text(
@@ -291,32 +219,6 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
       padding: EdgeInsets.symmetric(horizontal: size * 0.1),
     );
   }
-
-  // Container listStoreLike(double size) {
-  //   return Container(
-  //     margin: const EdgeInsets.only(bottom: 20),
-  //     height: 140,
-  //     child: Expanded(
-  //       flex: 3,
-  //       child: ListView.builder(
-  //           scrollDirection: Axis.horizontal,
-  //           itemCount: 20,
-  //           itemBuilder: (context, index) => BarberModel1(
-  //                 nameUser: nameUser,
-  //                 size: size,
-  //                 nameBarber: "ร้านที่ถูกใจ",
-  //                 addressdetails: '',
-  //                 dayopen: barberResult![0].dayopen,
-  //                 lat: '',
-  //                 lon: '',
-  //                 phoneNumber: '',
-  //                 recommend: '',
-  //                 timeclose: '',
-  //                 timeopen: '',
-  //               )),
-  //     ),
-  //   );
-  // }
 
   // Container listStoreHistory(double size) {
   //   return Container(

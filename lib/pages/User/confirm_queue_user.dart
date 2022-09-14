@@ -9,7 +9,7 @@ import 'package:barber/data/servicemodel.dart';
 
 class ConfirmQueueUser extends StatefulWidget {
   DateTime datetime;
-  String nameUser, nameBarber,nameHairresser;
+  String nameUser, nameBarber, nameHairresser;
   String emailBarber, idUser, hairdresserID;
   List<ServiceModel> servicemodel;
 
@@ -34,12 +34,13 @@ class ConfirmQueueUser extends StatefulWidget {
       nameBarber: nameBarber,
       nameUser: nameUser,
       servicemodel: servicemodel,
-      hairdresserID: hairdresserID,nameHairresser:nameHairresser);
+      hairdresserID: hairdresserID,
+      nameHairresser: nameHairresser);
 }
 
 class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
   DateTime datetime;
-  String nameUser, nameBarber,nameHairresser;
+  String nameUser, nameBarber, nameHairresser;
   String emailBarber, idUser, hairdresserID;
   List<ServiceModel> servicemodel;
 
@@ -52,7 +53,8 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
       required this.emailBarber,
       required this.idUser,
       required this.servicemodel,
-      required this.hairdresserID,required this.nameHairresser});
+      required this.hairdresserID,
+      required this.nameHairresser});
 
   // เวลาที่ใช้ แบบตัดเป็น ชม.
   String time = "";
@@ -110,7 +112,7 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
           title: const Text("สรุปรายการ"),
         ),
         body: Padding(
-          padding:  EdgeInsets.symmetric(horizontal:size*0.07),
+          padding: EdgeInsets.symmetric(horizontal: size * 0.07),
           child: ListView(shrinkWrap: true, children: [
             const SizedBox(
               height: 20,
@@ -239,7 +241,6 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
                           primary: Contants.colorSpringGreen,
                         ),
                         onPressed: () {
-                          
                           if (caninsert) {
                             insertQueueOnDatabase();
                           } else {
@@ -271,10 +272,9 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
   }
 
   Future<void> checkQueueInDatabase() async {
-
     var data = await FirebaseFirestore.instance
         .collection('Queue')
-         .where("hairdresserID",isEqualTo: hairdresserID)
+        .where("hairdresserID", isEqualTo: hairdresserID)
         .where("status", isEqualTo: "on")
         .orderBy("time.timestart")
         .startAt([(DateFormat('yyyy-MM-dd').format(datetime))])
@@ -329,8 +329,14 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
     }
     await FirebaseFirestore.instance.collection('Queue').add({
       "status": "on",
-      "barberEmail": emailBarber,
-      "hairdresserID": hairdresserID,
+      "barber": {
+        "id": emailBarber,
+        "name": nameBarber,
+      },
+      "hairdresser": {
+        "id": hairdresserID,
+        "name": nameHairresser,
+      },
       "UserID": idUser,
       "time": {
         "timestart": datetime.toString(),
