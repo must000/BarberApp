@@ -31,7 +31,8 @@ class _IndexPageState extends State<IndexPage> {
   String? email;
   String? hairdresserID;
   String phoneHairdresser = "";
-String userID = "";
+  String userID = "";
+  String nameUser = "";
   bool load = true;
   List<BarberModel> barbershop = [];
   @override
@@ -56,7 +57,8 @@ String userID = "";
       await FirebaseAuth.instance.authStateChanges().listen((event) async {
         setState(() {
           email = event!.email;
-userID = event.uid;
+          userID = event.uid;
+          nameUser = event.displayName!;
           if (event.phoneNumber != null) {
             phoneHairdresser = event.phoneNumber!;
           }
@@ -71,7 +73,7 @@ userID = event.uid;
             setState(() {
               hairdresserID = doc[0].id;
               dataHairresser = HairdresserModel(
-                hairdresserID: doc[0].id,
+                  hairdresserID: doc[0].id,
                   email: doc[0].data()["email"],
                   idCode: doc[0].data()["idCode"],
                   name: doc[0].data()["name"],
@@ -99,8 +101,6 @@ userID = event.uid;
     // get ข้อมูลBarber get Url imgfront
     var data = await FirebaseFirestore.instance.collection('Barber').get();
     var alldata = data.docs.map((e) => e.data()).toList();
-    // print("is a dataaaaaaaaaaaaaaaaaaaaa");
-    // print(alldata);
     for (int n = 0; n < alldata.length; n++) {
       barbershop.add(BarberModel(
           email: alldata[n]["email"],
@@ -118,8 +118,7 @@ userID = event.uid;
           districtl: alldata[n]["district"],
           subDistrict: alldata[n]["subdistrict"],
           addressdetails: alldata[n]["addressdetails"],
-          like: false
-          ));
+          like: false));
     }
   }
 
@@ -130,7 +129,7 @@ userID = event.uid;
         ? const ShowProgress()
         : isbarber == null
             ? DefaultTabController(
-              // initialIndex: tabsele,
+                // initialIndex: tabsele,
                 length: 3,
                 child: Scaffold(
                   body: TabBarView(children: [
@@ -140,7 +139,7 @@ userID = event.uid;
                     ),
                     ReservationUser(
                       userID: userID,
-
+                      nameUser: nameUser,
                     ),
                     const OtherUser(),
                   ]),

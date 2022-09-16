@@ -9,19 +9,18 @@ import 'package:barber/pages/User/reservation_detail_user.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ReservationUser extends StatefulWidget {
-  String userID;
-  ReservationUser({
-    Key? key,
-    required this.userID,
-  }) : super(key: key);
+  String userID, nameUser;
+  ReservationUser({Key? key, required this.userID, required this.nameUser})
+      : super(key: key);
 
   @override
-  State<ReservationUser> createState() => _ReservationUserState(userID: userID);
+  State<ReservationUser> createState() =>
+      _ReservationUserState(userID: userID, nameUser: nameUser);
 }
 
 class _ReservationUserState extends State<ReservationUser> {
-  String? userID;
-  _ReservationUserState({userID});
+  String? userID, nameUser;
+  _ReservationUserState({required this.userID, required this.nameUser});
   int indexTab = 0;
   Map<String, String> listImageUrl = {};
   bool load = true;
@@ -74,7 +73,7 @@ class _ReservationUserState extends State<ReservationUser> {
           backgroundColor: Contants.myBackgroundColordark,
         ),
         body: userID == ""
-            ? const Center(child: Text("ยังไม่ได้ Login เข้าสู่ระบบ"))
+            ? Center(child: Text("ยังไม่ได้ Login เข้าสู่ระบบ",style: Contants().h2white(),))
             : load
                 ? Center(
                     child: LoadingAnimationWidget.waveDots(
@@ -150,62 +149,93 @@ class _ReservationUserState extends State<ReservationUser> {
           if (snapshot.hasData) {
             print("dwdwwer");
             var data = snapshot.data.docs;
-          
-           
             if (data.isNotEmpty) {
-               
               return ListView.builder(
                 shrinkWrap: true,
                 itemCount: data.length,
                 itemBuilder: (context, index) {
-                    double sum = 0;
+                  double sum = 0;
                   for (var i = 0; i < data[index]["service"].length; i++) {
-              sum += data[index]["service"][i]["price"];
-              print(data[index]["service"].length);
-              print(data[index]["service"][i]["price"]);
-            }
+                    sum += data[index]["service"][i]["price"];
+                    print(data[index]["service"].length);
+                    print(data[index]["service"][i]["price"]);
+                  }
                   return InkWell(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ReservationDetailUser(),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child: Card(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      child: ListTile(
-                        leading: CachedNetworkImage(
-                          imageUrl: listImageUrl[data[index]["barber"]["id"]] ==
-                                  null
-                              ? "https://fluttercorner.com/wp-content/uploads/2021/12/noname-2.png"
-                              : listImageUrl[data[index]["barber"]["id"]]!,
-                          placeholder: (context, url) =>
-                              CircularProgressIndicator(),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
-                        title: Text("ร้าน : ${data[index]["barber"]["name"]}"),
-                        subtitle: Text(
-                            "เวลา ${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}"),
-                        trailing: Text(
-                          sum.toString(),
-                          style: Contants().h2Red(),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReservationDetailUser(
+                          docID: data[index].id,
+                          urlimg:
+                              listImageUrl[data[index]["barber"]["id"]] == null
+                                  ? ""
+                                  : listImageUrl[data[index]["barber"]["id"]]!,
+                          namebarber: data[index]["barber"]["name"],
+                          nameHairresser: data[index]["hairdresser"]["name"],
+                          timestart:
+                              "${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")}",
+                          timeend:
+                              "${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}",
+                          service: data[index]["service"],
+                          nameUser: nameUser!,
                         ),
                       ),
                     ),
-                  ),
-                );
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: Card(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        child: ListTile(
+                          leading: CachedNetworkImage(
+                            imageUrl: listImageUrl[data[index]["barber"]
+                                        ["id"]] ==
+                                    null
+                                ? ""
+                                : listImageUrl[data[index]["barber"]["id"]]!,
+                            placeholder: (context, url) =>
+                                CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                          title:
+                              Text("ร้าน : ${data[index]["barber"]["name"]}"),
+                          subtitle: Text(
+                              "เวลา ${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}"),
+                          trailing: Text(
+                            sum.toString(),
+                            style: Contants().h2Red(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
                 },
               );
             } else {
-              print("dwqqeeqw2");
-              return Center(child: Text(""));
+              String text = "";
+              switch (status) {
+                case "on":
+                  text = "ขณะนี้ยังไม่มีคิวที่กำลังดำเนินการ";
+                  break;
+                case "succeed":
+                  text = "ขณะนี้ยังไม่มีคิวที่สำเร็จ";
+                  break;
+                default:
+                  text = "ขณะนี้ยังไม่มีคิวที่ยกเลิก";
+              }
+              return Center(
+                  child: Container(
+                      child: Text(
+                        text,
+                        style: Contants().h3white(),
+                      ),
+                      margin: EdgeInsets.only(
+                        top: 150,
+                      )));
             }
           } else {
-            print("dwrw");
             return Center(child: Text(""));
           }
         });

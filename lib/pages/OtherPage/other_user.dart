@@ -30,7 +30,6 @@ class _OtherUserState extends State<OtherUser> {
               StreamBuilder(
                 stream: FirebaseAuth.instance.authStateChanges(),
                 builder: (context, snapshot) {
-                  print("${snapshot.data} <<<<<<<<<");
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   } else if (snapshot.hasData) {
@@ -131,7 +130,7 @@ class _OtherUserState extends State<OtherUser> {
     return TextButton(
         onPressed: () {
           final provider = Provider.of<MyProviders>(context, listen: false);
-          provider.logout();
+          provider.logout(context);
         },
         child:Text("logout",style: Contants().h3Red(),));
   }

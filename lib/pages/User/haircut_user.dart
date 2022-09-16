@@ -54,7 +54,6 @@ class _HairCutUserState extends State<HairCutUser> {
   void initState() {
     super.initState();
     widget.stream2.listen((barberModel) {
-      print(barberModel);
       mySetState2();
     });
     chechpermission();
@@ -77,8 +76,6 @@ class _HairCutUserState extends State<HairCutUser> {
           }
         }
       }
-      print("daa");
-      print(barberLike);
       setState(() {
         barberLike = data;
       });

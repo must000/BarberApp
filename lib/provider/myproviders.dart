@@ -29,11 +29,16 @@ class MyProviders extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future logout() async {
+  Future logout(cont) async {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance
           .signOut()
-          .then((value) => print("loout success"));
+          .then((value) => Navigator.pushAndRemoveUntil(
+              cont,
+              MaterialPageRoute(
+                builder: (context) => IndexPage(),
+              ),
+              (route) => false));
     });
     await googleSignIn.disconnect();
     FirebaseAuth.instance.signOut();
