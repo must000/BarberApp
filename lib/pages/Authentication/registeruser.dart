@@ -1,3 +1,4 @@
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/Authentication/register_phone_user.dart';
 import 'package:barber/pages/index.dart';
@@ -24,8 +25,10 @@ class _RegisterUserState extends State<RegisterUser> {
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Contants.myBackgroundColor,
       appBar: AppBar(
         title: const Text("สมัครสมาชิก"),
+        backgroundColor: Contants.myBackgroundColordark,
       ),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -50,6 +53,8 @@ class _RegisterUserState extends State<RegisterUser> {
                     controller: nameController,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: "Name",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -71,6 +76,8 @@ class _RegisterUserState extends State<RegisterUser> {
                     controller: userController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: "Email",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -92,6 +99,8 @@ class _RegisterUserState extends State<RegisterUser> {
                     },
                     obscureText: true,
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: "Password",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -114,6 +123,8 @@ class _RegisterUserState extends State<RegisterUser> {
                       }
                     },
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: "Confirm Password",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -123,20 +134,28 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  height: 40,
+                ),
                 SizedBox(
                     width: size * 0.5,
-                    height: 80,
+                    height: 50,
                     child: ElevatedButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            // registerFirebase();
-                            registerFirebase();
-                          }
-                        },
-                        child: const Text(
-                          "สมัคร",
-                          style: TextStyle(fontSize: 20),
-                        )))
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          // registerFirebase();
+                          registerFirebase();
+                        }
+                      },
+                      child: Text(
+                        "สมัคร",
+                        style: Contants().h2OxfordBlue(),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Contants.colorWhite),
+                      ),
+                    ))
               ],
             ),
           ),

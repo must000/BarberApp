@@ -195,9 +195,9 @@ class _ReservationUserState extends State<ReservationUser> {
                                 ? ""
                                 : listImageUrl[data[index]["barber"]["id"]]!,
                             placeholder: (context, url) =>
-                                CircularProgressIndicator(),
+                                const CircularProgressIndicator(),
                             errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+                                const Icon(Icons.error),
                           ),
                           title:
                               Text("ร้าน : ${data[index]["barber"]["name"]}"),

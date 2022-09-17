@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/pages/Authentication/register_phone_user.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,7 +31,9 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Contants.myBackgroundColor,
       appBar: AppBar(
+        backgroundColor: Contants.myBackgroundColordark,
         title: const Text("สมัครเป็นช่างทำผม"),
       ),
       body: GestureDetector(
@@ -57,6 +60,8 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                     controller: nameController,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: "Name",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -78,6 +83,8 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                     controller: lastnameController,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: "Lastname",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -99,6 +106,8 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: "Email",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -120,6 +129,8 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                     },
                     obscureText: true,
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: "Password",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -142,6 +153,8 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                       }
                     },
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: "Confirm Password",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -151,9 +164,12 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  height: 40,
+                ),
                 SizedBox(
                   width: size * 0.5,
-                  height: 80,
+                  height: 50,
                   child: ElevatedButton(
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
@@ -165,12 +181,19 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                         }
                       }
                     },
-                    child: const Text(
+                    child: Text(
                       "สมัคร",
-                      style: TextStyle(fontSize: 20),
+                      style: Contants().h2OxfordBlue(),
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(Contants.colorWhite),
                     ),
                   ),
-                )
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
               ],
             ),
           ),
@@ -229,11 +252,12 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
         width: 200,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.black),
+          border: Border.all(color: Colors.white),
         ),
         child: avertarIng == null
             ? const Icon(
                 Icons.account_circle,
+                color: Colors.white,
                 size: 200,
               )
             : Container(
@@ -241,7 +265,7 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                 width: 200,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.black),
+                  border: Border.all(color: Colors.white),
                 ),
                 child: ClipOval(
                   child: Image.file(
@@ -257,8 +281,9 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
             onPressed: () {
               normalDialog(context);
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.add_circle,
+              color: Contants.colorYellow,
               size: 50,
             )),
         height: 190,
