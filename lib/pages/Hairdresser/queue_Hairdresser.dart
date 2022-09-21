@@ -23,6 +23,7 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
   String hairdresserID;
   String barberState;
   String idCode;
+  DateTime selectedDate = DateTime.now();
   final Uri _url = Uri.parse('https://flutter.dev');
   _QueueHairdresserState(
       {required this.hairdresserID,
@@ -57,20 +58,80 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                     ],
                   ),
                 )
-              : Center(
-                  child: IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => QueueSettingHairdresser(
-                                  emailBarber: barberState,
-                                  idHairdresser: hairdresserID),
-                            ));
-                      },
-                      icon: Icon(Icons.settings)),
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedDate =
+                                    selectedDate.subtract(Duration(days: 1));
+                              });
+                            },
+                            icon: Icon(
+                              Icons.arrow_back_ios_new,
+                              color: Contants.colorWhite,
+                            )),
+                        ElevatedButton(
+                          onPressed: () {
+                            _selectedDate(context);
+                          },
+                          child: Text(
+                            "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
+                            style: Contants().h2OxfordBlue(),
+                          ),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Contants.colorWhite),
+                          ),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedDate =
+                                    selectedDate.add(const Duration(days: 1));
+                              });
+                            },
+                            icon: Icon(
+                              Icons.arrow_forward_ios,
+                              color: Contants.colorWhite,
+                            ))
+                      ],
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => QueueSettingHairdresser(
+                                    emailBarber: barberState,
+                                    idHairdresser: hairdresserID),
+                              ));
+                        },
+                        icon: Icon(
+                          Icons.settings,
+                          color: Contants.colorWhite,
+                          size: 40,
+                        )),
+                  ],
                 )),
     );
+  }
+
+  Future _selectedDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now().add(const Duration(days: 5)));
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+      // checkdayclose();
+    }
   }
 
   Future<void> _launchUrl() async {

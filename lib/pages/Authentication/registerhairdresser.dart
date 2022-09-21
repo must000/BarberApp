@@ -303,7 +303,9 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => RegisterPhoneUser(),
+                  builder: (context) => RegisterPhoneUser(
+                    emailhairresser: emailController.text,
+                  ),
                 ),
               );
             }));
@@ -327,7 +329,8 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
       "name": nameController.text,
       "lastname": lastnameController.text,
       "barberState": "no",
-      "idCode": randomNumeric(7)
+      "idCode": randomNumeric(7),
+      "phone": ""
     }).then((newvalue) async {
       await FirebaseFirestore.instance.collection('Service').add({}).then(
         (value) async {
@@ -342,28 +345,6 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
       debugPrint("บันทึกสำเร็จ");
     });
   }
-
-  //   await FirebaseFirestore.instance
-  //     .collection('Hairdresser')
-  //     .doc(emailController.text)
-  //     .set({
-  //   "name": nameController.text,
-  //   "lastname": lastnameController.text,
-  //   "barberState": null,
-  //   "idCode": randomNumeric(7)
-  // });
-  // debugPrint("บันทึกสำเร็จ");
-  //  await FirebaseFirestore.instance
-  //     .collection('Service').add({}).then((value) async {
-  //      print( value.id);
-  //      await FirebaseFirestore.instance
-  //     .collection('Hairdresser')
-  //     .doc(emailController.text)
-  //     .update({
-  //       "serviceID":value.id
-  //     });
-  //     debugPrint("อัพเดตเซอร์วิสไอดี สำเร็จ");
-  //     });
 
   void fc() {
     Navigator.pushAndRemoveUntil(

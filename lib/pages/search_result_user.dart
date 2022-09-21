@@ -19,13 +19,13 @@ class SearchResultUser extends StatefulWidget {
 
   @override
   State<SearchResultUser> createState() =>
-      _SearchResultUserState(barberModel: barberModel,nameUser: nameUser);
+      _SearchResultUserState(barberModel: barberModel, nameUser: nameUser);
 }
 
 class _SearchResultUserState extends State<SearchResultUser> {
   List<BarberModel> barberModel;
   String nameUser;
-  _SearchResultUserState({required this.barberModel,required this.nameUser});
+  _SearchResultUserState({required this.barberModel, required this.nameUser});
   Map<String, String>? urlImgFront;
   @override
   void initState() {
@@ -54,60 +54,63 @@ class _SearchResultUserState extends State<SearchResultUser> {
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
-        child: urlImgFront == null ? Container() : GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          
-          shrinkWrap: true,
-          gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: MediaQuery.of(context).size.width /
-              (MediaQuery.of(context).size.height/1.3),
-            crossAxisCount: 3,
-          ),
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BarberUser(
-                      nameUser: nameUser,
-
-                      url: urlImgFront![barberModel[index].email]!,
-
-barberModel: barberModel[index],
-                    ),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 5),
-                child: Container(
-                  decoration: BoxDecoration(border: Border.all()),
-                  child: Column(
-                    children: [
-                      CachedNetworkImage(
-                        height: 60,
-                        fit: BoxFit.fill,
-                        imageUrl: urlImgFront![barberModel[index].email]!,
-                        placeholder: (context, url) =>
-                            LoadingAnimationWidget.inkDrop(
-                                color: Colors.black, size: 20),
-                      ),
-                      ListTile(
-                        title: Text(barberModel[index].shopname),
-                        subtitle: Text(barberModel[index].shoprecommend),
-                      ),
-                      Row(
-                        children: const [Text("คะแนน X "), Icon(Icons.star)],
-                      )
-                    ],
-                  ),
+        child: urlImgFront == null
+            ? Container()
+            : GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: MediaQuery.of(context).size.width /
+                      (MediaQuery.of(context).size.height / 1.3),
+                  crossAxisCount: 3,
                 ),
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BarberUser(
+                            nameUser: nameUser,
+                            url: urlImgFront![barberModel[index].email]!,
+                            barberModel: barberModel[index],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 5),
+                      child: Container(
+                        decoration: BoxDecoration(border: Border.all()),
+                        child: Column(
+                          children: [
+                            CachedNetworkImage(
+                              height: 60,
+                              fit: BoxFit.fill,
+                              imageUrl: urlImgFront![barberModel[index].email]!,
+                              placeholder: (context, url) =>
+                                  LoadingAnimationWidget.inkDrop(
+                                      color: Colors.black, size: 20),
+                            ),
+                            ListTile(
+                              title: Text(barberModel[index].shopname),
+                              subtitle: Text(barberModel[index].shoprecommend),
+                            ),
+                            Row(
+                              children: const [
+                                Text("คะแนน X "),
+                                Icon(Icons.star)
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                itemCount: barberModel.length,
               ),
-            );
-          },
-          itemCount: barberModel.length,
-        ),
       ),
     );
   }

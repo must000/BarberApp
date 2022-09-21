@@ -58,7 +58,10 @@ class _IndexPageState extends State<IndexPage> {
         setState(() {
           email = event!.email;
           userID = event.uid;
-          nameUser = event.displayName!;
+          if (event.displayName != null) {
+            nameUser = event.displayName!;
+          }
+
           if (event.phoneNumber != null) {
             phoneHairdresser = event.phoneNumber!;
           }
@@ -79,7 +82,8 @@ class _IndexPageState extends State<IndexPage> {
                   name: doc[0].data()["name"],
                   lastname: doc[0].data()["lastname"],
                   serviceID: doc[0].data()["serviceID"],
-                  barberStatus: doc[0].data()["barberState"]);
+                  barberStatus: doc[0].data()["barberState"],
+                  phone: doc[0].data()["phone"]);
               isbarber = true;
               load = false;
             });

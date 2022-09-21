@@ -11,7 +11,7 @@ import 'package:barber/data/servicemodel.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ReservationDetailUser extends StatefulWidget {
-  String urlimg, namebarber, nameUser;
+  String urlimg, namebarber, nameUser,phoneBarber,phoneHairresser;
   String nameHairresser;
   String timestart, timeend;
   String docID;
@@ -25,7 +25,7 @@ class ReservationDetailUser extends StatefulWidget {
       required this.timeend,
       required this.docID,
       required this.service,
-      required this.nameUser})
+      required this.nameUser,required this.phoneBarber,required this.phoneHairresser})
       : super(key: key);
 
   @override
@@ -38,11 +38,13 @@ class ReservationDetailUser extends StatefulWidget {
         docID: docID,
         service: service,
         nameUser: nameUser,
+        phoneBarber: phoneBarber,
+        phoneHairresser: phoneHairresser
       );
 }
 
 class _ReservationDetailUserState extends State<ReservationDetailUser> {
-  String urlimg, namebarber, nameUser;
+  String urlimg, namebarber, nameUser,phoneBarber,phoneHairresser;
   String nameHairresser;
   String timestart, timeend;
   List service;
@@ -55,7 +57,7 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
       required this.timeend,
       required this.docID,
       required this.service,
-      required this.nameUser});
+      required this.nameUser,required this.phoneBarber,required this.phoneHairresser});
   @override
   void initState() {
     // TODO: implement initState
@@ -90,7 +92,6 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
         .snapshots()
         .listen((event) {
       if (event.data()!.isNotEmpty) {
-        print("d555");
         if (event["status"] == "succeed") {
           if (event.data()!.containsKey("comment")) {
             // มีคอมเมนต์
@@ -104,10 +105,8 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
               haveComment = true;
               show = true;
             }
-            print("1 $show");
           } else {
             //ไม่มีคอมเมนต์
-            print("2");
           }
         }
         setState(() {
@@ -130,9 +129,10 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
         child: ListView(
           children: [
             Text(
-              "ชื่อ : $namebarber",
+              "ร้าน : $namebarber",
               style: Contants().h2white(),
             ),
+            Text("เบอร์ร้าน : $phoneBarber",style: Contants().h3white(),),
             Container(
               height: 200,
               child: CachedNetworkImage(
@@ -150,6 +150,7 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
               "ช่างทำผม : $nameHairresser",
               style: Contants().h3white(),
             ),
+            Text("เบอร์โทร : $phoneHairresser",style: Contants().h4white(),),
             Container(
               margin: const EdgeInsets.only(top: 20),
               child: Column(children: [

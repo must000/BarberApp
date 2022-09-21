@@ -29,15 +29,14 @@ class BarberUser extends StatefulWidget {
       required this.barberModel,
       required this.nameUser,
       this.url,
-      this.callback})
+      this.callback,})
       : super(key: key);
 
   @override
   State<BarberUser> createState() => _BarberUserState(
-        barberModel: barberModel,
-        nameUser: nameUser,
-        url: url,
-      );
+      barberModel: barberModel,
+      nameUser: nameUser,
+      url: url,);
 }
 
 class _BarberUserState extends State<BarberUser> {
@@ -45,11 +44,10 @@ class _BarberUserState extends State<BarberUser> {
   BarberModel barberModel;
   String? url;
   List<HairdresserModel> hairdressermodel = [];
-  _BarberUserState({
-    required this.barberModel,
-    required this.nameUser,
-    this.url,
-  });
+  _BarberUserState(
+      {required this.barberModel,
+      required this.nameUser,
+      this.url,});
   int price = 0, z = 0;
   List<ServiceModel> servicemodel = [];
   bool showlist = false;
@@ -84,7 +82,8 @@ class _BarberUserState extends State<BarberUser> {
               name: doc[i].data()["name"],
               lastname: doc[i].data()["lastname"],
               serviceID: doc[i].data()["serviceID"],
-              barberStatus: doc[i].data()["barberState"]));
+              barberStatus: doc[i].data()["barberState"],
+              phone: doc[i].data()["phone"]));
         }
         Map<String, String>? urlImgFront = {};
         for (var i = 0; i < data.length; i++) {
@@ -240,8 +239,11 @@ class _BarberUserState extends State<BarberUser> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const CommentBarberUser(),
+                                  builder: (context) => CommentBarberUser(
+                                    emailbarber: barberModel.email,
+                                    nameBarber: barberModel.shopname,
+                                    url: url!,
+                                  ),
                                 ),
                               );
                             },
@@ -485,6 +487,10 @@ class _BarberUserState extends State<BarberUser> {
                             hairdressermodel[numberUserSelect].hairdresserID,
                         nameHairresser:
                             "${hairdressermodel[numberUserSelect].name} ${hairdressermodel[numberUserSelect].lastname}",
+                        phoneHairresser:
+                            hairdressermodel[numberUserSelect].phone,
+                     
+                        phonebarber: barberModel.phone,
                       ),
                     ),
                   );

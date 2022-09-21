@@ -11,19 +11,23 @@ class ConfirmQueueUser extends StatefulWidget {
   DateTime datetime;
   String nameUser, nameBarber, nameHairresser;
   String emailBarber, idUser, hairdresserID;
+  String phoneUser, phonebarber, phoneHairresser;
   List<ServiceModel> servicemodel;
 
-  ConfirmQueueUser({
-    Key? key,
-    required this.datetime,
-    required this.nameUser,
-    required this.nameBarber,
-    required this.emailBarber,
-    required this.idUser,
-    required this.servicemodel,
-    required this.hairdresserID,
-    required this.nameHairresser,
-  }) : super(key: key);
+  ConfirmQueueUser(
+      {Key? key,
+      required this.datetime,
+      required this.nameUser,
+      required this.nameBarber,
+      required this.emailBarber,
+      required this.idUser,
+      required this.servicemodel,
+      required this.hairdresserID,
+      required this.nameHairresser,
+      required this.phoneHairresser,
+      required this.phoneUser,
+      required this.phonebarber})
+      : super(key: key);
 
   @override
   // ignore: no_logic_in_create_state
@@ -35,7 +39,10 @@ class ConfirmQueueUser extends StatefulWidget {
       nameUser: nameUser,
       servicemodel: servicemodel,
       hairdresserID: hairdresserID,
-      nameHairresser: nameHairresser);
+      nameHairresser: nameHairresser,
+      phoneHairresser: phoneHairresser,
+      phoneUser: phoneUser,
+      phonebarber: phonebarber);
 }
 
 class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
@@ -43,7 +50,7 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
   String nameUser, nameBarber, nameHairresser;
   String emailBarber, idUser, hairdresserID;
   List<ServiceModel> servicemodel;
-
+  String phoneUser, phonebarber, phoneHairresser;
   List<Object> listdateStart = [];
   List<Object> listdateend = [];
   _ConfirmQueueUserState(
@@ -54,7 +61,10 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
       required this.idUser,
       required this.servicemodel,
       required this.hairdresserID,
-      required this.nameHairresser});
+      required this.nameHairresser,
+      required this.phoneHairresser,
+      required this.phoneUser,
+      required this.phonebarber});
 
   // เวลาที่ใช้ แบบตัดเป็น ชม.
   String time = "";
@@ -329,15 +339,13 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
     }
     await FirebaseFirestore.instance.collection('Queue').add({
       "status": "on",
-      "barber": {
-        "id": emailBarber,
-        "name": nameBarber,
-      },
+      "barber": {"id": emailBarber, "name": nameBarber, "phone": phonebarber},
       "hairdresser": {
         "id": hairdresserID,
         "name": nameHairresser,
+        "phone": phoneHairresser,
       },
-      "UserID": idUser,
+      "user": {"id": idUser, "name": nameUser, "phone": phoneUser},
       "time": {
         "timestart": datetime.toString(),
         "timeend": datetime.add(Duration(minutes: timeint)).toString(),

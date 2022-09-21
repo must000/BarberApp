@@ -1,20 +1,24 @@
-import 'package:barber/Constant/contants.dart';
-import 'package:barber/pages/index.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
+import 'package:barber/Constant/contants.dart';
+import 'package:barber/pages/index.dart';
 import 'package:barber/utils/dialog.dart';
 
 class RegisterPhoneUser extends StatefulWidget {
+  String? emailhairresser;
   RegisterPhoneUser({
     Key? key,
+    this.emailhairresser,
   }) : super(key: key);
 
   @override
-  State<RegisterPhoneUser> createState() => _RegisterPhoneUserState();
+  State<RegisterPhoneUser> createState() =>
+      _RegisterPhoneUserState(emailhairresser: emailhairresser);
 }
 
 class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
@@ -25,6 +29,8 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController smsController = TextEditingController();
   String? _verificationId;
+  String? emailhairresser;
+  _RegisterPhoneUserState({this.emailhairresser});
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -161,46 +167,38 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
   }
 
   verifyPhone() async {
-    final user = await FirebaseAuth.instance.currentUser;
-    user!
+    final userr = await FirebaseAuth.instance.currentUser;
+    userr!
         .updatePhoneNumber(PhoneAuthProvider.credential(
             verificationId: _verificationId!, smsCode: smsController.text))
-        .then((value) => Navigator.pushAndRemoveUntil(
+        .then((value) async {
+      if (emailhairresser != "") {
+        //เป็นช่างทำผม
+       await FirebaseFirestore.instance
+            .collection('Hairdresser')
+            .where("email", isEqualTo: emailhairresser)
+            .snapshots()
+            .listen((event) async {
+          var doc = event.docs;
+          await FirebaseFirestore.instance
+              .collection('Hairdresser')
+              .doc(doc[0].id)
+              .update({"phone": phoneController.text}).then(
+                  (value) => Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => IndexPage(),
+                      ),
+                      (route) => false));
+        });
+      } else {
+        return Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
               builder: (context) => IndexPage(),
             ),
-            (route) => false));
-    // await _auth
-    //     .signInWithCredential(PhoneAuthProvider.credential(
-    //         verificationId: _verificationId!, smsCode: smsController.text))
-    //     .then(
-    //       (value) => print("สำเร็จ"),
-    //     )
-    //     .catchError(() => print("ผิดพลาด"));
-    // print("สำเร็จ");
-    // await Firebase.initializeApp().then((value) async {
-    //   await FirebaseAuth.instance
-    //       .createUserWithEmailAndPassword(email: email!, password: password!)
-    //       .then((value) async {
-    //     await value.user!.updatePhoneNumber(PhoneAuthProvider.credential(
-    //         verificationId: _verificationId!, smsCode: smsController.text));
-    //     await value.user!
-    //         .updateDisplayName(name)
-    //         .then((value) => Navigator.pushAndRemoveUntil(
-    //             context,
-    //             MaterialPageRoute(
-    //               builder: (context) => IndexPage(),
-    //             ),
-    //             (route) => false))
-    //         .catchError((value) {
-    //       MyDialog().hardDialog(context, "แต่เบอร์โทรถูกใช้ไปแล้ว !!!", "สมัครสำเร็จ");
-    //     });
-
-    //     print("สมัครแล้ว $value");
-    //   }).catchError((value) {
-    //     MyDialog().normalDialog(context, value.message);
-    //   });
-    // });
+            (route) => false);
+      }
+    });
   }
 }

@@ -14,17 +14,20 @@ class OtherHairdresser extends StatefulWidget {
   String fullname;
   String barberState;
   String idHairdresser;
-  OtherHairdresser({
-    Key? key,
-    required this.email,
-    required this.fullname,
-    required this.barberState,
-    required this.idHairdresser
-  }) : super(key: key);
+  OtherHairdresser(
+      {Key? key,
+      required this.email,
+      required this.fullname,
+      required this.barberState,
+      required this.idHairdresser})
+      : super(key: key);
 
   @override
-  State<OtherHairdresser> createState() =>
-      _OtherHairdresserState(email: this.email, fullname: this.fullname,barberState: this.barberState,idHairdresser: idHairdresser);
+  State<OtherHairdresser> createState() => _OtherHairdresserState(
+      email: this.email,
+      fullname: this.fullname,
+      barberState: this.barberState,
+      idHairdresser: idHairdresser);
 }
 
 class _OtherHairdresserState extends State<OtherHairdresser> {
@@ -32,7 +35,11 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
   String? fullname;
   String? barberState;
   String? idHairdresser;
-  _OtherHairdresserState({required this.email, required this.fullname,required this.barberState,required this.idHairdresser});
+  _OtherHairdresserState(
+      {required this.email,
+      required this.fullname,
+      required this.barberState,
+      required this.idHairdresser});
 
   @override
   void initState() {
@@ -89,7 +96,9 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RegisterPhoneUser(),
+                          builder: (context) => RegisterPhoneUser(
+                            emailhairresser: email,
+                          ),
                         ));
                   },
                   child: Text(
@@ -106,9 +115,15 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
                     print(barberState);
                     if (barberState == "no") {
                       MyDialog().normalDialog(context, "ยังไม่มีร้านทำผม");
-                    }
-                    else{
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => BarberHairdresser(barberState: barberState!,idHairdresser: idHairdresser!,),));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BarberHairdresser(
+                              barberState: barberState!,
+                              idHairdresser: idHairdresser!,
+                            ),
+                          ));
                     }
                   },
                   child: Text(

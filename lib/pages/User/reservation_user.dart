@@ -34,7 +34,7 @@ class _ReservationUserState extends State<ReservationUser> {
   Future<Null> getdataImage() async {
     var data = await FirebaseFirestore.instance
         .collection('Queue')
-        .where("UserID", isEqualTo: userID)
+        .where("user.id", isEqualTo: userID)
         .get();
     var alldata = data.docs.map((e) => e.data()).toList();
     if (alldata.isNotEmpty) {
@@ -142,7 +142,7 @@ class _ReservationUserState extends State<ReservationUser> {
     return StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('Queue')
-            .where("UserID", isEqualTo: userID)
+            .where("user.id", isEqualTo: userID)
             .where("status", isEqualTo: status)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -177,7 +177,7 @@ class _ReservationUserState extends State<ReservationUser> {
                           timeend:
                               "${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}",
                           service: data[index]["service"],
-                          nameUser: nameUser!,
+                          nameUser: nameUser!, phoneBarber:data[index]["barber"]["phone"],phoneHairresser:  data[index]["hairdresser"]["phone"],
                         ),
                       ),
                     ),

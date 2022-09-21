@@ -19,7 +19,8 @@ class SelectDateTimeUser extends StatefulWidget {
   String timeopen;
   String timeclose;
   String email;
-  String nameUser, nameBarber, hairdresserID,nameHairresser;
+  String nameUser, nameBarber, hairdresserID, nameHairresser;
+   String  phonebarber, phoneHairresser;
   SelectDateTimeUser(
       {Key? key,
       required this.servicemodel,
@@ -29,7 +30,9 @@ class SelectDateTimeUser extends StatefulWidget {
       required this.email,
       required this.nameUser,
       required this.nameBarber,
-      required this.hairdresserID,required this.nameHairresser})
+      required this.hairdresserID,
+      required this.nameHairresser ,required this.phoneHairresser,
+      required this.phonebarber})
       : super(key: key);
 
   @override
@@ -41,7 +44,10 @@ class SelectDateTimeUser extends StatefulWidget {
       email: email,
       nameUser: nameUser,
       nameBarber: nameBarber,
-      hairdresserID: hairdresserID,nameHairresser:nameHairresser);
+      hairdresserID: hairdresserID,
+      nameHairresser: nameHairresser,
+      phoneHairresser: phoneHairresser,
+      phonebarber: phonebarber);
 }
 
 class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
@@ -50,8 +56,8 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
   String timeopen;
   String timeclose;
   String email;
-  String nameUser, nameBarber, hairdresserID,nameHairresser;
-
+  String nameUser, nameBarber, hairdresserID, nameHairresser;
+String  phonebarber, phoneHairresser;
   _SelectDateTimeUserState(
       {required this.servicemodel,
       required this.dayopen,
@@ -60,7 +66,10 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
       required this.email,
       required this.nameUser,
       required this.nameBarber,
-      required this.hairdresserID,required this.nameHairresser});
+      required this.hairdresserID,
+      required this.nameHairresser,
+       required this.phoneHairresser,
+      required this.phonebarber});
   DateTime selectedDate = DateTime.now();
   String? uid;
   bool load = true;
@@ -216,7 +225,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
   Future getQueueWhareDate2() async {
     var datadate = await FirebaseFirestore.instance
         .collection('Queue')
-        .where("hairdresserID",isEqualTo: hairdresserID)
+        .where("hairdresserID", isEqualTo: hairdresserID)
         .where("status", isEqualTo: "on")
         .orderBy("time.timestart")
         .startAt([(DateFormat('yyyy-MM-dd').format(selectedDate))]).endAt([
@@ -252,7 +261,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
           builder: (context) => RegisterPhoneUser(),
         ));
   }
-
+String? phoneUser;
   Future<Null> findEmail() async {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance.authStateChanges().listen(
@@ -264,9 +273,10 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
             //เช็คว่ามีเบอร์ไหม
             if (event.phoneNumber!.isEmpty) {
               MyDialog(funcAction: fc).hardDialog(context,
-                  "กรุณาเบอร์โทรศัพท์ของคุณ", "ยังไม่ได้ยืนยันเบอร์โทรศัพท์");
+                  "กรุณายืนยันเบอร์โทรศัพท์ของคุณ", "ยังไม่ได้ยืนยันเบอร์โทรศัพท์");
             } else {
               setState(() {
+                phoneUser = event.phoneNumber;
                 uid = event.uid;
               });
             }
@@ -312,7 +322,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                                 Border.all(color: Contants.colorSpringGreen),
                           ),
                         ),
-                        Container(
+                        SizedBox(
                           height: 30,
                           child: ElevatedButton(
                             style: ButtonStyle(
@@ -454,6 +464,33 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                                                 }
                                                 ko++;
                                               }
+                                              int xo = 1;
+                                              while (
+                                                  xo < count && canReserved) {
+                                                if (dateResult!
+                                                    .add(Duration(
+                                                        minutes: (index * 30) +
+                                                            (xo * 30)))
+                                                    .isAfter(DateFormat(
+                                                            'yyyyy-MM-dd HH:mm:ss')
+                                                        .parse(
+                                                            '${dateResult!.year}-${dateResult!.month}-${dateResult!.day} ${timeclose.replaceAll(' ', '')}:00'))) {
+                                                  canReserved = false;
+                                                  print("4");
+                                                } else if (dateResult!.add(
+                                                        Duration(
+                                                            minutes: (index *
+                                                                    30) +
+                                                                (xo * 30))) ==
+                                                    DateFormat(
+                                                            'yyyyy-MM-dd HH:mm:ss')
+                                                        .parse(
+                                                            '${dateResult!.year}-${dateResult!.month}-${dateResult!.day} ${timeclose.replaceAll(' ', '')}:00')) {
+                                                  canReserved = false;
+                                                  print("5");
+                                                }
+                                                xo++;
+                                              }
                                               canReserved
                                                   ? checkReserve(dateResult!
                                                       .add(Duration(
@@ -504,7 +541,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
               idUser: uid!,
               servicemodel: servicemodel,
               hairdresserID: hairdresserID,
-              nameHairresser: nameHairresser,
+              nameHairresser: nameHairresser, phoneHairresser: phoneHairresser, phoneUser: phoneUser!, phonebarber: phonebarber,
             ),
           ));
     }

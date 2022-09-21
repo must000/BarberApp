@@ -8,6 +8,7 @@ class HairdresserModel {
   String lastname;
   String serviceID;
   String barberStatus;
+  String phone;
   HairdresserModel({
     required this.hairdresserID,
     required this.email,
@@ -16,8 +17,8 @@ class HairdresserModel {
     required this.lastname,
     required this.serviceID,
     required this.barberStatus,
+    required this.phone,
   });
-  
 
   HairdresserModel copyWith({
     String? hairdresserID,
@@ -27,6 +28,7 @@ class HairdresserModel {
     String? lastname,
     String? serviceID,
     String? barberStatus,
+    String? phone,
   }) {
     return HairdresserModel(
       hairdresserID: hairdresserID ?? this.hairdresserID,
@@ -36,6 +38,7 @@ class HairdresserModel {
       lastname: lastname ?? this.lastname,
       serviceID: serviceID ?? this.serviceID,
       barberStatus: barberStatus ?? this.barberStatus,
+      phone: phone ?? this.phone,
     );
   }
 
@@ -48,6 +51,7 @@ class HairdresserModel {
       'lastname': lastname,
       'serviceID': serviceID,
       'barberStatus': barberStatus,
+      'phone': phone,
     };
   }
 
@@ -60,6 +64,7 @@ class HairdresserModel {
       lastname: map['lastname'] ?? '',
       serviceID: map['serviceID'] ?? '',
       barberStatus: map['barberStatus'] ?? '',
+      phone: map['phone'] ?? '',
     );
   }
 
@@ -69,7 +74,7 @@ class HairdresserModel {
 
   @override
   String toString() {
-    return 'HairdresserModel(hairdresserID: $hairdresserID, email: $email, idCode: $idCode, name: $name, lastname: $lastname, serviceID: $serviceID, barberStatus: $barberStatus)';
+    return 'HairdresserModel(hairdresserID: $hairdresserID, email: $email, idCode: $idCode, name: $name, lastname: $lastname, serviceID: $serviceID, barberStatus: $barberStatus, phone: $phone)';
   }
 
   @override
@@ -83,7 +88,8 @@ class HairdresserModel {
       other.name == name &&
       other.lastname == lastname &&
       other.serviceID == serviceID &&
-      other.barberStatus == barberStatus;
+      other.barberStatus == barberStatus &&
+      other.phone == phone;
   }
 
   @override
@@ -94,6 +100,7 @@ class HairdresserModel {
       name.hashCode ^
       lastname.hashCode ^
       serviceID.hashCode ^
-      barberStatus.hashCode;
+      barberStatus.hashCode ^
+      phone.hashCode;
   }
 }
