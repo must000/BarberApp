@@ -225,7 +225,7 @@ String  phonebarber, phoneHairresser;
   Future getQueueWhareDate2() async {
     var datadate = await FirebaseFirestore.instance
         .collection('Queue')
-        .where("hairdresserID", isEqualTo: hairdresserID)
+        .where("hairdresser.id", isEqualTo: hairdresserID)
         .where("status", isEqualTo: "on")
         .orderBy("time.timestart")
         .startAt([(DateFormat('yyyy-MM-dd').format(selectedDate))]).endAt([

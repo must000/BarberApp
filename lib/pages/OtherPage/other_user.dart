@@ -1,11 +1,13 @@
 import 'package:barber/Constant/contants.dart';
-import 'package:barber/pages/OtherPage/setting_account_user.dart';
+import 'package:barber/pages/OtherPage/setting_account.dart';
+import 'package:barber/pages/OtherPage/setting_password.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../Constant/route_cn.dart';
+import '../Authentication/register_phone_user.dart';
 
 class OtherUser extends StatefulWidget {
   const OtherUser({Key? key}) : super(key: key);
@@ -69,18 +71,28 @@ class _OtherUserState extends State<OtherUser> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  SettingAccountUser(
-                                                email: user.email!,
-                                                username: user.displayName!,
-                                                typebarber: false,
-                                              ),
+                                                  SettingAccount(email: user.email!, typebarber: false,name: user.displayName!, )
                                             ));
                                       },
                                       child:Text("ตั้งค่าข้อมูลผู้ใช้ ",style: Contants().h3white()),
                                     )
-                                  : const SizedBox(
-                                      child: Text(""),
-                                    ),
+                                  : const SizedBox(),
+                                    user.emailVerified == false
+                                  ? TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SettingPassword(
+                                                email: user.email!,
+                                                typebarber: false,
+                                              ),
+                                            ));
+                                      },
+                                      child:Text("เปลี่ยนรหัสผ่าน ",style: Contants().h3white()),
+                                    )
+                                  : const SizedBox()
                             ],
                           );
                   } else if (snapshot.hasError) {
@@ -101,8 +113,15 @@ class _OtherUserState extends State<OtherUser> {
                 },
               ),
               TextButton(
-                onPressed: () {},
-                child: Text("เปล่ยนเบอร์มือถือ",style: Contants().h3white(),),
+                onPressed: () {
+                         Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RegisterPhoneUser(
+                          ),
+                        ));
+                },
+                child: Text("เปลี่ยนเบอร์มือถือ",style: Contants().h3white(),),
               ),
               const SizedBox(
                 height: 70,

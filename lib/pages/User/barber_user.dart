@@ -19,35 +19,39 @@ import 'package:barber/pages/User/detail_barber_user.dart';
 import 'package:barber/pages/User/select_datetime_user.dart';
 import 'package:barber/utils/sqlite_helper.dart';
 
+import '../../Constant/contants.dart';
+
 class BarberUser extends StatefulWidget {
   final String nameUser;
   BarberModel barberModel;
   String? url;
   Function? callback;
-  BarberUser(
-      {Key? key,
-      required this.barberModel,
-      required this.nameUser,
-      this.url,
-      this.callback,})
-      : super(key: key);
+  BarberUser({
+    Key? key,
+    required this.barberModel,
+    required this.nameUser,
+    this.url,
+    this.callback,
+  }) : super(key: key);
 
   @override
   State<BarberUser> createState() => _BarberUserState(
-      barberModel: barberModel,
-      nameUser: nameUser,
-      url: url,);
+        barberModel: barberModel,
+        nameUser: nameUser,
+        url: url,
+      );
 }
 
 class _BarberUserState extends State<BarberUser> {
-  String nameUser;
+  final String nameUser;
   BarberModel barberModel;
   String? url;
   List<HairdresserModel> hairdressermodel = [];
-  _BarberUserState(
-      {required this.barberModel,
-      required this.nameUser,
-      this.url,});
+  _BarberUserState({
+    required this.barberModel,
+    required this.nameUser,
+    this.url,
+  });
   int price = 0, z = 0;
   List<ServiceModel> servicemodel = [];
   bool showlist = false;
@@ -193,9 +197,14 @@ class _BarberUserState extends State<BarberUser> {
                               color: like ? Colors.red : Colors.grey,
                               size: size * 0.1,
                             )),
-                        Container(
+                        SizedBox(
                           width: size * 0.33,
                           child: ElevatedButton(
+                            style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Contants.colorWhite),
+                                        ),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -213,12 +222,17 @@ class _BarberUserState extends State<BarberUser> {
                                 ),
                               );
                             },
-                            child: const Text("ข้อมูลร้าน"),
+                            child: Text("ข้อมูลร้าน",style: Contants().h3OxfordBlue(),),
                           ),
                         ),
                         Container(
                           width: size * 0.33,
                           child: ElevatedButton(
+                              style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Contants.colorWhite),
+                                        ),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -229,12 +243,17 @@ class _BarberUserState extends State<BarberUser> {
                                 ),
                               );
                             },
-                            child: const Text("ผลงาน"),
+                            child:  Text("ผลงาน",style: Contants().h3OxfordBlue(),),
                           ),
                         ),
                         Container(
                           width: size * 0.33,
                           child: ElevatedButton(
+                              style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Contants.colorWhite),
+                                        ),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -247,7 +266,7 @@ class _BarberUserState extends State<BarberUser> {
                                 ),
                               );
                             },
-                            child: const Text("คะแนนและรีวิว"),
+                            child:  Text("คะแนนและรีวิว",style: Contants().h4OxfordBlue(),),
                           ),
                         ),
                       ],
@@ -463,39 +482,49 @@ class _BarberUserState extends State<BarberUser> {
                     ))
               ],
             ),
-            trailing: ElevatedButton(
-              child: const Text("ดำเนินการต่อ"),
-              style: ButtonStyle(
+            trailing: SizedBox(
+              width: size * 0.4,
+              child: ElevatedButton(
+                child: Text(
+                  "ดำเนินการต่อ",
+                  style: Contants().h3white(),
+                ),
+                style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-              ))),
-              onPressed: () {
-                if (servicemodel.isNotEmpty) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SelectDateTimeUser(
-                        dayopen: barberModel.dayopen,
-                        timeclose: barberModel.timeclose,
-                        timeopen: barberModel.timeopen,
-                        servicemodel: servicemodel,
-                        email: barberModel.email,
-                        nameBarber: barberModel.shopname,
-                        nameUser: nameUser,
-                        hairdresserID:
-                            hairdressermodel[numberUserSelect].hairdresserID,
-                        nameHairresser:
-                            "${hairdressermodel[numberUserSelect].name} ${hairdressermodel[numberUserSelect].lastname}",
-                        phoneHairresser:
-                            hairdressermodel[numberUserSelect].phone,
-                     
-                        phonebarber: barberModel.phone,
+                    borderRadius: BorderRadius.circular(18.0),
+                  )),
+                  backgroundColor: MaterialStateProperty.all(
+                      servicemodel.isNotEmpty
+                          ? Contants.colorSpringGreen
+                          : Contants.colorRed),
+                ),
+                onPressed: () {
+                  if (servicemodel.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SelectDateTimeUser(
+                          dayopen: barberModel.dayopen,
+                          timeclose: barberModel.timeclose,
+                          timeopen: barberModel.timeopen,
+                          servicemodel: servicemodel,
+                          email: barberModel.email,
+                          nameBarber: barberModel.shopname,
+                          nameUser: nameUser,
+                          hairdresserID:
+                              hairdressermodel[numberUserSelect].hairdresserID,
+                          nameHairresser:
+                              "${hairdressermodel[numberUserSelect].name} ${hairdressermodel[numberUserSelect].lastname}",
+                          phoneHairresser:
+                              hairdressermodel[numberUserSelect].phone,
+                          phonebarber: barberModel.phone,
+                        ),
                       ),
-                    ),
-                  );
-                }
-              },
+                    );
+                  }
+                },
+              ),
             ),
           ),
         ),

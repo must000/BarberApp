@@ -32,6 +32,17 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
   String? emailhairresser;
   _RegisterPhoneUserState({this.emailhairresser});
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (emailhairresser ==null) {
+    print("userrrrrrrrrrr");
+    }
+    else{
+      print("ช่าง");
+    }
+  }
+  @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
 
@@ -172,7 +183,7 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
         .updatePhoneNumber(PhoneAuthProvider.credential(
             verificationId: _verificationId!, smsCode: smsController.text))
         .then((value) async {
-      if (emailhairresser != "") {
+      if (emailhairresser != null) {
         //เป็นช่างทำผม
        await FirebaseFirestore.instance
             .collection('Hairdresser')
@@ -192,6 +203,7 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                       (route) => false));
         });
       } else {
+     
         return Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(

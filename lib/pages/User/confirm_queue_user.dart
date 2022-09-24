@@ -284,7 +284,7 @@ class _ConfirmQueueUserState extends State<ConfirmQueueUser> {
   Future<void> checkQueueInDatabase() async {
     var data = await FirebaseFirestore.instance
         .collection('Queue')
-        .where("hairdresserID", isEqualTo: hairdresserID)
+        .where("hairdresser.id", isEqualTo: hairdresserID)
         .where("status", isEqualTo: "on")
         .orderBy("time.timestart")
         .startAt([(DateFormat('yyyy-MM-dd').format(datetime))])

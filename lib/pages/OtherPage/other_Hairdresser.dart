@@ -1,4 +1,5 @@
 import 'package:barber/pages/OtherPage/barber_hairdresser.dart';
+import 'package:barber/pages/OtherPage/setting_account.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,40 +7,40 @@ import 'package:provider/provider.dart';
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/Authentication/register_phone_user.dart';
-import 'package:barber/pages/OtherPage/setting_account_user.dart';
+import 'package:barber/pages/OtherPage/setting_password.dart';
 import 'package:barber/provider/myproviders.dart';
 
 class OtherHairdresser extends StatefulWidget {
   String email;
-  String fullname;
+  String name,lastname;
   String barberState;
   String idHairdresser;
   OtherHairdresser(
       {Key? key,
       required this.email,
-      required this.fullname,
+      required this.name,
       required this.barberState,
-      required this.idHairdresser})
+      required this.idHairdresser,required this.lastname})
       : super(key: key);
 
   @override
   State<OtherHairdresser> createState() => _OtherHairdresserState(
       email: this.email,
-      fullname: this.fullname,
+      name: this.name,
       barberState: this.barberState,
-      idHairdresser: idHairdresser);
+      idHairdresser: idHairdresser,lastname:lastname);
 }
 
 class _OtherHairdresserState extends State<OtherHairdresser> {
   String? email;
-  String? fullname;
+  String? name,lastname;
   String? barberState;
   String? idHairdresser;
   _OtherHairdresserState(
       {required this.email,
-      required this.fullname,
+      required this.name,
       required this.barberState,
-      required this.idHairdresser});
+      required this.idHairdresser,required this.lastname});
 
   @override
   void initState() {
@@ -49,6 +50,7 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
+    
     return Scaffold(
       backgroundColor: Contants.myBackgroundColor,
       body: Container(
@@ -58,10 +60,10 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                fullname == null
+                name==null||lastname == null
                     ? const Text("")
                     : Text(
-                        "ชื่อ $fullname",
+                        "ชื่อ $name $lastname",
                         style: Contants().h2white(),
                       ),
                 logout(context),
@@ -77,13 +79,30 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SettingAccountUser(
+                            builder: (context) => SettingAccount(
+                                email: email!, typebarber: true, name: name!,lastname: lastname,)));
+                  },
+                  child: Text(
+                    "ตั้งค่าโปรไฟล์",
+                    style: Contants().h3white(),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SettingPassword(
                                   email: email!,
                                   typebarber: true,
                                 )));
                   },
                   child: Text(
-                    "ตั้งค่าข้อมูลผู้ใช้ ",
+                    "เปลี่ยนรหัสผ่าน ",
                     style: Contants().h3white(),
                   ),
                 ),

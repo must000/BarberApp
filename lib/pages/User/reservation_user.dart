@@ -73,7 +73,11 @@ class _ReservationUserState extends State<ReservationUser> {
           backgroundColor: Contants.myBackgroundColordark,
         ),
         body: userID == ""
-            ? Center(child: Text("ยังไม่ได้ Login เข้าสู่ระบบ",style: Contants().h2white(),))
+            ? Center(
+                child: Text(
+                "ยังไม่ได้ Login เข้าสู่ระบบ",
+                style: Contants().h2white(),
+              ))
             : load
                 ? Center(
                     child: LoadingAnimationWidget.waveDots(
@@ -177,7 +181,9 @@ class _ReservationUserState extends State<ReservationUser> {
                           timeend:
                               "${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}",
                           service: data[index]["service"],
-                          nameUser: nameUser!, phoneBarber:data[index]["barber"]["phone"],phoneHairresser:  data[index]["hairdresser"]["phone"],
+                          nameUser: nameUser!,
+                          phoneBarber: data[index]["barber"]["phone"],
+                          phoneHairresser: data[index]["hairdresser"]["phone"],
                         ),
                       ),
                     ),
@@ -244,7 +250,6 @@ class _ReservationUserState extends State<ReservationUser> {
   Future<String?> _geturl(String email) async {
     Reference ref = FirebaseStorage.instance.ref().child("imgfront/$email");
     await ref.getDownloadURL().then((valuee) {
-      print("ddaw ${valuee}");
       return valuee;
     }).onError((error, stackTrace) {
       return "https://karnlab.com/wp-content/uploads/2018/10/LOGO-EP20-Keroppi.jpg";

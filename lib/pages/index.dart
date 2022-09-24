@@ -198,8 +198,8 @@ class _IndexPageState extends State<IndexPage> {
                             serviceID: dataHairresser!.serviceID,
                           ),
                           OtherHairdresser(
-                            fullname:
-                                "${dataHairresser!.name} ${dataHairresser!.lastname}",
+                            name: dataHairresser!.name,
+                            lastname: dataHairresser!.lastname,
                             email: email!,
                             barberState: dataHairresser!.barberStatus,
                             idHairdresser: hairdresserID!,
