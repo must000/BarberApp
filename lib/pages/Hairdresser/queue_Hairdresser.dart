@@ -1,5 +1,6 @@
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/pages/Hairdresser/queue_setting_hairdresser.dart';
+import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,6 +26,7 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
   String hairdresserID;
   String barberState;
   String idCode;
+  String idClick = "";
   DateTime selectedDate = DateTime.now();
   final Uri _url = Uri.parse('https://flutter.dev');
   _QueueHairdresserState(
@@ -60,80 +62,73 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                     ],
                   ),
                 )
-              : Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Row(
-                          children: [
-                            IconButton(
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Row(
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      selectedDate = selectedDate
+                                          .subtract(const Duration(days: 1));
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_back_ios_new,
+                                    color: Contants.colorWhite,
+                                  )),
+                              ElevatedButton(
                                 onPressed: () {
-                                  setState(() {
-                                    selectedDate = selectedDate
-                                        .subtract(Duration(days: 1));
-                                  });
+                                  _selectedDate(context);
                                 },
-                                icon: Icon(
-                                  Icons.arrow_back_ios_new,
-                                  color: Contants.colorWhite,
-                                )),
-                            ElevatedButton(
+                                child: Text(
+                                  "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
+                                  style: Contants().h2OxfordBlue(),
+                                ),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Contants.colorWhite),
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      selectedDate = selectedDate
+                                          .add(const Duration(days: 1));
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: Contants.colorWhite,
+                                  ))
+                            ],
+                          ),
+                          IconButton(
                               onPressed: () {
-                                _selectedDate(context);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          QueueSettingHairdresser(
+                                              emailBarber: barberState,
+                                              idHairdresser: hairdresserID),
+                                    ));
                               },
-                              child: Text(
-                                "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
-                                style: Contants().h2OxfordBlue(),
-                              ),
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    Contants.colorWhite),
-                              ),
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    selectedDate = selectedDate
-                                        .add(const Duration(days: 1));
-                                  });
-                                },
-                                icon: Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: Contants.colorWhite,
-                                ))
-                          ],
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        QueueSettingHairdresser(
-                                            emailBarber: barberState,
-                                            idHairdresser: hairdresserID),
-                                  ));
-                            },
-                            icon: Icon(
-                              Icons.settings,
-                              color: Contants.colorWhite,
-                              size: 40,
-                            )),
-                      ],
-                    ),
-                    buildQueue(),
-                    // ElevatedButton(
-                    //     onPressed: () {
-                    //       print(
-                    //           (DateFormat('yyyy-MM-dd').format(selectedDate)));
-                    //       print((DateFormat('yyyy-MM-dd').format(
-                    //           selectedDate.add(const Duration(days: 1)))));
-                    //           print(hairdresserID);
-                    //           print(barberState);
-                    //     },
-                    //     child: Text("dwqqeqeq"))
-                  ],
+                              icon: Icon(
+                                Icons.settings,
+                                color: Contants.colorWhite,
+                                size: 40,
+                              )),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      buildQueue(),
+                    ],
+                  ),
                 )),
     );
   }
@@ -154,11 +149,26 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
             var data = snapshot.data.docs;
             return ListView.builder(
               shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: data.length,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Card(
+                // data[index].id;
+                return GestureDetector(
+                  onTap: () {
+                    if (data[index]["status"] == "on") {
+                      if (idClick == data[index].id) {
+                        setState(() {
+                          idClick = "";
+                        });
+                      } else {
+                        setState(() {
+                          idClick = data[index].id;
+                        });
+                      }
+                    }
+                  },
+                  child: Container(
+                      margin: const EdgeInsets.all(10),
                       color: Contants.colorGreySilver,
                       child: Container(
                         margin: const EdgeInsets.all(10),
@@ -168,30 +178,107 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                    "ชื่อลูกค้า : ${data[index]["user"]["name"]}"),
+                                  "ชื่อ : ${data[index]["user"]["name"]}",
+                                  style: Contants().h3white(),
+                                ),
                                 Text(
-                                    "เวลา ${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}"),
+                                  "เวลา ${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}",
+                                  style: Contants().h3white(),
+                                ),
                               ],
                             ),
                             Row(
                               children: [
                                 Text(
-                                    "0${data[index]["user"]["phone"].toString().substring(3)}"),
+                                  "สถานะ : ",
+                                  style: Contants().h3white(),
+                                ),
+                                Text(
+                                  data[index]["status"],
+                                  style: data[index]["status"] == "on"
+                                      ? Contants().h2OxfordBlue()
+                                      : data[index]["status"] == "succeed"
+                                          ? Contants().h2SpringGreen()
+                                          : Contants().h2Red(),
+                                )
+                              ],
+                            ),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, i) {
+                                if (i == 0) {
+                                  return Text(
+                                    "บริการ : ${data[index]["service"][i]["name"]}",
+                                    style: Contants().h3white(),
+                                  );
+                                } else {
+                                  return Text(
+                                      "              ${data[index]["service"][i]["name"]}",
+                                      style: Contants().h3white());
+                                }
+                              },
+                              itemCount: data[index]["service"].length,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "เบอร์โทร 0${data[index]["user"]["phone"].toString().substring(3)}",
+                                  style: Contants().h3white(),
+                                ),
                                 const Text("")
                               ],
                             ),
-                            Row(
-                              children: const [Text("รายการ"), Text("")],
-                            ),
-                            ListView.builder(
-                               shrinkWrap: true,
-                              itemBuilder: (context, i) => Row(
-                                children:[
-                                  Text(data[index]["service"][i]["name"])
-                                ],
-                              ),
-                              itemCount: data[index]["service"].length,
-                            )
+                            idClick == data[index].id
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Contants.colorRed),
+                                          ),
+                                          onPressed: () {
+                                            MyDialog(funcAction: fc)
+                                                .superDialog(
+                                                    context,
+                                                    "ระบบจะทำการยกเลิกคิวนี้",
+                                                    "ยกเลิกคิว");
+                                          },
+                                          child: Text(
+                                            "Cancel",
+                                            style: Contants().h3white(),
+                                          )),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Container(
+                                        width: 150,
+                                        child: ElevatedButton(
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Contants
+                                                          .colorSpringGreen),
+                                            ),
+                                            onPressed: () {
+                                              finishQueue().then((value) {
+                                                setState(() {
+                                                  idClick = "";
+                                                });
+                                                return MyDialog().normalDialog(
+                                                    context, "เสร็จสิ้น");
+                                              });
+                                            },
+                                            child: Text(
+                                              'Finish',
+                                              style: Contants().h2OxfordBlue(),
+                                            )),
+                                      )
+                                    ],
+                                  )
+                                : const SizedBox()
                           ],
                         ),
                       )),
@@ -206,6 +293,28 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
             ));
           }
         });
+  }
+
+  void fc() {
+    Navigator.pop(context);
+    cancelQueue().then((value){
+      setState(() {
+        idClick = "";
+      });
+return MyDialog().normalDialog(context, "ยกเลิกคิวเรียบร้อย");
+    });
+  }
+Future<Null> cancelQueue()async{
+   await FirebaseFirestore.instance
+        .collection('Queue')
+        .doc(idClick)
+        .update({"status": "cancel"});
+}
+  Future<Null> finishQueue() async {
+    await FirebaseFirestore.instance
+        .collection('Queue')
+        .doc(idClick)
+        .update({"status": "succeed"});
   }
 
   Future _selectedDate(BuildContext context) async {

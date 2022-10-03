@@ -59,9 +59,9 @@ class _HairCutUserState extends State<HairCutUser> {
     chechpermission();
     findNameAnEmail();
     processReadSQLite().then((value) => getURL());
-
-// print("stream2 ==== > ${stream2.hashCode}");
   }
+
+ 
 
   Future<Null> processReadSQLite() async {
     if (sqliteModels.isNotEmpty) {
@@ -235,7 +235,7 @@ class _HairCutUserState extends State<HairCutUser> {
                   urlImgLike.isNotEmpty
                       ? sectionListview(size, "ร้านที่ถูกใจ")
                       : const SizedBox(child: Text("")),
-                   urlImgLike.isNotEmpty
+                  urlImgLike.isNotEmpty
                       ? listStoreLike(size)
                       : const SizedBox(
                           child: Text(""),
@@ -341,7 +341,8 @@ class _HairCutUserState extends State<HairCutUser> {
                               typeBarber: true,
                               barbershop: barberman,
                               lat: lat,
-                              lon: lng, stream2: streamController2.stream,
+                              lon: lng,
+                              stream2: streamController2.stream,
                             )));
               },
               child: Text(
@@ -370,7 +371,8 @@ class _HairCutUserState extends State<HairCutUser> {
                               typeBarber: false,
                               barbershop: barberwoman,
                               lat: lat,
-                              lon: lng, stream2: streamController2.stream,
+                              lon: lng,
+                              stream2: streamController2.stream,
                             )));
               },
               child: Text(

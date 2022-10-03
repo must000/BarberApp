@@ -18,7 +18,7 @@ class BarberSerchUser extends StatefulWidget {
   List<BarberModel> barbershop;
   double? lat, lon;
   String nameUser;
-  
+
   Stream<BarberModel> stream2;
   BarberSerchUser(
       {Key? key,
@@ -26,7 +26,8 @@ class BarberSerchUser extends StatefulWidget {
       required this.barbershop,
       this.lat,
       this.lon,
-      required this.nameUser, required this.stream2})
+      required this.nameUser,
+      required this.stream2})
       : super(key: key);
 
   @override
@@ -64,13 +65,11 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     getURL();
   }
 
-   void mySetState2() {
+  void mySetState2() {
     setState(() {
       barberLike;
     });
   }
-
- 
 
   calculateLatLon(List<BarberModel> barber) {
     var mapBarber = SplayTreeMap<double, BarberModel>();
@@ -105,6 +104,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
           .child("imgfront/${barberResult![i].email}");
       var url = await ref.getDownloadURL().then((value) {
         urlImgFrontModel[barberResult![i].email] = value;
+        print("${barberResult![i].email} ===>> $value");
       }).catchError((c) => print(c + "is an error"));
     }
     setState(() {

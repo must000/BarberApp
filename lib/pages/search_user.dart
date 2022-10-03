@@ -45,7 +45,6 @@ class _SearchUserState extends State<SearchUser> {
     for (var i = 0; i < barberModel.length; i++) {
       _list!.add(barberModel[i].shopname);
     }
-    print(_list);
   }
 
   @override
