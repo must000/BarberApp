@@ -95,12 +95,6 @@ class _IndexPageState extends State<IndexPage> {
     });
   }
 
-  // final cities = [];
-  // for (var doc in event.docs) {
-  //   cities.add(doc.data()["email"]);
-  // }
-  // print("cities in CA: ${cities.join(", ")}");
-
   Future<Null> getDataBarberForUser() async {
     // get ข้อมูลBarber get Url imgfront
     var data = await FirebaseFirestore.instance.collection('Barber').get();
@@ -122,7 +116,7 @@ class _IndexPageState extends State<IndexPage> {
           districtl: alldata[n]["district"],
           subDistrict: alldata[n]["subdistrict"],
           addressdetails: alldata[n]["addressdetails"],
-          like: false));
+         url:  alldata[n]["url"],score:0));
     }
   }
 
@@ -138,6 +132,8 @@ class _IndexPageState extends State<IndexPage> {
                 child: Scaffold(
                   body: TabBarView(children: [
                     HairCutUser(
+                      idUser: userID == "" ? "" : userID,
+                      nameUser: nameUser == "" ? "" : nameUser,
                       barbershop: barbershop,
                       stream2: streamController2.stream,
                     ),

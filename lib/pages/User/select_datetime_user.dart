@@ -270,10 +270,11 @@ String? phoneUser;
           if (event == null) {
             MyDialog().checkLoginDialog(context);
           } else {
+            print(event);
             //เช็คว่ามีเบอร์ไหม
-            if (event.phoneNumber!.isEmpty) {
-              MyDialog(funcAction: fc).hardDialog(context,
-                  "กรุณายืนยันเบอร์โทรศัพท์ของคุณ", "ยังไม่ได้ยืนยันเบอร์โทรศัพท์");
+            if (event.phoneNumber ==null) {
+              Navigator.pop(context);
+              MyDialog().normalDialog(context, "กรุณายืนยันเบอร์โทรศัพท์");
             } else {
               setState(() {
                 phoneUser = event.phoneNumber;

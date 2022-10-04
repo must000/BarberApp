@@ -57,6 +57,11 @@ class _ReservationUserState extends State<ReservationUser> {
         });
       }
     }
+    else{
+      setState(() {
+        load = false;
+      });
+    }
   }
 
   @override

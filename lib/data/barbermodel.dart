@@ -18,7 +18,8 @@ class BarberModel {
   final String districtl;
   final String subDistrict;
   final String addressdetails;
-  bool like;
+  final String url;
+  final double score;
   BarberModel({
     required this.email,
     required this.name,
@@ -35,7 +36,8 @@ class BarberModel {
     required this.districtl,
     required this.subDistrict,
     required this.addressdetails,
-    required this.like,
+    required this.url,
+    required this.score,
   });
 
   BarberModel copyWith({
@@ -54,7 +56,8 @@ class BarberModel {
     String? districtl,
     String? subDistrict,
     String? addressdetails,
-    bool? like,
+    String? url,
+    double? score,
   }) {
     return BarberModel(
       email: email ?? this.email,
@@ -72,7 +75,8 @@ class BarberModel {
       districtl: districtl ?? this.districtl,
       subDistrict: subDistrict ?? this.subDistrict,
       addressdetails: addressdetails ?? this.addressdetails,
-      like: like ?? this.like,
+      url: url ?? this.url,
+      score: score ?? this.score,
     );
   }
 
@@ -93,7 +97,8 @@ class BarberModel {
       'districtl': districtl,
       'subDistrict': subDistrict,
       'addressdetails': addressdetails,
-      'like': like,
+      'url': url,
+      'score': score,
     };
   }
 
@@ -114,7 +119,8 @@ class BarberModel {
       districtl: map['districtl'] ?? '',
       subDistrict: map['subDistrict'] ?? '',
       addressdetails: map['addressdetails'] ?? '',
-      like: map['like'] ?? false,
+      url: map['url'] ?? '',
+      score: map['score']?.toDouble() ?? 0.0,
     );
   }
 
@@ -124,7 +130,7 @@ class BarberModel {
 
   @override
   String toString() {
-    return 'BarberModel(email: $email, name: $name, lasiName: $lasiName, phone: $phone, typebarber: $typebarber, shopname: $shopname, shoprecommend: $shoprecommend, dayopen: $dayopen, timeopen: $timeopen, timeclose: $timeclose, lat: $lat, lng: $lng, districtl: $districtl, subDistrict: $subDistrict, addressdetails: $addressdetails, like: $like)';
+    return 'BarberModel(email: $email, name: $name, lasiName: $lasiName, phone: $phone, typebarber: $typebarber, shopname: $shopname, shoprecommend: $shoprecommend, dayopen: $dayopen, timeopen: $timeopen, timeclose: $timeclose, lat: $lat, lng: $lng, districtl: $districtl, subDistrict: $subDistrict, addressdetails: $addressdetails, url: $url, score: $score)';
   }
 
   @override
@@ -147,7 +153,8 @@ class BarberModel {
       other.districtl == districtl &&
       other.subDistrict == subDistrict &&
       other.addressdetails == addressdetails &&
-      other.like == like;
+      other.url == url &&
+      other.score == score;
   }
 
   @override
@@ -167,8 +174,7 @@ class BarberModel {
       districtl.hashCode ^
       subDistrict.hashCode ^
       addressdetails.hashCode ^
-      like.hashCode;
+      url.hashCode ^
+      score.hashCode;
   }
-
-  void add(BarberModel barberModel) {}
 }

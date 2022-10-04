@@ -2,9 +2,8 @@ import 'dart:async';
 import 'package:barber/main.dart';
 import 'package:barber/pages/User/barber_user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -21,20 +20,28 @@ import '../../Constant/route_cn.dart';
 
 class HairCutUser extends StatefulWidget {
   List<BarberModel> barbershop;
+  String nameUser, idUser;
   Stream<BarberModel> stream2;
-  HairCutUser({Key? key, required this.barbershop, required this.stream2})
+  HairCutUser(
+      {Key? key,
+      required this.barbershop,
+      required this.stream2,
+      required this.nameUser,
+      required this.idUser})
       : super(key: key);
 
   @override
-  State<HairCutUser> createState() =>
-      _HairCutUserState(barbershop: this.barbershop);
+  State<HairCutUser> createState() => _HairCutUserState(
+      barbershop: this.barbershop, nameUser: nameUser, idUser: idUser);
 }
 
 class _HairCutUserState extends State<HairCutUser> {
   List<SQLiteModel> sqliteModels = [];
   List<BarberModel>? barbershop;
-  _HairCutUserState({required this.barbershop});
-  String? name, email, phone;
+  String nameUser, idUser;
+  _HairCutUserState(
+      {required this.barbershop, required this.nameUser, required this.idUser});
+  // String? name, email, phone;
   double? lat, lng;
   String? dataPositionUser;
   bool? load = true;
@@ -43,7 +50,7 @@ class _HairCutUserState extends State<HairCutUser> {
   BarberUser? barberUser;
   Widget? currentUser;
   String menuName = 'A';
-
+  bool loadHistory = true;
   void mySetState2() {
     setState(() {
       barberLike;
@@ -57,11 +64,92 @@ class _HairCutUserState extends State<HairCutUser> {
       mySetState2();
     });
     chechpermission();
-    findNameAnEmail();
     processReadSQLite().then((value) => getURL());
+    getHistoryshop().then((value) {
+      setState(() {
+        loadHistory = false;
+      });
+    });
+    // getLikeShop();
+  }
+  getLikeShop()async{
+    if (sqliteModels.isNotEmpty) {
+      sqliteModels.clear();
+    }
+    List<BarberModel> data = [];
+    await SQLiteHelper().readSQLite().then((value) {
+      for (var i = 0; i < value.length; i++) {
+        for (var n = 0; n < barbershop!.length; n++) {
+          if (value[i].email == barbershop![n].email) {
+            data.add(barbershop![n]);
+          }
+        }
+      }
+      setState(() {
+        barberLike = data;
+      });
+    });
   }
 
- 
+  List<BarberModel> barberHistory = [];
+  Future<Null> getHistoryshop() async {
+    var data = await FirebaseFirestore.instance
+        .collection('Queue')
+        .where("user.id", isEqualTo: idUser)
+        .get()
+        .then((value) async {
+      var alldata = value.docs.map((e) => e.data()).toList();
+      var listHistory = [];
+      for (var i = 0; i < alldata.length; i++) {
+        if (listHistory.contains(alldata[i]["barber"]["id"])) {
+        } else {
+          listHistory.add(alldata[i]["barber"]["id"]);
+        }
+      }
+      var data2 = await FirebaseFirestore.instance
+          .collection("Barber")
+          .where("email", whereIn: listHistory)
+          .get();
+      var alldata2 = data2.docs.map((e) => e.data()).toList();
+      List<BarberModel> barberlist = [];
+      for (var n = 0; n < alldata2.length; n++) {
+        double sum = 0;
+        double count = 0;
+        double average = 0;
+        for (var i = 0; i < alldata.length; i++) {
+          if (alldata2[n]["email"] == alldata[i]["barber"]["id"]) {
+            if (alldata[i]["comment"] != null) {
+              count += 1;
+              sum += alldata[i]["comment"]["score"];
+              print("uu3");
+            }
+          }
+        }
+        average = sum / count;
+        barberlist.add(BarberModel(
+            email: alldata2[n]["email"],
+            name: alldata2[n]["name"],
+            lasiName: alldata2[n]["lastname"],
+            phone: alldata2[n]["phone"],
+            typebarber: alldata2[n]["typeBarber"],
+            shopname: alldata2[n]["shopname"],
+            shoprecommend: alldata2[n]["shoprecommend"],
+            dayopen: alldata2[n]["dayopen"],
+            timeopen: alldata2[n]["timeopen"],
+            timeclose: alldata2[n]["timeclose"],
+            lat: alldata2[n]["lat"],
+            lng: alldata2[n]["lon"],
+            districtl: alldata2[n]["district"],
+            subDistrict: alldata2[n]["subdistrict"],
+            addressdetails: alldata2[n]["addressdetails"],
+            url: alldata2[n]["url"],
+            score: average));
+      }
+      setState(() {
+        barberHistory = barberlist;
+      });
+    });
+  }
 
   Future<Null> processReadSQLite() async {
     if (sqliteModels.isNotEmpty) {
@@ -161,29 +249,12 @@ class _HairCutUserState extends State<HairCutUser> {
     });
   }
 
-  Future<Null> findNameAnEmail() async {
-    await Firebase.initializeApp().then((value) async {
-      await FirebaseAuth.instance.authStateChanges().listen((event) {
-        print("is an event");
-        print(event);
-        print(event!.phoneNumber);
-        setState(() {
-          name = event.displayName!;
-          email = event.email!;
-          phone = event.phoneNumber!;
-        });
-      });
-    });
-  }
-
   CarouselController buttonCarouselController = CarouselController();
-  int _current = 0;
   List<String> imgList = [];
 
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-    late final user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       backgroundColor: Contants.myBackgroundColor,
       appBar: AppBar(
@@ -194,7 +265,7 @@ class _HairCutUserState extends State<HairCutUser> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SearchUser(
-                    nameUser: name == null ? "" : name!,
+                    nameUser: nameUser == "" ? "" : nameUser,
                     barberModel: barbershop!,
                   ),
                 ));
@@ -203,14 +274,8 @@ class _HairCutUserState extends State<HairCutUser> {
         title:
             dataPositionUser == null ? const Text('') : Text(dataPositionUser!),
         actions: [
-          FirebaseAuth.instance.currentUser != null
-              ? Center(
-                  child: Text(name == null
-                      ? ""
-                      : name == ""
-                          ? email.toString()
-                          : "$name"))
-              : TextButton(
+          nameUser == ""
+              ? TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, Rount_CN.routeLogin);
                   },
@@ -218,6 +283,12 @@ class _HairCutUserState extends State<HairCutUser> {
                     "Login",
                     style: Contants().h3SpringGreen(),
                   ))
+              : Center(
+                  child: Text(
+                    nameUser,
+                    style: Contants().h3white(),
+                  ),
+                )
         ],
         backgroundColor: Contants.myBackgroundColordark,
       ),
@@ -230,16 +301,26 @@ class _HairCutUserState extends State<HairCutUser> {
               child: Column(
                 children: [
                   buttonChooseAType(size),
-                  // sectionListview(size, "ร้านที่เคยใช้บริการ"),
-                  // listStoreHistory(size),
+                  barberHistory.isNotEmpty && loadHistory == false
+                      ? sectionListview(size, "ร้านที่เคยใช้บริการ")
+                      : const SizedBox(),
+                  loadHistory
+                      ? LoadingAnimationWidget.waveDots(
+                          size: 40, color: Contants.colorSpringGreen)
+                      : barberHistory.isNotEmpty
+                          ? listStoreHistory(size)
+                          : const SizedBox(),
+                  barberHistory.isNotEmpty
+                      ? const SizedBox(
+                          height: 20,
+                        )
+                      : const SizedBox(),
                   urlImgLike.isNotEmpty
                       ? sectionListview(size, "ร้านที่ถูกใจ")
-                      : const SizedBox(child: Text("")),
+                      : const SizedBox(),
                   urlImgLike.isNotEmpty
                       ? listStoreLike(size)
-                      : const SizedBox(
-                          child: Text(""),
-                        ),
+                      : const SizedBox(),
                 ],
               ),
             ),
@@ -263,7 +344,7 @@ class _HairCutUserState extends State<HairCutUser> {
                 width: 120,
                 height: 120,
                 child: BarberModel3(
-                    nameUser: name == null ? "" : name!,
+                    nameUser: nameUser == "" ? "" : nameUser,
                     barberModel: barberLike[index],
                     url: urlImgLike[barberLike[index].email]!),
               ),
@@ -288,24 +369,46 @@ class _HairCutUserState extends State<HairCutUser> {
     );
   }
 
-  // Container listStoreHistory(double size) {
-  //   return Container(
-  //     margin: const EdgeInsets.only(bottom: 20),
-  //     height: 180,
-  //     child: Expanded(
-  //       flex: 3,
-  //       child: ListView.builder(
-  //           scrollDirection: Axis.horizontal,
-  //           itemCount: 20,
-  //           itemBuilder: (context, index) => BarberModel1(
-  //                 size: size,
-  //                 nameBarber: "ชื่อร้าน",
-  //                 img:
-  //                     "https://images.ctfassets.net/81iqaqpfd8fy/3r4flvP8Z26WmkMwAEWEco/870554ed7577541c5f3bc04942a47b95/78745131.jpg?w=1200&h=1200&fm=jpg&fit=fill",
-  //               )),
-  //     ),
-  //   );
-  // }
+  SizedBox listStoreHistory(double size) {
+    return SizedBox(
+      // margin: const EdgeInsets.only(bottom: 20,right: 10),
+      height: 120,
+      child: Expanded(
+        flex: 3,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: barberHistory.length,
+          itemBuilder: (context, index) => Stack(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                width: 120,
+                height: 120,
+                child: BarberModel3(
+                    nameUser: nameUser == "" ? "" : nameUser,
+                    barberModel: barberHistory[index],
+                    url: barberHistory[index].url),
+              ),
+              Center(
+                child: Container(
+                    margin: const EdgeInsets.only(),
+                    child: IconButton(
+                      icon: Icon(Icons.favorite, color: barberLike.contains(barberHistory[index]) ? Colors.red : Colors.grey ),
+                      onPressed: () async {
+                        // await SQLiteHelper()
+                        //     .deleteSQLiteWhereId(barberLike[index].email);
+                        // setState(() {
+                        //   barberLike.removeAt(index);
+                        // });
+                      },
+                    )),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Container sectionListview(double size, String title) {
     return Container(
@@ -337,7 +440,7 @@ class _HairCutUserState extends State<HairCutUser> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => BarberSerchUser(
-                              nameUser: name == null ? "" : name!,
+                              nameUser: nameUser == "" ? "" : nameUser,
                               typeBarber: true,
                               barbershop: barberman,
                               lat: lat,
@@ -367,7 +470,7 @@ class _HairCutUserState extends State<HairCutUser> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => BarberSerchUser(
-                              nameUser: name == null ? "" : name!,
+                              nameUser: nameUser == "" ? "" : nameUser,
                               typeBarber: false,
                               barbershop: barberwoman,
                               lat: lat,

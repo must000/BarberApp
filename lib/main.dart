@@ -39,6 +39,9 @@ class MyApp extends StatelessWidget {
       create: (context) => MyProviders(),
       child: MaterialApp(
         theme: ThemeData(primaryColor: Colors.black,
+         checkboxTheme: CheckboxThemeData(
+      fillColor: MaterialStateProperty.all(Colors.white),
+    )
         ),
         routes: map,
         initialRoute: Rount_CN.routeIndex,

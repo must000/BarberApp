@@ -174,7 +174,6 @@ class _BarberUserState extends State<BarberUser> {
                                 setState(() {
                                   barberLike.add(barberModel);
                                   urlImgLike.addAll({barberModel.email: url!});
-                                  print("Like ======> $barberLike");
                                   like = true;
                                 });
                                 //รีเฟรช

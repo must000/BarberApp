@@ -1,3 +1,5 @@
+import 'package:barber/Constant/contants.dart';
+import 'package:barber/Constant/contants.dart';
 import 'package:barber/pages/search_result_user.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -17,13 +19,14 @@ class SearchUser extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SearchUser> createState() => _SearchUserState(barberModel: barberModel,nameUser:nameUser);
+  State<SearchUser> createState() =>
+      _SearchUserState(barberModel: barberModel, nameUser: nameUser);
 }
 
 class _SearchUserState extends State<SearchUser> {
   List<BarberModel> barberModel;
   String nameUser;
-  _SearchUserState({required this.barberModel,required this.nameUser});
+  _SearchUserState({required this.barberModel, required this.nameUser});
 
   List<String> itemsDistrict = ["อำเภอทั้งหมด "] + District_CN.district;
   TextEditingController searchController = TextEditingController();
@@ -52,7 +55,10 @@ class _SearchUserState extends State<SearchUser> {
     double size = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Contants.myBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: Contants.myBackgroundColordark,
+      ),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
@@ -69,7 +75,10 @@ class _SearchUserState extends State<SearchUser> {
                   controller: searchController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    labelText: "Search Engine",
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelText: "ค้นหา",
+                    labelStyle: Contants().h3OxfordBlue(),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -77,159 +86,161 @@ class _SearchUserState extends State<SearchUser> {
                         borderRadius: BorderRadius.circular(10)),
                   ),
                   onChanged: searchOperation,
-                  onEditingComplete: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    setState(() {
-                      searchresult.clear();
-                    });
-                  },
+                  onEditingComplete: () {},
                 ),
               ),
-              searchresult.length != 0
-                  ? Container(
-                      width: size * 0.6,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: searchresult.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          String listData = searchresult[index];
-                          return InkWell(
-                            onTap: () {
-                              FocusScope.of(context).requestFocus(FocusNode());
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Checkbox(
+                                activeColor: Contants.colorSpringGreen,
+                                value: valueman,
+                                onChanged: (bool? newValue) {
+                                  setState(() {
+                                    valueman = newValue!;
+                                  });
+                                },
+                              ),
+                              Text(
+                                "ร้านตัดผมชาย",
+                                style: Contants().h3white(),
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Checkbox(
+                                activeColor: Contants.colorSpringGreen,
+                                value: valuewoman,
+                                onChanged: (bool? newValue) {
+                                  setState(() {
+                                    valuewoman = newValue!;
+                                  });
+                                },
+                              ),
+                              Text(
+                                "ร้านเสริมสวย",
+                                style: Contants().h3white(),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          DropdownButtonHideUnderline(
+                            child: DropdownButton2(
+                              iconEnabledColor: Contants.colorWhite,
+                              hint: Text('$selectedValueDis',
+                                  style: Contants().h3white()),
+                              items: itemsDistrict
+                                  .map((item) => DropdownMenuItem<String>(
+                                        value: item,
+                                        child: Text(
+                                          item,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList(),
+                              onChanged: (value) {
+                                if (value == 'เมืองนนทบุรี ') {
+                                  itemSubDistricts = ["ตำบลทั้งหมด "] +
+                                      District_CN.mueangNonthaburi;
+                                } else if (value == 'อ.บางกรวย') {
+                                  itemSubDistricts =
+                                      ["ตำบลทั้งหมด "] + District_CN.bangKruai;
+                                } else if (value == 'อ.บางใหญ่ ') {
+                                  itemSubDistricts =
+                                      ["ตำบลทั้งหมด "] + District_CN.bangYai;
+                                } else if (value == 'อ.บางบัวทอง') {
+                                  itemSubDistricts = ["ตำบลทั้งหมด "] +
+                                      District_CN.bangBuaThong;
+                                } else if (value == 'อ.ไทรน้อย') {
+                                  itemSubDistricts =
+                                      ["ตำบลทั้งหมด "] + District_CN.sainoi;
+                                } else if (value == 'อ.ปากเกร็ด') {
+                                  itemSubDistricts =
+                                      ["ตำบลทั้งหมด "] + District_CN.pakKret;
+                                } else {
+                                  itemSubDistricts = [];
+                                }
+                                setState(() {
+                                  itemSubDistricts;
+                                  selectedValueSubDis = "ตำบลทั้งหมด ";
+                                  selectedValueDis = value as String;
+                                });
+                              },
+                            ),
+                          ),
+                          DropdownButton2(
+                            iconEnabledColor: Contants.colorWhite,
+                            hint: Text('$selectedValueSubDis',
+                                style: Contants().h3white()),
+                            items: itemSubDistricts
+                                .map((item) => DropdownMenuItem<String>(
+                                      value: item,
+                                      child: Text(
+                                        item,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ))
+                                .toList(),
+                            onChanged: (value) {
                               setState(() {
-                                searchController.text = listData.toString();
-                                searchresult.clear();
+                                selectedValueSubDis = value as String;
                               });
                             },
-                            child: Container(
-                              height: 40,
-                              child: Text(listData.toString()),
-                            ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
                     )
-                  : const SizedBox(
-                      child: Text(""),
-                    ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton2(
-                      hint: Text(
-                        '$selectedValueDis',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).hintColor,
-                        ),
-                      ),
-                      items: itemsDistrict
-                          .map((item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        if (value == 'เมืองนนทบุรี ') {
-                          itemSubDistricts =
-                              ["ตำบลทั้งหมด "] + District_CN.mueangNonthaburi;
-                        } else if (value == 'อ.บางกรวย') {
-                          itemSubDistricts =
-                              ["ตำบลทั้งหมด "] + District_CN.bangKruai;
-                        } else if (value == 'อ.บางใหญ่ ') {
-                          itemSubDistricts =
-                              ["ตำบลทั้งหมด "] + District_CN.bangYai;
-                        } else if (value == 'อ.บางบัวทอง') {
-                          itemSubDistricts =
-                              ["ตำบลทั้งหมด "] + District_CN.bangBuaThong;
-                        } else if (value == 'อ.ไทรน้อย') {
-                          itemSubDistricts =
-                              ["ตำบลทั้งหมด "] + District_CN.sainoi;
-                        } else if (value == 'อ.ปากเกร็ด') {
-                          itemSubDistricts =
-                              ["ตำบลทั้งหมด "] + District_CN.pakKret;
-                        } else {
-                          itemSubDistricts = [];
-                        }
-                        setState(() {
-                          itemSubDistricts;
-                          selectedValueSubDis = "ตำบลทั้งหมด ";
-                          selectedValueDis = value as String;
-                        });
-                      },
-                    ),
-                  ),
-                  DropdownButton2(
-                    hint: Text(
-                      '$selectedValueSubDis',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).hintColor,
-                      ),
-                    ),
-                    items: itemSubDistricts
-                        .map((item) => DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(
-                                item,
-                                style: const TextStyle(
-                                  fontSize: 14,
+                  ],
+                ),
+              ),
+              Container(width: size*0.5,
+                child: ElevatedButton(
+                  style:ElevatedButton.styleFrom(
+                                primary: Colors.white,
+                                onPrimary: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
                                 ),
                               ),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedValueSubDis = value as String;
-                      });
+                    onPressed: () {
+                      searchData();
                     },
-                  ),
-                ],
+                    child: Text("ค้นหา", style: Contants().h1OxfordBlue())),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Checkbox(
-                    value: valueman,
-                    onChanged: (bool? newValue) {
-                      setState(() {
-                        valueman = newValue!;
-                      });
-                    },
-                  ),
-                  const Text("ร้านตัดผมชาย")
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Checkbox(
-                    value: valuewoman,
-                    onChanged: (bool? newValue) {
-                      setState(() {
-                        valuewoman = newValue!;
-                      });
-                    },
-                  ),
-                  const Text("ร้านเสริมสวย")
-                ],
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    computeResultBarber();
-                  },
-                  child: const Text("ค้นหา")),
+              const Divider(
+                height: 10,
+                thickness: 2,
+                indent: 20,
+                endIndent: 20,
+                color: Colors.white,
+              )
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<Null> searchData()async{
+
   }
 
   computeResultBarber() {
@@ -307,11 +318,14 @@ class _SearchUserState extends State<SearchUser> {
     }
     Navigator.pop(context);
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SearchResultUser(barberModel: listbarber4, nameUser: nameUser,),
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchResultUser(
+          barberModel: listbarber4,
+          nameUser: nameUser,
         ),
-        );
+      ),
+    );
   }
 
   searchOperation(String searchText) {

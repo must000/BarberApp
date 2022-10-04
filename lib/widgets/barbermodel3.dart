@@ -1,12 +1,8 @@
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/barbermodel.dart';
-import 'package:barber/data/sqlite_model.dart';
 import 'package:barber/pages/User/barber_user.dart';
-import 'package:barber/utils/sqlite_helper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class BarberModel3 extends StatelessWidget {
@@ -59,14 +55,16 @@ class BarberModel3 extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
+                const SizedBox(
                   child: Text("5"),
                 ),
                 Container(
                   child: Row(
                     children: [
                       Text(
-                        "X",
+                        barberModel.score == 0
+                            ? "-"
+                            : barberModel.score.toString(),
                         style: Contants().h4white(),
                       ),
                       const Icon(
