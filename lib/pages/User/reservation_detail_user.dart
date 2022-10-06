@@ -11,10 +11,10 @@ import 'package:barber/data/servicemodel.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ReservationDetailUser extends StatefulWidget {
-  String urlimg, namebarber, nameUser,phoneBarber,phoneHairresser;
+  String urlimg, namebarber, nameUser, phoneBarber, phoneHairresser;
   String nameHairresser;
   String timestart, timeend;
-  String docID;
+  String docID, emailBarber;
   List service;
   ReservationDetailUser(
       {Key? key,
@@ -25,30 +25,34 @@ class ReservationDetailUser extends StatefulWidget {
       required this.timeend,
       required this.docID,
       required this.service,
-      required this.nameUser,required this.phoneBarber,required this.phoneHairresser})
+      required this.nameUser,
+      required this.phoneBarber,
+      required this.phoneHairresser,
+      required this.emailBarber})
       : super(key: key);
 
   @override
   State<ReservationDetailUser> createState() => _ReservationDetailUserState(
-        urlimg: urlimg,
-        namebarber: namebarber,
-        nameHairresser: nameHairresser,
-        timeend: timeend,
-        timestart: timestart,
-        docID: docID,
-        service: service,
-        nameUser: nameUser,
-        phoneBarber: phoneBarber,
-        phoneHairresser: phoneHairresser
-      );
+      urlimg: urlimg,
+      namebarber: namebarber,
+      nameHairresser: nameHairresser,
+      timeend: timeend,
+      timestart: timestart,
+      docID: docID,
+      service: service,
+      nameUser: nameUser,
+      phoneBarber: phoneBarber,
+      phoneHairresser: phoneHairresser,
+      emailBarber: emailBarber);
 }
 
 class _ReservationDetailUserState extends State<ReservationDetailUser> {
-  String urlimg, namebarber, nameUser,phoneBarber,phoneHairresser;
+  String urlimg, namebarber, nameUser, phoneBarber, phoneHairresser;
   String nameHairresser;
   String timestart, timeend;
   List service;
   String docID;
+  String emailBarber;
   _ReservationDetailUserState(
       {required this.urlimg,
       required this.namebarber,
@@ -57,7 +61,10 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
       required this.timeend,
       required this.docID,
       required this.service,
-      required this.nameUser,required this.phoneBarber,required this.phoneHairresser});
+      required this.nameUser,
+      required this.phoneBarber,
+      required this.phoneHairresser,
+      required this.emailBarber});
   @override
   void initState() {
     // TODO: implement initState
@@ -97,7 +104,7 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
             // มีคอมเมนต์
             if (event["comment"]["show"] == false) {
               haveComment = true;
-              show =false;
+              show = false;
               //สถานะ ไม่โชว์
             } else {
               comment = event["comment"]["message"];
@@ -132,7 +139,10 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
               "ร้าน : $namebarber",
               style: Contants().h2white(),
             ),
-            Text("เบอร์ร้าน : $phoneBarber",style: Contants().h3white(),),
+            Text(
+              "เบอร์ร้าน : $phoneBarber",
+              style: Contants().h3white(),
+            ),
             Container(
               height: 200,
               child: CachedNetworkImage(
@@ -150,7 +160,10 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
               "ช่างทำผม : $nameHairresser",
               style: Contants().h3white(),
             ),
-            Text("เบอร์โทร : $phoneHairresser",style: Contants().h4white(),),
+            Text(
+              "เบอร์โทร : $phoneHairresser",
+              style: Contants().h4white(),
+            ),
             Container(
               margin: const EdgeInsets.only(top: 20),
               child: Column(children: [
@@ -386,18 +399,22 @@ class _ReservationDetailUserState extends State<ReservationDetailUser> {
   Future<Null> deleteComment() async {
     await FirebaseFirestore.instance.collection('Queue').doc(docID).update({
       "comment": {
-         "message": comment,
-        "score": score,
-        "show": false,}
+        "message": comment,
+        "show": false,
+      }
     }).then((value) => Navigator.pop(context));
   }
 
   Future<Null> insertComment() async {
+    FirebaseFirestore.instance.collection("Barber").doc(emailBarber).update({
+      "score.num": FieldValue.increment(score),
+      "score.count": FieldValue.increment(1)
+    });
     await FirebaseFirestore.instance.collection('Queue').doc(docID).set({
       "comment": {
         "message": commentController.text.toString(),
-        "score": score,
-        "show": true
+        "show": true,
+        "score": score
       },
     }, SetOptions(merge: true));
   }

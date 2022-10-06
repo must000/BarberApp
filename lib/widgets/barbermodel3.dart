@@ -62,7 +62,7 @@ class BarberModel3 extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        barberModel.score == 0
+                        barberModel.score == 0 || barberModel.score.isNaN
                             ? "-"
                             : barberModel.score.toString(),
                         style: Contants().h4white(),

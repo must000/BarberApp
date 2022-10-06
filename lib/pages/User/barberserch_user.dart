@@ -15,7 +15,6 @@ import '../../widgets/barbermodel1.dart';
 
 class BarberSerchUser extends StatefulWidget {
   final bool typeBarber;
-  List<BarberModel> barbershop;
   double? lat, lon;
   String nameUser;
 
@@ -23,7 +22,6 @@ class BarberSerchUser extends StatefulWidget {
   BarberSerchUser(
       {Key? key,
       required this.typeBarber,
-      required this.barbershop,
       this.lat,
       this.lon,
       required this.nameUser,
@@ -33,7 +31,6 @@ class BarberSerchUser extends StatefulWidget {
   @override
   State<BarberSerchUser> createState() => _BarberSerchUserState(
       typeBarber: typeBarber,
-      barbershop: barbershop,
       lat: lat,
       lon: lon,
       nameUser: nameUser);
@@ -41,12 +38,10 @@ class BarberSerchUser extends StatefulWidget {
 
 class _BarberSerchUserState extends State<BarberSerchUser> {
   bool typeBarber;
-  List<BarberModel> barbershop;
   String nameUser;
   double? lat, lon;
   _BarberSerchUserState(
       {required this.typeBarber,
-      required this.barbershop,
       this.lat,
       this.lon,
       required this.nameUser});
@@ -56,12 +51,11 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
   @override
   void initState() {
     widget.stream2.listen((barberModel) {
-      print(barberModel);
       mySetState2();
     });
     // TODO: implement initState
     super.initState();
-    calculateLatLon(barbershop);
+    // calculateLatLon(barbershop);
     getURL();
   }
 

@@ -19,7 +19,7 @@ class BarberModel {
   final String subDistrict;
   final String addressdetails;
   final String url;
-  final double score;
+  late final double score;
   BarberModel({
     required this.email,
     required this.name,

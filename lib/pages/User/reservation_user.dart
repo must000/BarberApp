@@ -56,8 +56,7 @@ class _ReservationUserState extends State<ReservationUser> {
           load = false;
         });
       }
-    }
-    else{
+    } else {
       setState(() {
         load = false;
       });
@@ -189,6 +188,7 @@ class _ReservationUserState extends State<ReservationUser> {
                           nameUser: nameUser!,
                           phoneBarber: data[index]["barber"]["phone"],
                           phoneHairresser: data[index]["hairdresser"]["phone"],
+                          emailBarber: data[index]["barber"]["id"],
                         ),
                       ),
                     ),
@@ -242,12 +242,12 @@ class _ReservationUserState extends State<ReservationUser> {
                         text,
                         style: Contants().h3white(),
                       ),
-                      margin: EdgeInsets.only(
+                      margin: const EdgeInsets.only(
                         top: 150,
                       )));
             }
           } else {
-            return Center(child: Text(""));
+            return Center(child: const Text(""));
           }
         });
   }

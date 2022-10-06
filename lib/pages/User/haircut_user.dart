@@ -4,7 +4,6 @@ import 'package:barber/pages/User/barber_user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -19,38 +18,28 @@ import 'package:barber/widgets/barbermodel3.dart';
 import '../../Constant/route_cn.dart';
 
 class HairCutUser extends StatefulWidget {
-  List<BarberModel> barbershop;
   String nameUser, idUser;
   Stream<BarberModel> stream2;
   HairCutUser(
       {Key? key,
-      required this.barbershop,
       required this.stream2,
       required this.nameUser,
       required this.idUser})
       : super(key: key);
 
   @override
-  State<HairCutUser> createState() => _HairCutUserState(
-      barbershop: this.barbershop, nameUser: nameUser, idUser: idUser);
+  State<HairCutUser> createState() =>
+      _HairCutUserState(nameUser: nameUser, idUser: idUser);
 }
 
 class _HairCutUserState extends State<HairCutUser> {
   List<SQLiteModel> sqliteModels = [];
-  List<BarberModel>? barbershop;
   String nameUser, idUser;
-  _HairCutUserState(
-      {required this.barbershop, required this.nameUser, required this.idUser});
-  // String? name, email, phone;
+  _HairCutUserState({required this.nameUser, required this.idUser});
   double? lat, lng;
   String? dataPositionUser;
-  bool? load = true;
-  bool? getSqlite = false;
-
-  BarberUser? barberUser;
-  Widget? currentUser;
-  String menuName = 'A';
   bool loadHistory = true;
+  bool loadSqlite = true;
   void mySetState2() {
     setState(() {
       barberLike;
@@ -64,29 +53,59 @@ class _HairCutUserState extends State<HairCutUser> {
       mySetState2();
     });
     chechpermission();
-    processReadSQLite().then((value) => getURL());
-    getHistoryshop().then((value) {
-      setState(() {
-        loadHistory = false;
-      });
-    });
+    getLikeShop();
+    getHistoryshop();
     // getLikeShop();
   }
-  getLikeShop()async{
+
+  getLikeShop() async {
     if (sqliteModels.isNotEmpty) {
       sqliteModels.clear();
     }
     List<BarberModel> data = [];
-    await SQLiteHelper().readSQLite().then((value) {
+    List<String> emailvalueGetSqlite = [];
+    await SQLiteHelper().readSQLite().then((value) async {
       for (var i = 0; i < value.length; i++) {
-        for (var n = 0; n < barbershop!.length; n++) {
-          if (value[i].email == barbershop![n].email) {
-            data.add(barbershop![n]);
-          }
-        }
+        emailvalueGetSqlite.add(value[i].email);
       }
-      setState(() {
-        barberLike = data;
+      await FirebaseFirestore.instance
+          .collection("Barber")
+          .where("email", whereIn: emailvalueGetSqlite)
+          .get()
+          .then((newvalue) async {
+        var alldata = newvalue.docs.map((e) => e.data()).toList();
+        List<BarberModel> listLike = [];
+        for (var i = 0; i < alldata.length; i++) {
+          double average = 0;
+          if (alldata[i]["score"] != null) {
+            average = alldata[i]["score"]["num"] / alldata[i]["score"]["count"];
+          } else {
+            average = 0;
+          }
+
+          listLike.add(BarberModel(
+              email: alldata[i]["email"],
+              name: alldata[i]["name"],
+              lasiName: alldata[i]["lastname"],
+              phone: alldata[i]["phone"],
+              typebarber: alldata[i]["typeBarber"],
+              shopname: alldata[i]["shopname"],
+              shoprecommend: alldata[i]["shoprecommend"],
+              dayopen: alldata[i]["dayopen"],
+              timeopen: alldata[i]["timeopen"],
+              timeclose: alldata[i]["timeclose"],
+              lat: alldata[i]["lat"],
+              lng: alldata[i]["lon"],
+              districtl: alldata[i]["district"],
+              subDistrict: alldata[i]["subdistrict"],
+              addressdetails: alldata[i]["addressdetails"],
+              url: alldata[i]["url"],
+              score: average));
+        }
+        setState(() {
+          barberLike = listLike;
+          loadSqlite = false;
+        });
       });
     });
   }
@@ -113,19 +132,12 @@ class _HairCutUserState extends State<HairCutUser> {
       var alldata2 = data2.docs.map((e) => e.data()).toList();
       List<BarberModel> barberlist = [];
       for (var n = 0; n < alldata2.length; n++) {
-        double sum = 0;
-        double count = 0;
-        double average = 0;
-        for (var i = 0; i < alldata.length; i++) {
-          if (alldata2[n]["email"] == alldata[i]["barber"]["id"]) {
-            if (alldata[i]["comment"] != null) {
-              count += 1;
-              sum += alldata[i]["comment"]["score"];
-              print("uu3");
-            }
-          }
+        double average;
+        if (alldata2[n]["score"] != null) {
+          average = alldata2[n]["score"]["num"] / alldata2[n]["score"]["count"];
+        } else {
+          average = 0;
         }
-        average = sum / count;
         barberlist.add(BarberModel(
             email: alldata2[n]["email"],
             name: alldata2[n]["name"],
@@ -147,46 +159,47 @@ class _HairCutUserState extends State<HairCutUser> {
       }
       setState(() {
         barberHistory = barberlist;
+        loadHistory = false;
       });
     });
   }
 
-  Future<Null> processReadSQLite() async {
-    if (sqliteModels.isNotEmpty) {
-      sqliteModels.clear();
-    }
-    List<BarberModel> data = [];
-    await SQLiteHelper().readSQLite().then((value) {
-      for (var i = 0; i < value.length; i++) {
-        for (var n = 0; n < barbershop!.length; n++) {
-          if (value[i].email == barbershop![n].email) {
-            data.add(barbershop![n]);
-          }
-        }
-      }
-      setState(() {
-        barberLike = data;
-      });
-    });
-  }
+  // Future<Null> processReadSQLite() async {
+  //   if (sqliteModels.isNotEmpty) {
+  //     sqliteModels.clear();
+  //   }
+  //   List<BarberModel> data = [];
+  //   await SQLiteHelper().readSQLite().then((value) {
+  //     for (var i = 0; i < value.length; i++) {
+  //       for (var n = 0; n < barbershop!.length; n++) {
+  //         if (value[i].email == barbershop![n].email) {
+  //           data.add(barbershop![n]);
+  //         }
+  //       }
+  //     }
+  //     setState(() {
+  //       barberLike = data;
+  //     });
+  //   });
+  // }
 
-  Future<Null> getURL() async {
-    Map<String, String>? urlImgFrontModel = {};
-    for (var i = 0; i < barberLike.length; i++) {
-      Reference ref = FirebaseStorage.instance
-          .ref()
-          .child("imgfront/${barberLike[i].email}");
-      var url = await ref.getDownloadURL().then((value) {
-        urlImgFrontModel[barberLike[i].email] = value;
-      }).catchError((c) => print(c + "is an error getURL $c"));
-    }
-    setState(() {
-      urlImgLike = urlImgFrontModel;
-      if (barberLike.isNotEmpty) {
-        getSqlite = true;
-      }
-    });
-  }
+  // Future<Null> getURL() async {
+  //   Map<String, String>? urlImgFrontModel = {};
+  //   for (var i = 0; i < barberLike.length; i++) {
+  //     Reference ref = FirebaseStorage.instance
+  //         .ref()
+  //         .child("imgfront/${barberLike[i].email}");
+  //     var url = await ref.getDownloadURL().then((value) {
+  //       urlImgFrontModel[barberLike[i].email] = value;
+  //     }).catchError((c) => print(c + "is an error getURL $c"));
+  //   }
+  //   setState(() {
+  //     urlImgLike = urlImgFrontModel;
+  //     if (barberLike.isNotEmpty) {
+  //       getSqlite = true;
+  //     }
+  //   });
+  // }
 
   Future<Null> chechpermission() async {
     bool locationService;
@@ -201,7 +214,6 @@ class _HairCutUserState extends State<HairCutUser> {
           // print("LocationPermission.deniedForever");
           setState(() {
             dataPositionUser = "LocationPermission ไม่ได้รับอนุญาต";
-            load = false;
           });
         } else {
           findposition().then((value) => getDataPosition());
@@ -211,7 +223,6 @@ class _HairCutUserState extends State<HairCutUser> {
           //  print("LocationPermission.deniedForever");
           setState(() {
             dataPositionUser = "LocationPermission ไม่ได้รับอนุญาต";
-            load = false;
           });
         } else {
           findposition().then((value) => getDataPosition());
@@ -220,7 +231,6 @@ class _HairCutUserState extends State<HairCutUser> {
     } else {
       setState(() {
         dataPositionUser = "Location ปิดอยู่";
-        load = false;
       });
     }
   }
@@ -233,7 +243,6 @@ class _HairCutUserState extends State<HairCutUser> {
       setState(() {
         dataPositionUser =
             "${value.data["subdistrict"]} ${value.data["district"]}";
-        load = false;
       });
     });
   }
@@ -266,7 +275,6 @@ class _HairCutUserState extends State<HairCutUser> {
                 MaterialPageRoute(
                   builder: (context) => SearchUser(
                     nameUser: nameUser == "" ? "" : nameUser,
-                    barberModel: barbershop!,
                   ),
                 ));
           },
@@ -292,40 +300,39 @@ class _HairCutUserState extends State<HairCutUser> {
         ],
         backgroundColor: Contants.myBackgroundColordark,
       ),
-      body: load == true
-          ? Center(
-              child: LoadingAnimationWidget.newtonCradle(
-                  color: const Color.fromARGB(255, 111, 111, 240), size: 200),
-            )
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  buttonChooseAType(size),
-                  barberHistory.isNotEmpty && loadHistory == false
-                      ? sectionListview(size, "ร้านที่เคยใช้บริการ")
-                      : const SizedBox(),
-                  loadHistory
-                      ? LoadingAnimationWidget.waveDots(
-                          size: 40, color: Contants.colorSpringGreen)
-                      : barberHistory.isNotEmpty
-                          ? listStoreHistory(size)
-                          : const SizedBox(),
-                  barberHistory.isNotEmpty
-                      ? const SizedBox(
-                          height: 20,
-                        )
-                      : const SizedBox(),
-                  urlImgLike.isNotEmpty
-                      ? sectionListview(size, "ร้านที่ถูกใจ")
-                      : const SizedBox(),
-                  urlImgLike.isNotEmpty
-                      ? listStoreLike(size)
-                      : const SizedBox(),
-                ],
-              ),
-            ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            buttonChooseAType(size),
+            barberHistory.isNotEmpty && loadHistory == false
+                ? sectionListview(size, "ร้านที่เคยใช้บริการ")
+                : const SizedBox(),
+            loadHistory
+                ? LoadingAnimationWidget.waveDots(
+                    size: 40, color: Contants.colorSpringGreen)
+                : barberHistory.isNotEmpty
+                    ? listStoreHistory(size)
+                    : const SizedBox(),
+            barberHistory.isNotEmpty
+                ? const SizedBox(
+                    height: 20,
+                  )
+                : const SizedBox(),
+            barberLike.isNotEmpty
+                ? sectionListview(size, "ร้านที่ถูกใจ")
+                : const SizedBox(),
+            barberLike.isNotEmpty ? listStoreLike(size) : const SizedBox(),
+          ],
+        ),
+      ),
     );
   }
+
+  // Future<Null> test() async {
+  //   await FirebaseFirestore.instance
+  //       .collection('test')
+  //       .doc("76cvuBjj8UcCx0K6wDeq").update({"score":FieldValue.increment(4)});
+  // }
 
   Widget listStoreLike(double size) {
     return SizedBox(
@@ -346,7 +353,7 @@ class _HairCutUserState extends State<HairCutUser> {
                 child: BarberModel3(
                     nameUser: nameUser == "" ? "" : nameUser,
                     barberModel: barberLike[index],
-                    url: urlImgLike[barberLike[index].email]!),
+                    url: barberLike[index].url),
               ),
               Center(
                 child: Container(
@@ -393,13 +400,26 @@ class _HairCutUserState extends State<HairCutUser> {
                 child: Container(
                     margin: const EdgeInsets.only(),
                     child: IconButton(
-                      icon: Icon(Icons.favorite, color: barberLike.contains(barberHistory[index]) ? Colors.red : Colors.grey ),
+                      icon: Icon(Icons.favorite,
+                          color: barberLike.contains(barberHistory[index])
+                              ? Colors.red
+                              : Colors.grey),
                       onPressed: () async {
-                        // await SQLiteHelper()
-                        //     .deleteSQLiteWhereId(barberLike[index].email);
-                        // setState(() {
-                        //   barberLike.removeAt(index);
-                        // });
+                        if (barberLike.contains(barberHistory[index]) ==
+                            false) {
+                          SQLiteModel sqLiteModel =
+                              SQLiteModel(email: barberHistory[index].email);
+                          await SQLiteHelper().insertValueToSQlite(sqLiteModel);
+                          setState(() {
+                            barberLike.add(barberHistory[index]);
+                          });
+                        } else {
+                          await SQLiteHelper()
+                              .deleteSQLiteWhereId(barberLike[index].email);
+                          setState(() {
+                            barberLike.removeAt(index);
+                          });
+                        }
                       },
                     )),
               )
@@ -430,19 +450,12 @@ class _HairCutUserState extends State<HairCutUser> {
           SizedBox(
             child: ElevatedButton(
               onPressed: () {
-                List<BarberModel> barberman = [];
-                for (var n = 0; n < barbershop!.length; n++) {
-                  if (barbershop![n].typebarber == "man") {
-                    barberman.add(barbershop![n]);
-                  }
-                }
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => BarberSerchUser(
                               nameUser: nameUser == "" ? "" : nameUser,
                               typeBarber: true,
-                              barbershop: barberman,
                               lat: lat,
                               lon: lng,
                               stream2: streamController2.stream,
@@ -460,19 +473,12 @@ class _HairCutUserState extends State<HairCutUser> {
           SizedBox(
             child: ElevatedButton(
               onPressed: () {
-                List<BarberModel> barberwoman = [];
-                for (var n = 0; n < barbershop!.length; n++) {
-                  if (barbershop![n].typebarber == "woman") {
-                    barberwoman.add(barbershop![n]);
-                  }
-                }
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => BarberSerchUser(
                               nameUser: nameUser == "" ? "" : nameUser,
                               typeBarber: false,
-                              barbershop: barberwoman,
                               lat: lat,
                               lon: lng,
                               stream2: streamController2.stream,

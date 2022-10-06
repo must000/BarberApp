@@ -39,13 +39,16 @@ class _IndexPageState extends State<IndexPage> {
   void initState() {
     super.initState();
     findEmail().then((value) {
-      if (isbarber != false) {
-        getDataBarberForUser().then((value) {
-          setState(() {
-            load = false;
-          });
-        });
-      }
+      // if (isbarber != false) {
+      //   getDataBarberForUser().then((value) {
+      //     setState(() {
+      //       load = false;
+      //     });
+      //   });
+      // }
+      setState(() {
+        load = false;
+      });
     });
   }
 
@@ -95,30 +98,30 @@ class _IndexPageState extends State<IndexPage> {
     });
   }
 
-  Future<Null> getDataBarberForUser() async {
-    // get ข้อมูลBarber get Url imgfront
-    var data = await FirebaseFirestore.instance.collection('Barber').get();
-    var alldata = data.docs.map((e) => e.data()).toList();
-    for (int n = 0; n < alldata.length; n++) {
-      barbershop.add(BarberModel(
-          email: alldata[n]["email"],
-          name: alldata[n]["name"],
-          lasiName: alldata[n]["lastname"],
-          phone: alldata[n]["phone"],
-          typebarber: alldata[n]["typeBarber"],
-          shopname: alldata[n]["shopname"],
-          shoprecommend: alldata[n]["shoprecommend"],
-          dayopen: alldata[n]["dayopen"],
-          timeopen: alldata[n]["timeopen"],
-          timeclose: alldata[n]["timeclose"],
-          lat: alldata[n]["lat"],
-          lng: alldata[n]["lon"],
-          districtl: alldata[n]["district"],
-          subDistrict: alldata[n]["subdistrict"],
-          addressdetails: alldata[n]["addressdetails"],
-         url:  alldata[n]["url"],score:0));
-    }
-  }
+  // Future<Null> getDataBarberForUser() async {
+  //   // get ข้อมูลBarber get Url imgfront
+  //   var data = await FirebaseFirestore.instance.collection('Barber').get();
+  //   var alldata = data.docs.map((e) => e.data()).toList();
+  //   for (int n = 0; n < alldata.length; n++) {
+  //     barbershop.add(BarberModel(
+  //         email: alldata[n]["email"],
+  //         name: alldata[n]["name"],
+  //         lasiName: alldata[n]["lastname"],
+  //         phone: alldata[n]["phone"],
+  //         typebarber: alldata[n]["typeBarber"],
+  //         shopname: alldata[n]["shopname"],
+  //         shoprecommend: alldata[n]["shoprecommend"],
+  //         dayopen: alldata[n]["dayopen"],
+  //         timeopen: alldata[n]["timeopen"],
+  //         timeclose: alldata[n]["timeclose"],
+  //         lat: alldata[n]["lat"],
+  //         lng: alldata[n]["lon"],
+  //         districtl: alldata[n]["district"],
+  //         subDistrict: alldata[n]["subdistrict"],
+  //         addressdetails: alldata[n]["addressdetails"],
+  //        url:  alldata[n]["url"],score:0));
+  //   }
+  // }
 
   _IndexPageState({this.isbarber});
   @override
@@ -134,7 +137,6 @@ class _IndexPageState extends State<IndexPage> {
                     HairCutUser(
                       idUser: userID == "" ? "" : userID,
                       nameUser: nameUser == "" ? "" : nameUser,
-                      barbershop: barbershop,
                       stream2: streamController2.stream,
                     ),
                     ReservationUser(
