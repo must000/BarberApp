@@ -112,44 +112,89 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Contants.myBackgroundColor,
       appBar: AppBar(
+        backgroundColor: Contants.myBackgroundColordark,
         title: Text(nameBarber),
       ),
       body: ListView(
         children: [
-          Center(
-            child: Stack(
+          // Center(
+          //   child: Stack(
+          //     children: [
+          //       SizedBox(
+          //         child: LongdoMapWidget(
+          //           apiKey: Contants.keyLongdomap,
+          //           key: map,
+          //           bundleId: Contants.bundleID,
+          //         ),
+          //         width: size * 0.9,
+          //         height: 250,
+          //       ),
+          //       SizedBox(
+          //         child: const Icon(Icons.pin_drop),
+          //         width: size * 0.9,
+          //         height: 250,
+          //       )
+          //     ],
+          //   ),
+          // ),
+          // ElevatedButton(
+          //     onPressed: () {
+          //       proceedMoveLongdoMap(double.parse(lat), double.parse(lon));
+          //     },
+          //     child: const Text("ย้ายไปยังตำแหน่งของร้าน")),
+
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: size * 0.04),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  child: LongdoMapWidget(
-                    apiKey: Contants.keyLongdomap,
-                    key: map,
-                    bundleId: Contants.bundleID,
-                  ),
-                  width: size * 0.9,
-                  height: 250,
+                const Icon(
+                  Icons.pin_drop,
+                  size: 50,
                 ),
-                SizedBox(
-                  child: const Icon(Icons.pin_drop),
-                  width: size * 0.9,
-                  height: 250,
+                Text(
+                  "นำทางไปยังร้านทำผม",
+                  style: Contants().h3OxfordBlue(),
                 )
               ],
             ),
+            color: Contants.colorGreySilver,
+            width: size * 0.9,
+            height: 100,
           ),
-          ElevatedButton(
-              onPressed: () {
-                proceedMoveLongdoMap(double.parse(lat), double.parse(lon));
-              },
-              child: const Text("ย้ายไปยังตำแหน่งของร้าน")),
-          headingDetail("รายละเอียดที่อยู่ : "),
-          contentDetail('$addressdetails'),
-          headingDetail("เวลาเปิดปิด"),
+          const SizedBox(
+            height: 25,
+          ),
+          headingDetail(
+              "รายละเอียดที่อยู่ : ",
+              Icon(
+                Icons.pin_drop_outlined,
+                color: Contants.colorWhite,
+              )),
+          contentDetail(addressdetails),
+          headingDetail(
+              "เวลาเปิด - เวลาปิด",
+              Icon(
+                Icons.schedule,
+                color: Contants.colorWhite,
+              )),
           contentDetail("$timeopen - $timeclose"),
-          headingDetail("วันหยุด"),
+          headingDetail(
+              "วันหยุด",
+              Icon(
+                Icons.calendar_month,
+                color: Contants.colorWhite,
+              )),
           contentDetail("$dayC"),
-          headingDetail("เบอร์ติดต่อ"),
-          contentDetail("$phoneNumber"),
+          headingDetail(
+              "เบอร์ติดต่อ",
+              Icon(
+                Icons.smartphone,
+                color: Contants.colorWhite,
+              )),
+          contentDetail(phoneNumber),
         ],
       ),
     );
@@ -157,18 +202,21 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
 
   Container contentDetail(String text) {
     return Container(
-      child: Text(text),
-      margin: const EdgeInsets.symmetric(horizontal: 22),
+      child: Text(
+        text,
+        style: Contants().h4Grey(),
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 45),
     );
   }
 
-  Container headingDetail(String text) {
+  Container headingDetail(String text, Icon icon) {
     return Container(
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 18,
-        ),
+      child: Row(
+        children: [
+          icon,
+          Text("  $text", style: Contants().h3white()),
+        ],
       ),
       margin: const EdgeInsets.all(10),
     );

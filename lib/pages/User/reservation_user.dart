@@ -155,7 +155,6 @@ class _ReservationUserState extends State<ReservationUser> {
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            print("dwdwwer");
             var data = snapshot.data.docs;
             if (data.isNotEmpty) {
               return ListView.builder(
@@ -165,8 +164,6 @@ class _ReservationUserState extends State<ReservationUser> {
                   double sum = 0;
                   for (var i = 0; i < data[index]["service"].length; i++) {
                     sum += data[index]["service"][i]["price"];
-                    print(data[index]["service"].length);
-                    print(data[index]["service"][i]["price"]);
                   }
                   return InkWell(
                     onTap: () => Navigator.push(
@@ -193,7 +190,8 @@ class _ReservationUserState extends State<ReservationUser> {
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25, vertical: 4),
                       child: Card(
                         shape: const RoundedRectangleBorder(
                             borderRadius:
@@ -212,10 +210,15 @@ class _ReservationUserState extends State<ReservationUser> {
                           ),
                           title:
                               Text("ร้าน : ${data[index]["barber"]["name"]}"),
-                          subtitle: Text(
-                              "เวลา ${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}"),
+                          subtitle: Row(
+                            children: [
+                              Text(
+                                  "${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}"),
+                              const Icon(Icons.schedule,size: 17,),
+                            ],
+                          ),
                           trailing: Text(
-                            sum.toString(),
+                            "฿ ${sum.toStringAsFixed(0)}",
                             style: Contants().h2Red(),
                           ),
                         ),
@@ -247,7 +250,7 @@ class _ReservationUserState extends State<ReservationUser> {
                       )));
             }
           } else {
-            return Center(child: const Text(""));
+            return const Center(child: Text(""));
           }
         });
   }

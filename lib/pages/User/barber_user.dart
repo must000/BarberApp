@@ -565,8 +565,8 @@ class _BarberUserState extends State<BarberUser> {
                             child: Row(
                               children: [
                                 Text(
-                                  "${userData['time'].toString()} นาที",
-                                  style: Contants().h3OxfordBlue(),
+                                  "${userData['time'].toStringAsFixed(0)} นาที",
+                                  style: Contants().h4OxfordBlue(),
                                 ),
                                 const Icon(Icons.add_shopping_cart)
                               ],
@@ -576,20 +576,20 @@ class _BarberUserState extends State<BarberUser> {
                         ],
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                       Row(
                         children: [
                           Expanded(
                             child: Text(
                               userData['detail'],
-                              style: Contants().h3OxfordBlue(),
+                              style: Contants().h3Grey(),
                             ),
                             flex: 2,
                           ),
                           Expanded(
                             child: Text(
-                              "${userData['price'].toString()} บาท",
+                              "฿ ${userData['price'].toStringAsFixed(0)}",
                               style: Contants().h3OxfordBlue(),
                             ),
                             flex: 1,

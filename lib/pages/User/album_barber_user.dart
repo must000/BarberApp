@@ -51,9 +51,9 @@ class _AlbumBarberUserState extends State<AlbumBarberUser> {
     return Scaffold(
       backgroundColor: Contants.myBackgroundColor,
       appBar: AppBar( backgroundColor: Contants.myBackgroundColordark,),
-      body: filess!.length == 0
-          ? const Center(
-              child: Text("ไม่มีรูปภาพในอัลบั้ม"),
+      body: filess!.isEmpty
+          ? Center(
+              child: Text("ไม่มีรูปภาพในอัลบั้ม",style: Contants().h2SpringGreen(),),
             )
           : GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

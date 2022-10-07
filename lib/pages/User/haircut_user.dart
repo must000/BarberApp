@@ -461,9 +461,13 @@ class _HairCutUserState extends State<HairCutUser> {
                               stream2: streamController2.stream,
                             )));
               },
-              child: Text(
-                "ตัดผมชาย ",
-                style: Contants().h2OxfordBlue(),
+              child: Column(
+                children: [
+                  Text(
+                    "ตัดผมชาย ",
+                    style: Contants().h2OxfordBlue(),
+                  ),
+                ],
               ),
               style: ElevatedButton.styleFrom(primary: Contants.colorWhite),
             ),

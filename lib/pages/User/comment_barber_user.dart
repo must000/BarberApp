@@ -152,6 +152,7 @@ class _CommentBarberUserState extends State<CommentBarberUser> {
                               topRight: Radius.circular(20),
                               bottomRight: Radius.circular(20),)),
                       child: ListTile(
+                        leading:  Icon(Icons.forum,size: 35,color: Contants.colorOxfordBlue,),
                         title: Text(listcomment[index].comment),
                         subtitle: Wrap(children: [
                           Icon(
