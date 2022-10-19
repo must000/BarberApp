@@ -3,6 +3,7 @@ import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/Authentication/register_phone_user.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/utils/dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -152,8 +153,8 @@ class _RegisterUserState extends State<RegisterUser> {
                         style: Contants().h2OxfordBlue(),
                       ),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            Contants.colorWhite),
+                        backgroundColor:
+                            MaterialStateProperty.all(Contants.colorWhite),
                       ),
                     ))
               ],

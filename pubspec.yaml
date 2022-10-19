@@ -60,7 +60,7 @@ dependencies:
   url_launcher: ^6.1.5
   flutter_facebook_login: ^3.0.0
   dot_navigation_bar: ^1.0.1+4
-
+  dart_geohash: ^2.0.2
 
 
 dev_dependencies:

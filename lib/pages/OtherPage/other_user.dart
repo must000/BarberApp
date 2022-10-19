@@ -2,7 +2,9 @@ import 'package:barber/Constant/contants.dart';
 import 'package:barber/pages/OtherPage/setting_account.dart';
 import 'package:barber/pages/OtherPage/setting_password.dart';
 import 'package:barber/provider/myproviders.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,9 +20,36 @@ class OtherUser extends StatefulWidget {
 
 class _OtherUserState extends State<OtherUser> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getdataAuthen();
+  }
+
+  bool login = false;
+  int score = 0;
+  String name = "";
+  String email = "";
+  late final user = FirebaseAuth.instance.currentUser;
+  Future getdataAuthen() async {
+    // late final user = FirebaseAuth.instance.currentUser;
+    FirebaseFirestore.instance
+        .collection("user")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        setState(() {
+          score = value.data()!["score"];
+        });
+      } else {
+        print("ไม่มีคะแนน");
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    late final user = FirebaseAuth.instance.currentUser;
-    bool login = false;
     double size = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
@@ -35,7 +64,7 @@ class _OtherUserState extends State<OtherUser> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   } else if (snapshot.hasData) {
-                    return user?.displayName == null
+                    return user!.displayName == null
                         ? const Text(
                             "",
                             style: TextStyle(
@@ -57,7 +86,7 @@ class _OtherUserState extends State<OtherUser> {
                                 children: [
                                   Container(
                                     child: Text(
-                                      "คะแนนสะสม",
+                                      "คะแนนสะสม $score",
                                       style: Contants().h4SpringGreen(),
                                     ),
                                     margin: const EdgeInsets.only(
@@ -65,8 +94,7 @@ class _OtherUserState extends State<OtherUser> {
                                   ),
                                 ],
                               ),
-                              
-                              user.emailVerified == false
+                              user!.emailVerified == false
                                   ? TextButton(
                                       onPressed: () {
                                         Navigator.push(
@@ -74,23 +102,23 @@ class _OtherUserState extends State<OtherUser> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     SettingAccount(
-                                                      email: user.email!,
+                                                      email: user!.email!,
                                                       typebarber: false,
-                                                      name: user.displayName!,
+                                                      name: user!.displayName!,
                                                     )));
                                       },
                                       child: Text("ตั้งค่าข้อมูลผู้ใช้ ",
                                           style: Contants().h3white()),
                                     )
                                   : const SizedBox(),
-                              user.emailVerified == false
+                              user!.emailVerified == false
                                   ? Divider(
                                       height: 5,
                                       indent: 1,
                                       color: Contants.colorWhite,
                                     )
                                   : const SizedBox(),
-                              user.emailVerified == false
+                              user!.emailVerified == false
                                   ? TextButton(
                                       onPressed: () {
                                         Navigator.push(
@@ -98,7 +126,7 @@ class _OtherUserState extends State<OtherUser> {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   SettingPassword(
-                                                email: user.email!,
+                                                email: user!.email!,
                                                 typebarber: false,
                                               ),
                                             ));
@@ -106,7 +134,29 @@ class _OtherUserState extends State<OtherUser> {
                                       child: Text("เปลี่ยนรหัสผ่าน ",
                                           style: Contants().h3white()),
                                     )
-                                  : const SizedBox()
+                                  : const SizedBox(),
+                                  user!.emailVerified == false
+                  ? const SizedBox()
+                  : Divider(
+                      height: 5,
+                      indent: 1,
+                      color: Contants.colorWhite,
+                    ),
+                 user!.emailVerified == false
+                  ? const SizedBox()
+                  : TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RegisterPhoneUser(),
+                            ));
+                      },
+                      child: Text(
+                        "เปลี่ยนเบอร์มือถือ",
+                        style: Contants().h3white(),
+                      ),
+                    ),
                             ],
                           );
                   } else if (snapshot.hasError) {
@@ -129,24 +179,7 @@ class _OtherUserState extends State<OtherUser> {
                   }
                 },
               ),
-              Divider(
-                height: 5,
-                indent: 1,
-                color: Contants.colorWhite,
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterPhoneUser(),
-                      ));
-                },
-                child: Text(
-                  "เปลี่ยนเบอร์มือถือ",
-                  style: Contants().h3white(),
-                ),
-              ),
+                  
               Divider(
                 height: 5,
                 indent: 1,

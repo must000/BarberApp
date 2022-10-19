@@ -102,7 +102,7 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                     },
                     child: Text(
                       "ส่งotp",
-                      style: Contants().h2white(),
+                      style: Contants().h3white(),
                     ),
                   ),
                 ),
@@ -211,6 +211,6 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
             ),
             (route) => false);
       }
-    });
+    },onError: (e)=>MyDialog().normalDialog(context, "มีข้อผิดพลาด $e"));
   }
 }

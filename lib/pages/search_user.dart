@@ -62,7 +62,7 @@ class _SearchUserState extends State<SearchUser> {
                   decoration: InputDecoration(
                     fillColor: Colors.white,
                     filled: true,
-                    hintStyle: Contants().h3white(),
+                    hintStyle: Contants().h3Grey(),
                     hintText: "ค้นหาด้วยชื่อร้าน",
                     labelStyle: Contants().h3OxfordBlue(),
                     enabledBorder: OutlineInputBorder(
@@ -98,7 +98,7 @@ class _SearchUserState extends State<SearchUser> {
                               ),
                               Text(
                                 "ร้านตัดผมชาย",
-                                style: Contants().h3white(),
+                                style: Contants().h4white(),
                               )
                             ],
                           ),
@@ -118,7 +118,7 @@ class _SearchUserState extends State<SearchUser> {
                               ),
                               Text(
                                 "ร้านเสริมสวย",
-                                style: Contants().h3white(),
+                                style: Contants().h4white(),
                               )
                             ],
                           ),
@@ -138,9 +138,7 @@ class _SearchUserState extends State<SearchUser> {
                                         value: item,
                                         child: Text(
                                           item,
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                          ),
+                                          style:Contants().h4OxfordBlue()
                                         ),
                                       ))
                                   .toList(),
@@ -185,9 +183,7 @@ class _SearchUserState extends State<SearchUser> {
                                       value: item,
                                       child: Text(
                                         item,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                        ),
+                                        style: Contants().h4OxfordBlue()
                                       ),
                                     ))
                                 .toList(),
@@ -227,7 +223,7 @@ class _SearchUserState extends State<SearchUser> {
                             searchController.text = "";
                           });
                         },
-                        child: Text("ล้าง", style: Contants().h1white())),
+                        child: Text("ล้าง ", style: Contants().h2white())),
                   ),
                   Container(
                     width: size * 0.55,
@@ -243,7 +239,7 @@ class _SearchUserState extends State<SearchUser> {
                           FocusScope.of(context).requestFocus(FocusNode());
                           searchOperation(searchController.text);
                         },
-                        child: Text("ค้นหา", style: Contants().h1OxfordBlue())),
+                        child: Text("ค้นหา ", style: Contants().h1OxfordBlue())),
                   ),
                 ],
               ),
@@ -262,7 +258,7 @@ class _SearchUserState extends State<SearchUser> {
                       itemBuilder: (context, index) {
                         return Container(
                           height: 100,
-                          margin: const EdgeInsets.symmetric(horizontal: 7),
+                          margin: const EdgeInsets.symmetric(horizontal: 15),
                           child: InkWell(
                             onTap: () {
                               FocusScope.of(context).requestFocus(FocusNode());
@@ -292,6 +288,7 @@ class _SearchUserState extends State<SearchUser> {
                                         imageUrl: barberModel[index].url,
                                         width: size * 0.3,
                                         fit: BoxFit.cover,
+                                        errorWidget: (context, url, error) => const Icon(Icons.error,color: Colors.white,),
                                       ),
                                       SizedBox(
                                         width: size * 0.01,
@@ -300,7 +297,7 @@ class _SearchUserState extends State<SearchUser> {
                                         children: [
                                           Text(
                                             barberModel[index].shopname,
-                                            style: Contants().h2white(),
+                                            style: Contants().h3white(),
                                           ),
                                           Text(
                                             barberModel[index].shoprecommend,
@@ -316,9 +313,9 @@ class _SearchUserState extends State<SearchUser> {
                                         barberModel[index].score == 0 ||
                                                 barberModel[index].score.isNaN
                                             ? "- "
-                                            : "${barberModel[index].score} ",
+                                            : "${barberModel[index].score}",
                                         style: const TextStyle(
-                                            color: Colors.yellow, fontSize: 17),
+                                            color: Colors.yellow, fontSize: 12),
                                       ),
                                       const Icon(
                                         Icons.star,
@@ -340,92 +337,6 @@ class _SearchUserState extends State<SearchUser> {
       ),
     );
   }
-
-  // computeResultBarber() {
-  //   List<BarberModel> listbarber = [];
-  //   List<BarberModel> listbarber2 = [];
-  //   List<BarberModel> listbarber3 = [];
-  //   List<BarberModel> listbarber4 = [];
-
-  //   // เช็คประเภท ร้าน
-  //   if (valueman == false && valuewoman == false) {
-  //     listbarber = barberModel;
-  //   }
-  //   if (valueman == true) {
-  //     for (var i = 0; i < barberModel.length; i++) {
-  //       if (barberModel[i].typebarber == "man") {
-  //         listbarber.add(barberModel[i]);
-  //       }
-  //     }
-  //   }
-  //   if (valuewoman == true) {
-  //     for (var i = 0; i < barberModel.length; i++) {
-  //       if (barberModel[i].typebarber == "woman") {
-  //         listbarber.add(barberModel[i]);
-  //       }
-  //     }
-  //   }
-  //   // for (var i = 0; i < listbarber.length; i++) {
-  //   //   print("step 1 ${listbarber[i]}");
-  //   // }
-
-  //   // เช็คkey word
-  //   if (searchController.text != "") {
-  //     List<BarberModel> databarber = listbarber;
-  //     for (var i = 0; i < databarber.length; i++) {
-  //       if (databarber[i]
-  //           .shopname
-  //           .toLowerCase()
-  //           .contains(searchController.text.toLowerCase())) {
-  //         setState(() {
-  //           listbarber2.add(databarber[i]);
-  //         });
-  //       }
-  //     }
-  //   } else {
-  //     listbarber2 = listbarber;
-  //   }
-  //   for (var i = 0; i < listbarber2.length; i++) {
-  //     print("step 2 ${listbarber2[i]}");
-  //   }
-
-  //   // เช็ค อำเภอ ตำบล
-  //   if (selectedValueDis != "อำเภอทั้งหมด ") {
-  //     for (var i = 0; i < listbarber2.length; i++) {
-  //       if (listbarber2[i].districtl == selectedValueDis!.trim()) {
-  //         listbarber3.add(listbarber2[i]);
-  //       }
-  //     }
-  //   } else {
-  //     listbarber3 = listbarber2;
-  //   }
-  //   for (var i = 0; i < listbarber3.length; i++) {
-  //     print("step 3 ${listbarber3[i]}");
-  //   }
-  //   if (selectedValueSubDis != "ตำบลทั้งหมด ") {
-  //     for (var i = 0; i < listbarber3.length; i++) {
-  //       if (listbarber3[i].subDistrict == selectedValueSubDis!.trim()) {
-  //         listbarber4.add(listbarber3[i]);
-  //       }
-  //     }
-  //   } else {
-  //     listbarber4 = listbarber3;
-  //   }
-  //   for (var i = 0; i < listbarber4.length; i++) {
-  //     print("step 4 ${listbarber4[i]}");
-  //   }
-  //   Navigator.pop(context);
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => SearchResultUser(
-  //         barberModel: listbarber4,
-  //         nameUser: nameUser,
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Future<Null> searchOperation(String searchText) async {
     List<String> type = ["man", "woman"];
     List<BarberModel> list = [];
@@ -478,13 +389,14 @@ class _SearchUserState extends State<SearchUser> {
                   dayopen: data[i]["dayopen"],
                   timeopen: data[i]["timeopen"],
                   timeclose: data[i]["timeclose"],
-                  lat: data[i]["lat"],
-                  lng: data[i]["lon"],
-                  districtl: data[i]["district"],
-                  subDistrict: data[i]["subdistrict"],
-                  addressdetails: data[i]["addressdetails"],
+                  lat: data[i]["position"]["lat"],
+                  lng: data[i]["position"]["lng"],
+                  districtl: data[i]["position"]["district"],
+                  subDistrict: data[i]["position"]["subdistrict"],
+                  addressdetails: data[i]["position"]["addressdetails"],
                   url: data[i]["url"],
-                  score: average));
+                  score: average,
+                  geoHasher: data[i]["position"]["geohash"]));
             }
             setState(() {
               barberModel = list;
@@ -519,31 +431,19 @@ class _SearchUserState extends State<SearchUser> {
                   dayopen: data[i]["dayopen"],
                   timeopen: data[i]["timeopen"],
                   timeclose: data[i]["timeclose"],
-                  lat: data[i]["lat"],
-                  lng: data[i]["lon"],
-                  districtl: data[i]["district"],
-                  subDistrict: data[i]["subdistrict"],
-                  addressdetails: data[i]["addressdetails"],
+                  lat: data[i]["position"]["lat"],
+                  lng: data[i]["position"]["lng"],
+                  districtl: data[i]["position"]["district"],
+                  subDistrict: data[i]["position"]["subdistrict"],
+                  addressdetails: data[i]["position"]["addressdetails"],
                   url: data[i]["url"],
-                  score: average));
+                  score: average,
+                  geoHasher: data[i]["position"]["geohash"]));
             }
             setState(() {
               barberModel = list;
             });
           });
     }
-
-    // ค้นหาด้วยคำ
-    // var data = await FirebaseFirestore.instance
-    //     .collection('Barber')
-    //     .orderBy("shopname").startAt([searchText]).endAt([searchText+"\uf8ff"])
-    //     .get()
-    //     .then((value) {
-    //       var data =  value.docs.map((e) => e.data()).toList();
-    //       print("ขั้น");
-    //      for ( var i = 0 ; i <data.length ; i++ ){
-    //      print(data[i]["shopname"]);
-    //      }
-    //     });
   }
 }

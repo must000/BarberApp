@@ -263,7 +263,9 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                                                           .colorSpringGreen),
                                             ),
                                             onPressed: () {
-                                              finishQueue().then((value) {
+                                              finishQueue(
+                                                      data[index]["user"]["id"])
+                                                  .then((value) {
                                                 setState(() {
                                                   idClick = "";
                                                 });
@@ -297,20 +299,38 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
 
   void fc() {
     Navigator.pop(context);
-    cancelQueue().then((value){
+    cancelQueue().then((value) {
       setState(() {
         idClick = "";
       });
-return MyDialog().normalDialog(context, "ยกเลิกคิวเรียบร้อย");
+      return MyDialog().normalDialog(context, "ยกเลิกคิวเรียบร้อย");
     });
   }
-Future<Null> cancelQueue()async{
-   await FirebaseFirestore.instance
+
+  Future<Null> cancelQueue() async {
+    await FirebaseFirestore.instance
         .collection('Queue')
         .doc(idClick)
         .update({"status": "cancel"});
-}
-  Future<Null> finishQueue() async {
+  }
+
+  Future<Null> finishQueue(String uid) async {
+    await FirebaseFirestore.instance
+        .collection("user")
+        .doc(uid)
+        .get()
+        .then((value) async {
+      if (value.exists) {
+        await FirebaseFirestore.instance.collection("user").doc(uid).update({
+          "score": FieldValue.increment(10),
+        });
+      } else {
+        await FirebaseFirestore.instance
+            .collection("user")
+            .doc(uid)
+            .set({"score": 10});
+      }
+    });
     await FirebaseFirestore.instance
         .collection('Queue')
         .doc(idClick)

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class BarberModel {
-   final String email;
+     final String email;
   final String name;
   final String lasiName;
   final String phone;
@@ -13,13 +13,14 @@ class BarberModel {
   final Map<String, dynamic> dayopen;
   final String timeopen;
   final String timeclose;
+  final String geoHasher;
   final String lat;
   final String lng;
   final String districtl;
   final String subDistrict;
   final String addressdetails;
   final String url;
-  late final double score;
+  final double score;
   BarberModel({
     required this.email,
     required this.name,
@@ -31,6 +32,7 @@ class BarberModel {
     required this.dayopen,
     required this.timeopen,
     required this.timeclose,
+    required this.geoHasher,
     required this.lat,
     required this.lng,
     required this.districtl,
@@ -51,6 +53,7 @@ class BarberModel {
     Map<String, dynamic>? dayopen,
     String? timeopen,
     String? timeclose,
+    String? geoHasher,
     String? lat,
     String? lng,
     String? districtl,
@@ -70,6 +73,7 @@ class BarberModel {
       dayopen: dayopen ?? this.dayopen,
       timeopen: timeopen ?? this.timeopen,
       timeclose: timeclose ?? this.timeclose,
+      geoHasher: geoHasher ?? this.geoHasher,
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       districtl: districtl ?? this.districtl,
@@ -92,6 +96,7 @@ class BarberModel {
       'dayopen': dayopen,
       'timeopen': timeopen,
       'timeclose': timeclose,
+      'geoHasher': geoHasher,
       'lat': lat,
       'lng': lng,
       'districtl': districtl,
@@ -114,6 +119,7 @@ class BarberModel {
       dayopen: Map<String, dynamic>.from(map['dayopen']),
       timeopen: map['timeopen'] ?? '',
       timeclose: map['timeclose'] ?? '',
+      geoHasher: map['geoHasher'] ?? '',
       lat: map['lat'] ?? '',
       lng: map['lng'] ?? '',
       districtl: map['districtl'] ?? '',
@@ -130,7 +136,7 @@ class BarberModel {
 
   @override
   String toString() {
-    return 'BarberModel(email: $email, name: $name, lasiName: $lasiName, phone: $phone, typebarber: $typebarber, shopname: $shopname, shoprecommend: $shoprecommend, dayopen: $dayopen, timeopen: $timeopen, timeclose: $timeclose, lat: $lat, lng: $lng, districtl: $districtl, subDistrict: $subDistrict, addressdetails: $addressdetails, url: $url, score: $score)';
+    return 'BarberModel(email: $email, name: $name, lasiName: $lasiName, phone: $phone, typebarber: $typebarber, shopname: $shopname, shoprecommend: $shoprecommend, dayopen: $dayopen, timeopen: $timeopen, timeclose: $timeclose, geoHasher: $geoHasher, lat: $lat, lng: $lng, districtl: $districtl, subDistrict: $subDistrict, addressdetails: $addressdetails, url: $url, score: $score)';
   }
 
   @override
@@ -148,6 +154,7 @@ class BarberModel {
       mapEquals(other.dayopen, dayopen) &&
       other.timeopen == timeopen &&
       other.timeclose == timeclose &&
+      other.geoHasher == geoHasher &&
       other.lat == lat &&
       other.lng == lng &&
       other.districtl == districtl &&
@@ -169,6 +176,7 @@ class BarberModel {
       dayopen.hashCode ^
       timeopen.hashCode ^
       timeclose.hashCode ^
+      geoHasher.hashCode ^
       lat.hashCode ^
       lng.hashCode ^
       districtl.hashCode ^

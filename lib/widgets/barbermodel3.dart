@@ -35,45 +35,46 @@ class BarberModel3 extends StatelessWidget {
         );
       },
       child: Container(
-        decoration:
-            BoxDecoration(border: Border.all(color: Contants.colorWhite)),
+        decoration: BoxDecoration(
+          border: Border.all(color: Contants.colorWhite),
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Column(
           children: [
             CachedNetworkImage(
-              height: 70,
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
               imageUrl: url,
               placeholder: (context, url) =>
                   LoadingAnimationWidget.inkDrop(color: Colors.black, size: 20),
+              imageBuilder: (context, imageProvider) => Container(
+                height: 90,
+                width: 120,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  image:
+                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                ),
+              ),
             ),
             Center(
               child: Text(
-                barberModel.shopname,
+                "${barberModel.shopname}  ",
                 style: Contants().h4white(),
               ),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const SizedBox(
-                  child: Text("5"),
+                Text(
+                  barberModel.score == 0 || barberModel.score.isNaN
+                      ? "-"
+                      : barberModel.score.toString(),
+                  style: Contants().h4white(),
                 ),
-                Container(
-                  child: Row(
-                    children: [
-                      Text(
-                        barberModel.score == 0 || barberModel.score.isNaN
-                            ? "-"
-                            : barberModel.score.toString(),
-                        style: Contants().h4white(),
-                      ),
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      )
-                    ],
-                  ),
-                ),
+                const Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                )
               ],
             )
           ],

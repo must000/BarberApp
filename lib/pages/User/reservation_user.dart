@@ -207,6 +207,13 @@ class _ReservationUserState extends State<ReservationUser> {
                                 const CircularProgressIndicator(),
                             errorWidget: (context, url, error) =>
                                 const Icon(Icons.error),
+                                imageBuilder: (context, imageProvider) => Container(
+                  width: 50.0,
+                  height: 50.0, decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
                           ),
                           title:
                               Text("ร้าน : ${data[index]["barber"]["name"]}"),
