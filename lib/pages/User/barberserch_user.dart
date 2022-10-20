@@ -35,6 +35,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
   _BarberSerchUserState(
       {required this.typeBarber, this.lat, this.lon, required this.nameUser});
   List<BarberModel>? barberResult = [];
+  List<BarberModel>? barber = [];
   Map<String, String>? urlImgFront;
   List<SQLiteModel> sqliteModels = [];
   @override
@@ -44,9 +45,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     });
     // TODO: implement initState
     super.initState();
-    // getDataBarber();
-    print("${geoHasher.encode(lon!, lat!)} $lat $lon ");
-   
+    getDataBarber();
   }
 
   Future<Null> getDataBarber() async {
@@ -58,26 +57,147 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     }
     final db = FirebaseFirestore.instance;
     final citiesRef = db.collection("Barber");
-    citiesRef
-        .where("typeBarber", isEqualTo: type)
-        .where("lat", isGreaterThan: "13.9")
-        .where("lat", isLessThan: "14.0")
-        .get()
-        .then((value) {
-      if (value.docs.isNotEmpty) {
-        for (var i = 0; i < value.docs.length; i++) {
-          print(value.docs[i]["email"]);
+    // print("$geohashstart ${lon! - 0.03} ${lat! - 0.03}");
+    // print("$geohashend ${lon! + 0.03} ${lat! + 0.03}");
+    if (lat == null || lon == null) {
+      print("1");
+      citiesRef
+          .where("typeBarber", isEqualTo: type)
+          .limit(40)
+          .get()
+          .then((value) {
+        print("2");
+
+        if (value.docs.isNotEmpty) {
+          for (var i = 0; i < value.docs.length; i++) {
+            print("13");
+            double average;
+            if (value.docs[i]["score"] != null) {
+              average = value.docs[i]["score"]["num"] /
+                  value.docs[i]["score"]["count"];
+            } else {
+              average = 0;
+            }
+            barberResult!.add(BarberModel(
+                    email: value.docs[i]["email"],
+                    name: value.docs[i]["name"],
+                    lasiName: value.docs[i]["lastname"],
+                    phone: value.docs[i]["phone"],
+                    typebarber: value.docs[i]["typeBarber"],
+                    shopname: value.docs[i]["shopname"],
+                    shoprecommend: value.docs[i]["shoprecommend"],
+                    dayopen: value.docs[i]["dayopen"],
+                    timeopen: value.docs[i]["timeopen"],
+                    timeclose: value.docs[i]["timeclose"],
+                    lat: value.docs[i]["position"]["lat"],
+                    lng: value.docs[i]["position"]["lng"],
+                    districtl: value.docs[i]["position"]["district"],
+                    subDistrict: value.docs[i]["position"]["subdistrict"],
+                    addressdetails: value.docs[i]["position"]["addressdetails"],
+                    url: value.docs[i]["url"],
+                    score: average,
+                    geoHasher: value.docs[i]["position"]["geohash"]));
+          }
+          setState(() {
+            
+          });
+        } else {
+          print("12");
         }
-      } else {
-        print("ไม่เจอส้นตีนอะไรเลย");
-      }
-    });
+        print("11");
+      });
+    } else {
+      print("3");
+
+      String geohashstart = geoHasher.encode(lon! - 0.03, lat! - 0.03);
+      String geohashend = geoHasher.encode(lon! + 0.03, lat! + 0.03);
+      citiesRef
+          .where("typeBarber", isEqualTo: type)
+          .orderBy("position.geohash")
+          .startAt([(geohashstart)])
+          .endAt([(geohashend)])
+          .limit(40)
+          .get()
+          .then((value) {
+            print("4");
+            if (value.docs.isNotEmpty) {
+              print(value.docs[0]["email"]);
+              for (var i = 0; i < value.docs.length; i++) {
+                print("5");
+                double average;
+                if (value.docs[i]["score"] != null) {
+                  average = value.docs[i]["score"]["num"] /
+                      value.docs[i]["score"]["count"];
+                } else {
+                  average = 0;
+                }
+                print("7");
+                barberResult!.add(BarberModel(
+                    email: value.docs[i]["email"],
+                    name: value.docs[i]["name"],
+                    lasiName: value.docs[i]["lastname"],
+                    phone: value.docs[i]["phone"],
+                    typebarber: value.docs[i]["typeBarber"],
+                    shopname: value.docs[i]["shopname"],
+                    shoprecommend: value.docs[i]["shoprecommend"],
+                    dayopen: value.docs[i]["dayopen"],
+                    timeopen: value.docs[i]["timeopen"],
+                    timeclose: value.docs[i]["timeclose"],
+                    lat: value.docs[i]["position"]["lat"],
+                    lng: value.docs[i]["position"]["lng"],
+                    districtl: value.docs[i]["position"]["district"],
+                    subDistrict: value.docs[i]["position"]["subdistrict"],
+                    addressdetails: value.docs[i]["position"]["addressdetails"],
+                    url: value.docs[i]["url"],
+                    score: average,
+                    geoHasher: value.docs[i]["position"]["geohash"]));
+              }
+            } else {
+              print("6");
+              citiesRef
+                  .where("typeBarber", isEqualTo: type)
+                  .limit(40)
+                  .get()
+                  .then((value) {
+                for (var i = 0; i < value.docs.length; i++) {
+                  double average;
+                  if (value.docs[i]["score"] != null) {
+                    average = value.docs[i]["score"]["num"] /
+                        value.docs[i]["score"]["count"];
+                  } else {
+                    average = 0;
+                  }
+                  barberResult!.add(BarberModel(
+                      email: value.docs[i]["email"],
+                      name: value.docs[i]["name"],
+                      lasiName: value.docs[i]["lastname"],
+                      phone: value.docs[i]["phone"],
+                      typebarber: value.docs[i]["typeBarber"],
+                      shopname: value.docs[i]["shopname"],
+                      shoprecommend: value.docs[i]["shoprecommend"],
+                      dayopen: value.docs[i]["dayopen"],
+                      timeopen: value.docs[i]["timeopen"],
+                      timeclose: value.docs[i]["timeclose"],
+                      lat: value.docs[i]["position"]["lat"],
+                      lng: value.docs[i]["position"]["lng"],
+                      districtl: value.docs[i]["position"]["district"],
+                      subDistrict: value.docs[i]["position"]["subdistrict"],
+                      addressdetails: value.docs[i]["position"]
+                          ["addressdetails"],
+                      url: value.docs[i]["url"],
+                      score: average,
+                      geoHasher: value.docs[i]["position"]["geohash"]));
+                }
+              });
+            }
+            setState(() {
+              barber = barberResult;
+              print("9");
+            });
+          });
+    }
   }
 
-  //  .orderBy("lat",)
-  //     .orderBy("lon")
-  //     .startAt(["13.9","13.9"])
-  //     .endAt(["14.0","14.0"])
   void mySetState2() {
     setState(() {
       barberLike;
@@ -98,8 +218,10 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
             children: [
               const SizedBox(height: 20),
               // sectionListview(size, "ร้านยอดฮิต"),
-              urlImgFront == null
-                  ? Container()
+              barber == []
+                  ? Container(
+                      child: Text("dwqdqwe"),
+                    )
                   : Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: GridView.builder(
@@ -116,9 +238,8 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                             children: [
                               BarberModel2(
                                   nameUser: nameUser,
-                                  barberModel: barberResult![index],
-                                  url: urlImgFront![
-                                      barberResult![index].email]!),
+                                  barberModel: barber![index],
+                                  url: barber![index].url),
                               Center(
                                 child: Container(
                                     margin: const EdgeInsets.only(
@@ -126,44 +247,38 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                     child: IconButton(
                                       icon: Icon(
                                         Icons.favorite,
-                                        color: barberLike
-                                                .contains(barberResult![index])
-                                            ? Colors.red
-                                            : Colors.white,
+                                        color:
+                                            barberLike.contains(barber![index])
+                                                ? Colors.red
+                                                : Colors.white,
                                       ),
                                       onPressed: () async {
-                                        if (barberLike.contains(
-                                                barberResult![index]) ==
+                                        if (barberLike
+                                                .contains(barber![index]) ==
                                             false) {
                                           SQLiteModel sqLiteModel = SQLiteModel(
-                                              email:
-                                                  barberResult![index].email);
+                                              email: barber![index].email);
                                           await SQLiteHelper()
                                               .insertValueToSQlite(sqLiteModel);
                                           setState(() {
-                                            barberLike
-                                                .add(barberResult![index]);
+                                            barberLike.add(barber![index]);
                                             urlImgLike.addAll({
-                                              barberResult![index].email:
+                                              barber![index].email:
                                                   urlImgFront![
-                                                      barberResult![index]
-                                                          .email]!
+                                                      barber![index].email]!
                                             });
                                           });
-                                          streamController2
-                                              .add(barberResult![index]);
+                                          streamController2.add(barber![index]);
                                         } else {
                                           await SQLiteHelper()
                                               .deleteSQLiteWhereId(
-                                                  barberResult![index].email);
+                                                  barber![index].email);
                                           setState(() {
-                                            barberLike
-                                                .remove(barberResult![index]);
-                                            urlImgLike.remove(
-                                                barberResult![index].email);
+                                            barberLike.remove(barber![index]);
+                                            urlImgLike
+                                                .remove(barber![index].email);
                                           });
-                                          streamController2
-                                              .add(barberResult![index]);
+                                          streamController2.add(barber![index]);
                                         }
                                       },
                                     )),
@@ -171,7 +286,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                             ],
                           );
                         },
-                        itemCount: barberResult!.length,
+                        itemCount: barber!.length,
                       ),
                     )
             ],

@@ -617,7 +617,6 @@ class _BarberUserState extends State<BarberUser> {
                           time: userData['time'],
                           price: userData['price']),
                     );
-                    // print("${price.toString()}");
                   });
                   }
      

@@ -139,7 +139,6 @@ class _HairCutUserState extends State<HairCutUser> {
       List<BarberModel> barberlist = [];
       if (alldata2.isNotEmpty) {
         for (var n = 0; n < alldata2.length; n++) {
-          print("dqdqwe4");
           double average;
           if (alldata2[n]["score"] != null) {
             average =
@@ -218,7 +217,6 @@ class _HairCutUserState extends State<HairCutUser> {
     String path =
         "https://api.longdo.com/map/services/address?lon=$lng&lat=$lat&nopostcode=0&noroad=0&noaoi=0&noelevation=0&nowater=0&key=${Contants.keyLongdomap}";
     await Dio().get(path).then((value) {
-      print(value);
       setState(() {
         dataPositionUser =
             "${value.data["subdistrict"]} ${value.data["district"]}";
@@ -233,7 +231,6 @@ class _HairCutUserState extends State<HairCutUser> {
     setState(() {
       lat = position.latitude;
       lng = position.longitude;
-      print("lat = $lat" + "lng = $lng");
     });
   }
 

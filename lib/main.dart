@@ -20,7 +20,6 @@ final Map<String, WidgetBuilder> map = {
   '/Login': (BuildContext context) => const Login(),
   '/index': (BuildContext context) => IndexPage(),
   '/registerUser': (BuildContext context) => const RegisterUser(),
-  
   '/contactAdminUser': (BuildContext context) => const ContactAdminUser(),
   '/aboutDevloper': (BuildContext context) => const AboutDeveloper(),
 };
