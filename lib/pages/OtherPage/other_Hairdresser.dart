@@ -60,10 +60,10 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                name==null||lastname == null
+                name==null
                     ? const Text("")
                     : Text(
-                        "ชื่อ $name $lastname",
+                        "ชื่อ $name",
                         style: Contants().h2white(),
                       ),
                 logout(context),

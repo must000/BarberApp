@@ -20,7 +20,7 @@ class SelectDateTimeUser extends StatefulWidget {
   String timeclose;
   String email;
   String nameUser, nameBarber, hairdresserID, nameHairresser;
-   String  phonebarber, phoneHairresser;
+  String phonebarber, phoneHairresser;
   SelectDateTimeUser(
       {Key? key,
       required this.servicemodel,
@@ -31,7 +31,8 @@ class SelectDateTimeUser extends StatefulWidget {
       required this.nameUser,
       required this.nameBarber,
       required this.hairdresserID,
-      required this.nameHairresser ,required this.phoneHairresser,
+      required this.nameHairresser,
+      required this.phoneHairresser,
       required this.phonebarber})
       : super(key: key);
 
@@ -57,7 +58,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
   String timeclose;
   String email;
   String nameUser, nameBarber, hairdresserID, nameHairresser;
-String  phonebarber, phoneHairresser;
+  String phonebarber, phoneHairresser;
   _SelectDateTimeUserState(
       {required this.servicemodel,
       required this.dayopen,
@@ -68,7 +69,7 @@ String  phonebarber, phoneHairresser;
       required this.nameBarber,
       required this.hairdresserID,
       required this.nameHairresser,
-       required this.phoneHairresser,
+      required this.phoneHairresser,
       required this.phonebarber});
   DateTime selectedDate = DateTime.now();
   String? uid;
@@ -244,24 +245,23 @@ String  phonebarber, phoneHairresser;
         setState(() {
           listQueue = list;
         });
-      } else {
-        print("ไม่มีข้อมูลคิว");
       }
-    } else {
-      print("ไม่มีค่า 2");
     }
-
-    // .onError((e) => print("$e error"));
   }
 
   void fc() {
+    print("d2");
+    Navigator.pop(context);
+    Navigator.pop(context);
+
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => RegisterPhoneUser(),
         ));
   }
-String? phoneUser;
+
+  String? phoneUser;
   Future<Null> findEmail() async {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance.authStateChanges().listen(
@@ -272,9 +272,9 @@ String? phoneUser;
           } else {
             print(event);
             //เช็คว่ามีเบอร์ไหม
-            if (event.phoneNumber ==null) {
-              Navigator.pop(context);
-              MyDialog().normalDialog(context, "กรุณายืนยันเบอร์โทรศัพท์");
+            if (event.phoneNumber == null) {
+              // Navigator.pop(context);
+              MyDialog(funcAction: fc).hardDialogv2(context, "เราจะนำคุณไปยืนยันเบอร์มือถือ", "ยังไม่ได้ยืนยันเบอร์มือถือ");
             } else {
               setState(() {
                 phoneUser = event.phoneNumber;
@@ -542,7 +542,10 @@ String? phoneUser;
               idUser: uid!,
               servicemodel: servicemodel,
               hairdresserID: hairdresserID,
-              nameHairresser: nameHairresser, phoneHairresser: phoneHairresser, phoneUser: phoneUser!, phonebarber: phonebarber,
+              nameHairresser: nameHairresser,
+              phoneHairresser: phoneHairresser,
+              phoneUser: phoneUser!,
+              phonebarber: phonebarber,
             ),
           ));
     }

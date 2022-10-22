@@ -115,6 +115,29 @@ class MyDialog {
     );
   }
 
+  Future<Null> hardDialogv2(
+    BuildContext context,
+    String string,
+    String title,
+  ) async {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: ListTile(
+          title: Text(title, style: const TextStyle(color: Colors.black)),
+          subtitle: Text(string),
+        ),
+        children: [
+          TextButton(
+            onPressed: funcAction,
+            child: const Text("OK"),
+          )
+        ],
+      ),
+    );
+  }
+
   Future<Null> superDialog(
     BuildContext context,
     String string,
@@ -146,6 +169,7 @@ class MyDialog {
   Future<Null> checkLoginDialog(BuildContext context) async {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => SimpleDialog(
         title: const ListTile(
           title: Text("กรุณาเข้าสู่ระบบก่อนทำรายการจอง",

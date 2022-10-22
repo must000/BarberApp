@@ -43,14 +43,6 @@ class _ContactAdminUserState extends State<ContactAdminUser> {
                   )),
               const SizedBox(height: 10),
               showCard(
-                  "จีเมล xxxxx@gmail.com",
-                  FaIcon(
-                  FontAwesomeIcons.google,
-                  color: Contants.colorOxfordBlue,
-                ),),
-              const SizedBox(height: 10),
-
-              showCard(
                 "ไลน์ @ADMIN",
                 FaIcon(
                   FontAwesomeIcons.line,

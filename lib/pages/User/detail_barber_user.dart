@@ -180,7 +180,7 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
                 Icons.schedule,
                 color: Contants.colorWhite,
               )),
-          contentDetail("$timeopen - $timeclose"),
+          contentDetail("$timeopen - $timeclose น."),
           headingDetail(
               "วันหยุด",
               Icon(

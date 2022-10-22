@@ -129,7 +129,13 @@ class _ReservationUserState extends State<ReservationUser> {
                               )),
                         ],
                       ),
-                      buildReservation(indexTab),
+                      Flexible(
+                        child: ListView(
+                          children: [
+                            buildReservation(indexTab),
+                          ],
+                        ),
+                      ),
                     ],
                   ));
   }
@@ -158,6 +164,7 @@ class _ReservationUserState extends State<ReservationUser> {
             var data = snapshot.data.docs;
             if (data.isNotEmpty) {
               return ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: data.length,
                 itemBuilder: (context, index) {
@@ -207,13 +214,14 @@ class _ReservationUserState extends State<ReservationUser> {
                                 const CircularProgressIndicator(),
                             errorWidget: (context, url, error) =>
                                 const Icon(Icons.error),
-                                imageBuilder: (context, imageProvider) => Container(
-                  width: 50.0,
-                  height: 50.0, decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.cover),
-                  ),
-                ),
+                            imageBuilder: (context, imageProvider) => Container(
+                              width: 50.0,
+                              height: 50.0,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover),
+                              ),
+                            ),
                           ),
                           title:
                               Text("ร้าน : ${data[index]["barber"]["name"]}"),
@@ -221,7 +229,10 @@ class _ReservationUserState extends State<ReservationUser> {
                             children: [
                               Text(
                                   "${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}"),
-                              const Icon(Icons.schedule,size: 17,),
+                              const Icon(
+                                Icons.schedule,
+                                size: 17,
+                              ),
                             ],
                           ),
                           trailing: Text(

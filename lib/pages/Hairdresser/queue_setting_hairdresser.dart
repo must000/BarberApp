@@ -52,10 +52,9 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
 
   List<Widget> dayOpen = [
     Container(
-            decoration: BoxDecoration(border: Border.all()),
-
-      child: const Text("เวลา"),
-      width: 100,
+      decoration: BoxDecoration(border: Border.all()),
+      child: Text("เวลา" ,style: Contants().h3white()),
+      width: 85,
       height: 56,
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.centerLeft,
@@ -69,7 +68,7 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
   List<String> bleaktimemockup = [];
   List<String> prepareInsert = [];
   List<String> preparedelete = [];
-  double widthSize = 100;
+  double widthSize = 85;
   Future<Null> getDataDayopenandTimeopen() async {
     print("dwdwrwr");
     final data =
@@ -84,7 +83,7 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
         dayOpen.add(
           Container(
             decoration: BoxDecoration(border: Border.all()),
-            child: const Text("จันทร์ "),
+            child:Text("จันทร์ ",style: Contants().h3white()),
             width: widthSize,
             height: 56,
             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
@@ -96,7 +95,7 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
       if (data["dayopen"]["tu"] == true) {
         dayOpen.add(Container(
           decoration: BoxDecoration(border: Border.all()),
-          child: const Text("อังคาร "),
+          child:  Text("อังคาร ",style: Contants().h3white()),
           width: widthSize,
           height: 56,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
@@ -107,7 +106,7 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
       if (data["dayopen"]["we"] == true) {
         dayOpen.add(Container(
           decoration: BoxDecoration(border: Border.all()),
-          child: const Text("พุธ "),
+          child:  Text("พุธ ",style: Contants().h3white()),
           width: widthSize,
           height: 56,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
@@ -118,8 +117,8 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
       if (data["dayopen"]["th"] == true) {
         dayOpen.add(Container(
           decoration: BoxDecoration(border: Border.all()),
-          child: const Text("พฤหัสบดี "),
-          width:widthSize,
+          child: Text("พฤหัสบดี ",style: Contants().h3white()),
+          width: widthSize,
           height: 56,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.centerLeft,
@@ -129,7 +128,7 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
       if (data["dayopen"]["fr"] == true) {
         dayOpen.add(Container(
           decoration: BoxDecoration(border: Border.all()),
-          child: const Text("ศุกร์ "),
+          child: Text("ศุกร์ ",style: Contants().h3white()),
           width: widthSize,
           height: 56,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
@@ -140,7 +139,7 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
       if (data["dayopen"]["sa"] == true) {
         dayOpen.add(Container(
           decoration: BoxDecoration(border: Border.all()),
-          child: const Text("เสาร์ "),
+          child: Text("เสาร์ ",style: Contants().h3white()),
           width: widthSize,
           height: 56,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
@@ -151,7 +150,7 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
       if (data["dayopen"]["su"] == true) {
         dayOpen.add(Container(
           decoration: BoxDecoration(border: Border.all()),
-          child: const Text("อาทิตย์ "),
+          child: Text("อาทิตย์ ",style: Contants().h3white()),
           width: widthSize,
           height: 56,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
@@ -160,12 +159,12 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
         listdayOpen.add("su");
       }
       DateTime t1 = DateFormat('yyyyy-MM-dd HH:mm:ss')
-          .parse('2020-04-03 ${data["timeopen"].replaceAll(' ', '')}:00');
+          .parse('2022-04-03 ${data["timeopen"].replaceAll(' ', '')}:00');
       DateTime t2 = DateFormat('yyyyy-MM-dd HH:mm:ss')
-          .parse('2020-04-03 ${data["timeclose"].replaceAll(' ', '')}:00');
+          .parse('2022-04-03 ${data["timeclose"].replaceAll(' ', '')}:00');
       Duration diff = t2.difference(t1);
       timeOpen = DateFormat('yyyyy-MM-dd HH:mm:ss')
-          .parse('2020-04-03 ${data["timeopen"].replaceAll(' ', '')}:00');
+          .parse('2022-04-03 ${data["timeopen"].replaceAll(' ', '')}:00');
       setState(() {
         timediff = diff.inHours;
         listdayOpen;
@@ -241,8 +240,10 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
         body: timediff == null
             ? LoadingAnimationWidget.inkDrop(color: Colors.black, size: 30)
             : HorizontalDataTable(
-                leftHandSideColumnWidth: 100,
-                rightHandSideColumnWidth: listdayOpen.length * 100,
+                leftHandSideColumnWidth: widthSize,
+                rightHandSideColumnWidth: listdayOpen.length * widthSize,
+                rightHandSideColBackgroundColor: Contants.colorOxfordBlue,
+                leftHandSideColBackgroundColor: Contants.colorOxfordBlue,
                 itemCount: timediff! * 2,
                 isFixedHeader: true,
                 headerWidgets: dayOpen,
@@ -253,7 +254,7 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
   Widget _generateFirstColumnRow(BuildContext context, int index) {
     return Container(
       child: Text(
-          "${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")} : ${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}"),
+          "${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")} : ${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}",style: Contants().h3white(),),
       width: widthSize,
       height: 52,
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
@@ -271,11 +272,14 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
       }
       listdata.add(Container(
         decoration: BoxDecoration(border: Border.all()),
-          width: widthSize,
-          height: 52,
-          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.centerLeft,
+        width: widthSize,
+        height: 52,
+        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+        alignment: Alignment.centerLeft,
         child: Checkbox(
+            checkColor: Contants.colorBlack,
+            activeColor: Colors.red,
+            // tristate: ,
             value: value,
             onChanged: (newvalue) {
               if (newvalue == true) {
@@ -285,7 +289,7 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
                   prepareInsert.add(
                       "${listdayOpen[i]} ${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}");
                   preparedelete.remove(
-                      "${listdayOpen[i]} ${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}"); 
+                      "${listdayOpen[i]} ${timeOpen!.add(Duration(minutes: index * 30)).hour.toString().padLeft(2, "0")}.${timeOpen!.add(Duration(minutes: index * 30)).minute.toString().padLeft(2, "0")}");
                 });
                 print(bleaktimemockup);
                 print(prepareInsert);

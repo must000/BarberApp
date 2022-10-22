@@ -80,7 +80,11 @@ class _HairCutUserState extends State<HairCutUser> {
           } else {
             average = 0;
           }
-   print("dqdqwe1");
+       
+          if (average.isNaN) {
+           average = 0;
+          }
+          print("dqdqwe1 $average");
           listLike.add(BarberModel(
               email: alldata[i]["email"],
               name: alldata[i]["name"],
@@ -111,7 +115,7 @@ class _HairCutUserState extends State<HairCutUser> {
 
   List<BarberModel> barberHistory = [];
   Future<Null> getHistoryshop() async {
-       print("dqdqwe2");
+    print("dqdqwe2");
     var data = await FirebaseFirestore.instance
         .collection('Queue')
         .where("user.id", isEqualTo: idUser)
@@ -119,12 +123,12 @@ class _HairCutUserState extends State<HairCutUser> {
         .then((value) async {
       var alldata = value.docs.map((e) => e.data()).toList();
       var listHistory = [];
-         print("dqdqwe3");
-         if (alldata.isEmpty) {
-         setState(() {
-            loadHistory = false;
-         });
-         }
+      print("dqdqwe3");
+      if (alldata.isEmpty) {
+        setState(() {
+          loadHistory = false;
+        });
+      }
       for (var i = 0; i < alldata.length; i++) {
         if (listHistory.contains(alldata[i]["barber"]["id"])) {
         } else {
@@ -139,12 +143,18 @@ class _HairCutUserState extends State<HairCutUser> {
       List<BarberModel> barberlist = [];
       if (alldata2.isNotEmpty) {
         for (var n = 0; n < alldata2.length; n++) {
-          double average;
+          double average = 0;
           if (alldata2[n]["score"] != null) {
+            print("dweqeqeqeq");
             average =
                 alldata2[n]["score"]["num"] / alldata2[n]["score"]["count"];
           } else {
+            print("dweqeqeqeq5");
+
             average = 0;
+          }
+             if (average.isNaN) {
+           average = 0;
           }
           barberlist.add(BarberModel(
               email: alldata2[n]["email"],
@@ -311,7 +321,6 @@ class _HairCutUserState extends State<HairCutUser> {
       child: Expanded(
         flex: 3,
         child: ListView.builder(
-          // itemExtent: 100,
           scrollDirection: Axis.horizontal,
           itemCount: barberLike.length,
           itemBuilder: (context, index) => Stack(

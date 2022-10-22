@@ -60,6 +60,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     // print("$geohashstart ${lon! - 0.03} ${lat! - 0.03}");
     // print("$geohashend ${lon! + 0.03} ${lat! + 0.03}");
     if (lat == null || lon == null) {
+      // ไม่เปิดตำแหน่ง
       print("1");
       citiesRef
           .where("typeBarber", isEqualTo: type)
@@ -67,39 +68,42 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
           .get()
           .then((value) {
         print("2");
-
         if (value.docs.isNotEmpty) {
           for (var i = 0; i < value.docs.length; i++) {
             print("13");
-            double average;
+                double average =0;
             if (value.docs[i]["score"] != null) {
               average = value.docs[i]["score"]["num"] /
                   value.docs[i]["score"]["count"];
             } else {
               average = 0;
             }
+               if (average.isNaN) {
+           average = 0;
+          }
             barberResult!.add(BarberModel(
-                    email: value.docs[i]["email"],
-                    name: value.docs[i]["name"],
-                    lasiName: value.docs[i]["lastname"],
-                    phone: value.docs[i]["phone"],
-                    typebarber: value.docs[i]["typeBarber"],
-                    shopname: value.docs[i]["shopname"],
-                    shoprecommend: value.docs[i]["shoprecommend"],
-                    dayopen: value.docs[i]["dayopen"],
-                    timeopen: value.docs[i]["timeopen"],
-                    timeclose: value.docs[i]["timeclose"],
-                    lat: value.docs[i]["position"]["lat"],
-                    lng: value.docs[i]["position"]["lng"],
-                    districtl: value.docs[i]["position"]["district"],
-                    subDistrict: value.docs[i]["position"]["subdistrict"],
-                    addressdetails: value.docs[i]["position"]["addressdetails"],
-                    url: value.docs[i]["url"],
-                    score: average,
-                    geoHasher: value.docs[i]["position"]["geohash"]));
+                email: value.docs[i]["email"],
+                name: value.docs[i]["name"],
+                lasiName: value.docs[i]["lastname"],
+                phone: value.docs[i]["phone"],
+                typebarber: value.docs[i]["typeBarber"],
+                shopname: value.docs[i]["shopname"],
+                shoprecommend: value.docs[i]["shoprecommend"],
+                dayopen: value.docs[i]["dayopen"],
+                timeopen: value.docs[i]["timeopen"],
+                timeclose: value.docs[i]["timeclose"],
+                lat: value.docs[i]["position"]["lat"],
+                lng: value.docs[i]["position"]["lng"],
+                districtl: value.docs[i]["position"]["district"],
+                subDistrict: value.docs[i]["position"]["subdistrict"],
+                addressdetails: value.docs[i]["position"]["addressdetails"],
+                url: value.docs[i]["url"],
+                score: average,
+                geoHasher: value.docs[i]["position"]["geohash"]));
           }
           setState(() {
-            
+            barber = barberResult;
+            print("14");
           });
         } else {
           print("12");
@@ -108,7 +112,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
       });
     } else {
       print("3");
-
+      // เปิดตำแหน่ง
       String geohashstart = geoHasher.encode(lon! - 0.03, lat! - 0.03);
       String geohashend = geoHasher.encode(lon! + 0.03, lat! + 0.03);
       citiesRef
@@ -121,16 +125,18 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
           .then((value) {
             print("4");
             if (value.docs.isNotEmpty) {
-              print(value.docs[0]["email"]);
               for (var i = 0; i < value.docs.length; i++) {
                 print("5");
-                double average;
+              double average =0;
                 if (value.docs[i]["score"] != null) {
                   average = value.docs[i]["score"]["num"] /
                       value.docs[i]["score"]["count"];
                 } else {
                   average = 0;
                 }
+                   if (average.isNaN) {
+           average = 0;
+          }
                 print("7");
                 barberResult!.add(BarberModel(
                     email: value.docs[i]["email"],
@@ -160,13 +166,16 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                   .get()
                   .then((value) {
                 for (var i = 0; i < value.docs.length; i++) {
-                  double average;
+                      double average =0;
                   if (value.docs[i]["score"] != null) {
                     average = value.docs[i]["score"]["num"] /
                         value.docs[i]["score"]["count"];
                   } else {
                     average = 0;
                   }
+                     if (average.isNaN) {
+           average = 0;
+          }
                   barberResult!.add(BarberModel(
                       email: value.docs[i]["email"],
                       name: value.docs[i]["name"],
@@ -209,6 +218,11 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
         backgroundColor: Contants.myBackgroundColor,
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          print(barber![0]);
+          print(barberLike[0]);
+          print(barberLike.contains(barber![0]));
+        }),
         appBar: AppBar(
           backgroundColor: Contants.myBackgroundColordark,
           title: Text(typeBarber == true ? "ร้านตัดผมชาย" : "ร้านเสริมสวย"),
@@ -220,7 +234,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
               // sectionListview(size, "ร้านยอดฮิต"),
               barber == []
                   ? Container(
-                      child: Text("dwqdqwe"),
+                      child: Text(""),
                     )
                   : Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -262,11 +276,6 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                               .insertValueToSQlite(sqLiteModel);
                                           setState(() {
                                             barberLike.add(barber![index]);
-                                            urlImgLike.addAll({
-                                              barber![index].email:
-                                                  urlImgFront![
-                                                      barber![index].email]!
-                                            });
                                           });
                                           streamController2.add(barber![index]);
                                         } else {
@@ -275,8 +284,6 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                                   barber![index].email);
                                           setState(() {
                                             barberLike.remove(barber![index]);
-                                            urlImgLike
-                                                .remove(barber![index].email);
                                           });
                                           streamController2.add(barber![index]);
                                         }

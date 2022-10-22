@@ -32,16 +32,15 @@ class BarberModel2 extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => BarberUser(
               nameUser: nameUser,
-  
               url: url,
-barberModel: barberModel,
+              barberModel: barberModel,
             ),
           ),
         );
       },
       child: Container(
-        
-        decoration: BoxDecoration(border: Border.all(color: Contants.colorWhite)),
+        decoration:
+            BoxDecoration(border: Border.all(color: Contants.colorWhite)),
         child: ListView(
           children: [
             CachedNetworkImage(
@@ -50,7 +49,6 @@ barberModel: barberModel,
               imageUrl: url,
               placeholder: (context, url) =>
                   LoadingAnimationWidget.inkDrop(color: Colors.black, size: 20),
-                
             ),
             ListTile(
               title: Text(
@@ -70,7 +68,10 @@ barberModel: barberModel,
                     "คะแนน X ",
                     style: Contants().h4white(),
                   ),
-                 const Icon(Icons.star,color: Colors.amber,)
+                  const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  )
                 ],
               ),
             )

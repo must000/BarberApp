@@ -152,7 +152,6 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: data.length,
               itemBuilder: (context, index) {
-                // data[index].id;
                 return GestureDetector(
                   onTap: () {
                     if (data[index]["status"] == "on") {
@@ -181,9 +180,14 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                                   "ชื่อ : ${data[index]["user"]["name"]}",
                                   style: Contants().h3white(),
                                 ),
-                                Text(
-                                  "เวลา ${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}",
-                                  style: Contants().h3white(),
+                                Row(
+                                  children: [
+                                    Icon(Icons.access_alarm,color: Contants.colorWhite,),
+                                    Text(
+                                      "${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")} น.",
+                                      style: Contants().h3white(),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -194,7 +198,11 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                                   style: Contants().h3white(),
                                 ),
                                 Text(
-                                  data[index]["status"],
+                                 data[index]["status"] == "on"
+                                      ? "รอ"
+                                      : data[index]["status"] == "succeed"
+                                          ? "สำเร็จ"
+                                          : "ยกเลิก",
                                   style: data[index]["status"] == "on"
                                       ? Contants().h2OxfordBlue()
                                       : data[index]["status"] == "succeed"
@@ -222,10 +230,12 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                             ),
                             Row(
                               children: [
-                                Text(
-                                  "เบอร์โทร 0${data[index]["user"]["phone"].toString().substring(3)}",
-                                  style: Contants().h3white(),
-                                ),
+                                data[index]["user"]["phone"].isEmpty
+                                    ? Text("")
+                                    : Text(
+                                        "เบอร์โทร 0${data[index]["user"]["phone"].toString().substring(3)}",
+                                        style: Contants().h3white(),
+                                      ),
                                 const Text("")
                               ],
                             ),

@@ -39,13 +39,6 @@ class _IndexPageState extends State<IndexPage> {
   void initState() {
     super.initState();
     findEmail().then((value) {
-      // if (isbarber != false) {
-      //   getDataBarberForUser().then((value) {
-      //     setState(() {
-      //       load = false;
-      //     });
-      //   });
-      // }
       setState(() {
         load = false;
       });
@@ -91,7 +84,6 @@ class _IndexPageState extends State<IndexPage> {
               load = false;
             });
           } else {
-            print("ไม่มี data");
           }
         }, onError: (error) => print("Listen failed: $error"));
       });

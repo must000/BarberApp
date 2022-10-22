@@ -136,16 +136,14 @@ class _SearchUserState extends State<SearchUser> {
                               items: itemsDistrict
                                   .map((item) => DropdownMenuItem<String>(
                                         value: item,
-                                        child: Text(
-                                          item,
-                                          style:Contants().h4OxfordBlue()
-                                        ),
+                                        child: Text(item,
+                                            style: Contants().h4OxfordBlue()),
                                       ))
                                   .toList(),
                               onChanged: (value) {
                                 FocusScope.of(context)
                                     .requestFocus(FocusNode());
-                                if (value == 'เมืองนนทบุรี ') {
+                                if (value == 'อ.เมืองนนทบุรี ') {
                                   itemSubDistricts = ["ตำบลทั้งหมด "] +
                                       District_CN.mueangNonthaburi;
                                 } else if (value == 'อ.บางกรวย') {
@@ -181,10 +179,8 @@ class _SearchUserState extends State<SearchUser> {
                             items: itemSubDistricts
                                 .map((item) => DropdownMenuItem<String>(
                                       value: item,
-                                      child: Text(
-                                        item,
-                                        style: Contants().h4OxfordBlue()
-                                      ),
+                                      child: Text(item,
+                                          style: Contants().h4OxfordBlue()),
                                     ))
                                 .toList(),
                             onChanged: (value) {
@@ -203,7 +199,24 @@ class _SearchUserState extends State<SearchUser> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Container(
+                  SizedBox(
+                    width: size * 0.55,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          onPrimary: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                        ),
+                        onPressed: () {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          searchOperation(searchController.text);
+                        },
+                        child:
+                            Text("ค้นหา ", style: Contants().h1OxfordBlue())),
+                  ),
+                  SizedBox(
                     width: size * 0.2,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -225,22 +238,6 @@ class _SearchUserState extends State<SearchUser> {
                         },
                         child: Text("ล้าง ", style: Contants().h2white())),
                   ),
-                  Container(
-                    width: size * 0.55,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                        ),
-                        onPressed: () {
-                          FocusScope.of(context).requestFocus(FocusNode());
-                          searchOperation(searchController.text);
-                        },
-                        child: Text("ค้นหา ", style: Contants().h1OxfordBlue())),
-                  ),
                 ],
               ),
               const Divider(
@@ -251,7 +248,7 @@ class _SearchUserState extends State<SearchUser> {
                 color: Colors.white,
               ),
               barberModel.isEmpty
-                  ? const Text("ไม่พบร้านทำผมที่อยู่ในเงื่อนไข")
+                  ? Text("ไม่พบร้านทำผมที่อยู่ในเงื่อนไข",style: Contants().h2Red(),)
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -288,7 +285,11 @@ class _SearchUserState extends State<SearchUser> {
                                         imageUrl: barberModel[index].url,
                                         width: size * 0.3,
                                         fit: BoxFit.cover,
-                                        errorWidget: (context, url, error) => const Icon(Icons.error,color: Colors.white,),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(
+                                          Icons.error,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                       SizedBox(
                                         width: size * 0.01,
@@ -337,6 +338,7 @@ class _SearchUserState extends State<SearchUser> {
       ),
     );
   }
+
   Future<Null> searchOperation(String searchText) async {
     List<String> type = ["man", "woman"];
     List<BarberModel> list = [];
@@ -359,10 +361,11 @@ class _SearchUserState extends State<SearchUser> {
         where = "district";
         key = selectedValueDis!;
       }
+      // print("position.${where}");
       var data = await FirebaseFirestore.instance
           .collection('Barber')
           .where("typeBarber", whereIn: type)
-          .where(where, isEqualTo: key)
+          .where("position.$where", isEqualTo: key.trim())
           .orderBy("shopname")
           .limit(50)
           .startAt([searchText])
