@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 List<BarberModel> barberLike = [];
 Map<String, String> urlImgLike = {};
+BarberModel? barberModelformanager;
 
 StreamController<BarberModel> streamController2 =
     StreamController<BarberModel>.broadcast();

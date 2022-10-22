@@ -1,5 +1,6 @@
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/Constant/route_cn.dart';
+import 'package:barber/pages/Authentication/chose_type.dart';
 import 'package:barber/pages/Authentication/registerhairdresser.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/provider/myproviders.dart';
@@ -223,14 +224,14 @@ class _LoginState extends State<Login> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const RegisterHairdresser()),
+                                          const ChoseType()),
                                 );
                               },
                               child: const Text(
-                                "ช่างทำผม ",
+                                "ร่วมงานกับเรา ",
                                 style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 20,
+                                    fontSize: 17,
                                     fontWeight: FontWeight.bold),
                               ),
                             ),

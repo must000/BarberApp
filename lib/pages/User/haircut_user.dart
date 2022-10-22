@@ -13,7 +13,7 @@ import 'package:barber/pages/User/barberserch_user.dart';
 import 'package:barber/pages/search_user.dart';
 import 'package:barber/utils/sqlite_helper.dart';
 import 'package:barber/widgets/barbermodel3.dart';
-
+import 'dart:math' as math;
 import '../../Constant/route_cn.dart';
 
 class HairCutUser extends StatefulWidget {
@@ -80,9 +80,9 @@ class _HairCutUserState extends State<HairCutUser> {
           } else {
             average = 0;
           }
-       
+
           if (average.isNaN) {
-           average = 0;
+            average = 0;
           }
           print("dqdqwe1 $average");
           listLike.add(BarberModel(
@@ -153,8 +153,8 @@ class _HairCutUserState extends State<HairCutUser> {
 
             average = 0;
           }
-             if (average.isNaN) {
-           average = 0;
+          if (average.isNaN) {
+            average = 0;
           }
           barberlist.add(BarberModel(
               email: alldata2[n]["email"],
@@ -430,24 +430,34 @@ class _HairCutUserState extends State<HairCutUser> {
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BarberSerchUser(
-                              nameUser: nameUser == "" ? "" : nameUser,
-                              typeBarber: true,
-                              lat: lat,
-                              lon: lng,
-                              stream2: streamController2.stream,
-                            )));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BarberSerchUser(
+                      nameUser: nameUser == "" ? "" : nameUser,
+                      typeBarber: true,
+                      lat: lat,
+                      lon: lng,
+                      stream2: streamController2.stream,
+                    ),
+                  ),
+                );
               },
-              child: Text(
-                "ตัดผมชาย ",
-                style: Contants().h2OxfordBlue(),
+              child: Column(
+                children: [
+                  Transform(
+                      transform: Matrix4.rotationY(math.pi),
+                      alignment: Alignment.center,
+                      child: Image.asset("images/man.png")),
+                  Text(
+                    "ตัดผมชาย ",
+                    style: Contants().h2OxfordBlue(),
+                  ),
+                ],
               ),
               style: ElevatedButton.styleFrom(primary: Contants.colorWhite),
             ),
             width: size * 0.4,
-            height: 40,
+            height: 100,
           ),
           SizedBox(
             child: ElevatedButton(
@@ -463,14 +473,19 @@ class _HairCutUserState extends State<HairCutUser> {
                               stream2: streamController2.stream,
                             )));
               },
-              child: Text(
-                "เสริมสวย ",
-                style: Contants().h2OxfordBlue(),
+              child: Column(
+                children: [
+                  Image.asset("images/woman.png"),
+                  Text(
+                    "เสริมสวย ",
+                    style: Contants().h2OxfordBlue(),
+                  ),
+                ],
               ),
               style: ElevatedButton.styleFrom(primary: Contants.colorWhite),
             ),
             width: size * 0.4,
-            height: 40,
+            height: 100,
           )
         ],
       ),

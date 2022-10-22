@@ -156,7 +156,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
     double size = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(backgroundColor: Contants.myBackgroundColordark,),
+      backgroundColor: Contants.myBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: GestureDetector(

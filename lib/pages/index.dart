@@ -3,6 +3,7 @@ import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/barbermodel.dart';
 import 'package:barber/data/hairdressermodel.dart';
 import 'package:barber/main.dart';
+import 'package:barber/pages/Barbermanager/member_barber.dart';
 import 'package:barber/pages/OtherPage/other_Hairdresser.dart';
 import 'package:barber/pages/Hairdresser/queue_Hairdresser.dart';
 import 'package:barber/pages/Hairdresser/service_barber.dart';
@@ -84,6 +85,53 @@ class _IndexPageState extends State<IndexPage> {
               load = false;
             });
           } else {
+            FirebaseFirestore.instance
+                .collection('Barber')
+                .doc(email)
+                .get()
+                .then((value) {
+              if (value.data() == null) {
+                print("ไม่ใช่ผู้จัดการร้าน");
+              } else {
+                print("ผู้จัดการร้าน");
+                double average = 0;
+                print(value.data()!["email"]);
+                if (value.data()!["score"] != null) {
+                  average = value.data()!["score"]["num"] /
+                      value.data()!["score"]["count"];
+                } else {
+                  average = 0;
+                }
+                if (average.isNaN) {
+                  average = 0;
+                }
+barberModelformanager = BarberModel(
+                email:  value.data()!["email"],
+                name:  value.data()!["name"],
+                lasiName:  value.data()!["lastname"],
+                phone:  value.data()!["phone"],
+                typebarber:  value.data()!["typeBarber"],
+                shopname:  value.data()!["shopname"],
+                shoprecommend:  value.data()!["shoprecommend"],
+                dayopen:  value.data()!["dayopen"],
+                timeopen:  value.data()!["timeopen"],
+                timeclose:  value.data()!["timeclose"],
+                lat:  value.data()!["position"]["lat"],
+                lng:  value.data()!["position"]["lng"],
+                districtl:  value.data()!["position"]["district"],
+                subDistrict: value.data()!["position"]["subdistrict"],
+                addressdetails:  value.data()!["position"]["addressdetails"],
+                url:  value.data()!["url"],
+                score: average,
+                geoHasher:  value.data()!["position"]["geohash"]);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MemberBarberPage(),
+                    ),
+                    (route) => false);
+              }
+            });
           }
         }, onError: (error) => print("Listen failed: $error"));
       });
