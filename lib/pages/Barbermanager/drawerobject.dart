@@ -3,11 +3,13 @@ import 'package:barber/pages/Barbermanager/album_barber.dart';
 import 'package:barber/pages/Barbermanager/member_barber.dart';
 import 'package:barber/pages/Barbermanager/setting_barber.dart';
 import 'package:barber/pages/Barbermanager/statistics_barber.dart';
+import 'package:barber/provider/myproviders.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../../Constant/contants.dart';
 
@@ -93,7 +95,8 @@ class DrawerObject extends StatelessWidget {
               ListTile(
                 title: Text('ออกจากระบบ', style: Contants().h3Red()),
                 onTap: () {
-                  Navigator.pop(context);
+                  final provider = Provider.of<MyProviders>(context, listen: false);
+          provider.logoutBB(context);
                 },
               ),
             ],

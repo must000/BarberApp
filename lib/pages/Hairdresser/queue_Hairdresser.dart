@@ -182,7 +182,10 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(Icons.access_alarm,color: Contants.colorWhite,),
+                                    Icon(
+                                      Icons.access_alarm,
+                                      color: Contants.colorWhite,
+                                    ),
                                     Text(
                                       "${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")} น.",
                                       style: Contants().h3white(),
@@ -198,7 +201,7 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                                   style: Contants().h3white(),
                                 ),
                                 Text(
-                                 data[index]["status"] == "on"
+                                  data[index]["status"] == "on"
                                       ? "รอ"
                                       : data[index]["status"] == "succeed"
                                           ? "สำเร็จ"

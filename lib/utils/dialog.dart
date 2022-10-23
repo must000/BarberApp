@@ -166,6 +166,41 @@ class MyDialog {
     );
   }
 
+  Future<Null> addHairresserDialog(
+    BuildContext context,
+    String idCode,
+    String fullname,
+    String phone,
+    String email,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: ListTile(
+          title: Text(idCode, style: const TextStyle(color: Colors.black)),
+          subtitle: Text(" $fullname \n $email \n $phone"),
+        ),
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("ยกเลิก", style: Contants().h4Red()),
+              ),
+              TextButton(
+                onPressed: funcAction,
+                child: Text("ยืนยัน", style: Contants().h4OxfordBlue()),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   Future<Null> checkLoginDialog(BuildContext context) async {
     showDialog(
       context: context,
