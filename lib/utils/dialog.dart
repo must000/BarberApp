@@ -115,6 +115,45 @@ class MyDialog {
     );
   }
 
+  Future<Null> confirmImage(
+    BuildContext context,
+    File file,
+  ) async {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: const ListTile(
+          title: Text("อัพโหลดรูปภาพ", style: TextStyle(color: Colors.black)),
+        ),
+        children: [
+          Image.file(file),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton(
+                   style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.all<Color>(Contants.colorSpringGreen),
+    ),
+                onPressed: funcAction,
+                child: const Text("ยืนยัน"),
+              ),
+              ElevatedButton(
+                 style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.all<Color>(Contants.colorRed),
+    ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("ยกเลิก"),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   Future<Null> hardDialogv2(
     BuildContext context,
     String string,
@@ -151,15 +190,20 @@ class MyDialog {
           subtitle: Text(string),
         ),
         children: [
-          TextButton(
-            onPressed: funcAction,
-            child: const Text("ยืนยัน"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text("ยกเลิก"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              TextButton(
+                onPressed: funcAction,
+                child: const Text("ยืนยัน"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("ยกเลิก"),
+              ),
+            ],
           ),
         ],
       ),

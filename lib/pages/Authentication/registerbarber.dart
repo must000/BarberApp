@@ -156,7 +156,9 @@ class _RegisterBarberState extends State<RegisterBarber> {
     double size = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(backgroundColor: Contants.myBackgroundColordark,),
+      appBar: AppBar(
+        backgroundColor: Contants.myBackgroundColordark,
+      ),
       backgroundColor: Contants.myBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -173,14 +175,14 @@ class _RegisterBarberState extends State<RegisterBarber> {
                   inputEmail(size),
                   inputPassword(size),
                   inputRePassword(size),
-                  inputPhoneNumber(size),
+                  // inputPhoneNumber(size),
                   radiobuttonTypeBarber(),
                   inputNameShop(size),
                   inputRecommentShop(size),
-                  const Text("เวลาเปิด-ปิด"),
+                 Text("เวลาเปิด-ปิด",style: Contants().h3white()),
                   showTimeOpenAndTimeClose(),
                   inputTimeOpenAndTimeClose(),
-                  const Text("วันที่เปิด"),
+                 Text("วันที่เปิด",style: Contants().h3white(),),
                   checkboxDayOpen(),
                   mapLocation(size),
                   buttonMovePosition(),
@@ -189,9 +191,20 @@ class _RegisterBarberState extends State<RegisterBarber> {
                   inputDetailLocation(size),
                   imgPhotoShop(size, context),
                   buttonChangeImgPhotoShop(context),
-                  const Text("อัลบั้มของร้าน"),
-                  inputAlbum(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "เพิ่มอัลบั้มรูปภาพ",
+                        style: Contants().h3white(),
+                      ),
+                      inputAlbum(),
+                    ],
+                  ),
                   albumShop(),
+                  SizedBox(
+                    height: 20,
+                  ),
                   buttonRegister(),
                 ],
               ),
@@ -232,15 +245,19 @@ class _RegisterBarberState extends State<RegisterBarber> {
     );
   }
 
-  InkWell buttonMovePosition() {
-    return InkWell(
-      child: const ListTile(
-        title: Text("My position"),
-        leading: Icon(Icons.wrong_location),
+  Widget buttonMovePosition() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: InkWell(
+        child: ListTile(
+          tileColor: Contants.colorWhite,
+          title: const Text("My position"),
+          leading: const Icon(Icons.wrong_location),
+        ),
+        onTap: () {
+          proceedMoveLongdoMap(lat!, lng!);
+        },
       ),
-      onTap: () {
-        proceedMoveLongdoMap(lat!, lng!);
-      },
     );
   }
 
@@ -266,37 +283,47 @@ class _RegisterBarberState extends State<RegisterBarber> {
     );
   }
 
-  ElevatedButton buttonRegister() {
-    return ElevatedButton(
-      onPressed: () async {
-        var location = await map.currentState?.call("location");
-        groupDayOpen = {
-          'su': su,
-          'mo': mo,
-          'tu': tu,
-          'we': we,
-          'th': th,
-          'fr': fr,
-          'sa': sa
-        };
-        print("location =>> $location");
-        var latx = cutlat(location);
-        var lonx = cutlon(location);
-        if (formKey.currentState!.validate()) {
-          if (groupTypeBarber == null) {
-            MyDialog().normalDialog(context, "กรุณาเลือกประเภทของร้าน");
+  Widget buttonRegister() {
+    return Container(
+      height: 50,
+      child: ElevatedButton(
+        onPressed: () async {
+          var location = await map.currentState?.call("location");
+          groupDayOpen = {
+            'su': su,
+            'mo': mo,
+            'tu': tu,
+            'we': we,
+            'th': th,
+            'fr': fr,
+            'sa': sa
+          };
+          print("location =>> $location");
+          var latx = cutlat(location);
+          var lonx = cutlon(location);
+          if (formKey.currentState!.validate()) {
+            if (groupTypeBarber == null) {
+              MyDialog().normalDialog(context, "กรุณาเลือกประเภทของร้าน");
+            }
+            // else if (subDistrict == null) {
+            //   MyDialog().normalDialog(context, "กรุณาเลือกตำบลที่ร้านอยู่");
+            // }
+            else if (photoShopFront == null) {
+              MyDialog().normalDialog(context, "กรุณาเพิ่มรูปหน้าร้าน");
+            } else {
+              apigetDataDistrict(latx, lonx);
+            }
           }
-          // else if (subDistrict == null) {
-          //   MyDialog().normalDialog(context, "กรุณาเลือกตำบลที่ร้านอยู่");
-          // }
-          else if (photoShopFront == null) {
-            MyDialog().normalDialog(context, "กรุณาเพิ่มรูปหน้าร้าน");
-          } else {
-            apigetDataDistrict(latx, lonx);
-          }
-        }
-      },
-      child: const Text('ลงทะเบียนร้าน'),
+        },
+        child: Text(
+          'ลงทะเบียนร้าน',
+          style: Contants().h2OxfordBlue(),
+        ),
+        style: ButtonStyle(
+          backgroundColor:
+              MaterialStateProperty.all<Color>(Contants.colorSpringGreen),
+        ),
+      ),
     );
   }
 
@@ -455,12 +482,17 @@ class _RegisterBarberState extends State<RegisterBarber> {
     debugPrint("บันทึกสำเร็จ");
   }
 
-  ElevatedButton inputAlbum() {
-    return ElevatedButton(
-        onPressed: () {
-          openImages();
-        },
-        child: const Text("เพิ่มอัลบั้มรูปภาพ"));
+  IconButton inputAlbum() {
+    return IconButton(
+      onPressed: () {
+        openImages();
+      },
+      icon: Icon(
+        Icons.add_to_photos,
+        color: Contants.colorSpringGreen,
+        size: 30,
+      ),
+    );
   }
 
   Container imgPhotoShop(double size, BuildContext context) {
@@ -503,7 +535,9 @@ class _RegisterBarberState extends State<RegisterBarber> {
         },
         maxLines: 4,
         decoration: InputDecoration(
-          labelText: "รายละเอียดที่อยู่ของร้าน",
+          filled: true,
+          fillColor: Colors.white,
+          labelText: "รายละเอียดที่อยู่ร้าน",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -528,7 +562,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
               },
               child: const Text("จ"),
               style: ElevatedButton.styleFrom(
-                primary: su == false ? Colors.blue : Colors.red,
+                primary:
+                    su == false ? Contants.colorSpringGreen : Contants.colorRed,
                 shape: const CircleBorder(),
               ),
             ),
@@ -545,7 +580,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
               child: const Text("อ"),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
-                primary: mo == false ? Colors.blue : Colors.red,
+                primary:
+                    mo == false ? Contants.colorSpringGreen : Contants.colorRed,
               ),
             ),
           ),
@@ -561,7 +597,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
               child: const Text("พ"),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
-                primary: tu == false ? Colors.blue : Colors.red,
+                primary:
+                    tu == false ? Contants.colorSpringGreen : Contants.colorRed,
               ),
             ),
           ),
@@ -577,7 +614,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
               child: const Text("พฤ"),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
-                primary: we == false ? Colors.blue : Colors.red,
+                primary:
+                    we == false ? Contants.colorSpringGreen : Contants.colorRed,
               ),
             ),
           ),
@@ -593,7 +631,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
               child: const Text("ศ"),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
-                primary: th == false ? Colors.blue : Colors.red,
+                primary:
+                    th == false ? Contants.colorSpringGreen : Contants.colorRed,
               ),
             ),
           ),
@@ -609,7 +648,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
               child: const Text("ส"),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
-                primary: fr == false ? Colors.blue : Colors.red,
+                primary:
+                    fr == false ? Contants.colorSpringGreen : Contants.colorRed,
               ),
             ),
           ),
@@ -625,7 +665,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
               child: const Text("อา"),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
-                primary: sa == false ? Colors.blue : Colors.red,
+                primary:
+                    sa == false ? Contants.colorSpringGreen : Contants.colorRed,
               ),
             ),
           ),
@@ -642,13 +683,18 @@ class _RegisterBarberState extends State<RegisterBarber> {
           onPressed: () {
             _selectTime();
           },
-          child: const Text("เวลาเปิด"),
+          child:Text("เวลาเปิด",style: Contants().h3OxfordBlue()),
+          style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.all<Color>(Contants.colorYellow),
+    ),
         ),
         ElevatedButton(
           onPressed: () {
             _selectTime2();
           },
-          child: const Text("เวลาปิด"),
+          child: Text("เวลาปิด",style: Contants().h3OxfordBlue()),  style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.all<Color>(Contants.colorYellow),
+    ),
         ),
       ],
     );
@@ -659,9 +705,9 @@ class _RegisterBarberState extends State<RegisterBarber> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Text(
-            "${_timeopen.hour.toString().padLeft(2, "0")} : ${_timeopen.minute.toString().padLeft(2, "0")}"),
+            "${_timeopen.hour.toString().padLeft(2, "0")} : ${_timeopen.minute.toString().padLeft(2, "0")}",style: Contants().h3white()),
         Text(
-            "${_timeclose.hour.toString().padLeft(2, "0")} : ${_timeclose.minute.toString().padLeft(2, "0")}")
+            "${_timeclose.hour.toString().padLeft(2, "0")} : ${_timeclose.minute.toString().padLeft(2, "0")}",style: Contants().h3white())
       ],
     );
   }
@@ -679,6 +725,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
         },
         maxLines: 4,
         decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
           labelText: "คำแนะนำร้าน",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -701,6 +749,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
           }
         },
         decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
           labelText: "ชื่อร้าน",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -722,9 +772,11 @@ class _RegisterBarberState extends State<RegisterBarber> {
               groupTypeBarber = "man";
             });
           },
-          child: const Text("ร้านตัดผมชาย"),
+          child: Text("ร้านตัดผมชาย", style: Contants().h3OxfordBlue()),
           style: ElevatedButton.styleFrom(
-              primary: groupTypeBarber == "man" ? Colors.red : Colors.grey,
+              primary: groupTypeBarber == "man"
+                  ? Contants.colorSpringGreen
+                  : Colors.grey,
               onPrimary: Colors.black),
         ),
         ElevatedButton(
@@ -733,37 +785,44 @@ class _RegisterBarberState extends State<RegisterBarber> {
               groupTypeBarber = "woman";
             });
           },
-          child: const Text("ร้านเสริมสวย"),
+          child: Text(
+            "ร้านเสริมสวย",
+            style: Contants().h3OxfordBlue(),
+          ),
           style: ElevatedButton.styleFrom(
-              primary: groupTypeBarber == "woman" ? Colors.red : Colors.grey,
+              primary: groupTypeBarber == "woman"
+                  ? Contants.colorSpringGreen
+                  : Colors.grey,
               onPrimary: Colors.black),
         ),
       ],
     );
   }
 
-  Container inputPhoneNumber(double size) {
-    return Container(
-      margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
-      child: TextFormField(
-        keyboardType: TextInputType.phone,
-        controller: phoneController,
-        validator: (value) {
-          if (value!.isEmpty) {
-            return "กรุณากรอกเบอร์โทร";
-          }
-        },
-        decoration: InputDecoration(
-          labelText: "phone",
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          focusedBorder:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-      ),
-    );
-  }
+  // Container inputPhoneNumber(double size) {
+  //   return Container(
+  //     margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
+  //     child: TextFormField(
+  //       keyboardType: TextInputType.phone,
+  //       controller: phoneController,
+  //       validator: (value) {
+  //         if (value!.isEmpty) {
+  //           return "กรุณากรอกเบอร์โทร";
+  //         }
+  //       },
+  //       decoration: InputDecoration(
+  //         filled: true,
+  //         fillColor: Colors.white,
+  //         labelText: "เบอร์ ",
+  //         enabledBorder: OutlineInputBorder(
+  //           borderRadius: BorderRadius.circular(10),
+  //         ),
+  //         focusedBorder:
+  //             OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Container inputRePassword(double size) {
     return Container(
@@ -779,7 +838,9 @@ class _RegisterBarberState extends State<RegisterBarber> {
         },
         obscureText: true,
         decoration: InputDecoration(
-          labelText: "Confirm Password",
+          filled: true,
+          fillColor: Colors.white,
+          labelText: "ยืนยันรหัสผ่าน",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -803,7 +864,9 @@ class _RegisterBarberState extends State<RegisterBarber> {
         },
         obscureText: true,
         decoration: InputDecoration(
-          labelText: "Password",
+          filled: true,
+          fillColor: Colors.white,
+          labelText: "รหัสผ่าน",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -826,7 +889,9 @@ class _RegisterBarberState extends State<RegisterBarber> {
         controller: emailController,
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
-          labelText: "Email",
+          filled: true,
+          fillColor: Colors.white,
+          labelText: "อีเมล",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -849,7 +914,9 @@ class _RegisterBarberState extends State<RegisterBarber> {
         controller: nameController,
         keyboardType: TextInputType.name,
         decoration: InputDecoration(
-          labelText: "Name",
+          filled: true,
+          fillColor: Colors.white,
+          labelText: "ชื่อ",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -872,7 +939,9 @@ class _RegisterBarberState extends State<RegisterBarber> {
         controller: lastnameController,
         keyboardType: TextInputType.name,
         decoration: InputDecoration(
-          labelText: "Lastname",
+          filled: true,
+          fillColor: Colors.white,
+          labelText: "นามสกุล",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),

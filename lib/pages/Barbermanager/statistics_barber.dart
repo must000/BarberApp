@@ -1,8 +1,6 @@
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/pages/Barbermanager/drawerobject.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class StatisticeBarber extends StatefulWidget {
   const StatisticeBarber({Key? key}) : super(key: key);
@@ -19,7 +17,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
         backgroundColor: Contants.myBackgroundColordark,
       ),
       backgroundColor: Contants.myBackgroundColor,
-      body: Text("ข้อมูลผู้ใช้"), drawer: DrawerObject()
+      body: const Text("ข้อมูลผู้ใช้"), drawer: DrawerObject()
     );
   }
 }
