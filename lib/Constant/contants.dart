@@ -119,4 +119,24 @@ class Contants {
         color:  colorGreySilver,
         fontFamily: font,
       );
+              TextStyle h1yellow() => TextStyle(
+        fontSize: 30,
+        color: colorYellow,
+        fontFamily: font,
+      );
+  TextStyle h2yellow() => TextStyle(
+        fontSize: 25,
+        color:  colorYellow,
+        fontFamily: font,
+      );
+  TextStyle h3yellow() => TextStyle(
+        fontSize: 20,
+        color: colorYellow,
+        fontFamily: font,
+      );
+  TextStyle h4yellow() => TextStyle(
+        fontSize: 15,
+        color:  colorYellow,
+        fontFamily: font,
+      );
 }

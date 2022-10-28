@@ -1,23 +1,18 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/Constant/district_cn.dart';
-import 'package:barber/pages/index.dart';
-import 'package:barber/pages/locationpage.dart';
-import 'package:barber/pages/test.dart';
+import 'package:barber/pages/Authentication/register_phone_user.dart';
 import 'package:barber/utils/dialog.dart';
-import 'package:barber/utils/show_progress.dart';
-import 'package:barber/widgets/barbermodel1.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dart_geohash/dart_geohash.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:longdo_maps_api3_flutter/longdo_maps_api3_flutter.dart';
@@ -30,8 +25,8 @@ class RegisterBarber extends StatefulWidget {
 }
 
 class _RegisterBarberState extends State<RegisterBarber> {
-  TimeOfDay _timeopen = TimeOfDay(hour: 0, minute: 0);
-  TimeOfDay _timeclose = TimeOfDay(hour: 0, minute: 0);
+  TimeOfDay _timeopen = TimeOfDay(hour: 1, minute: 0);
+  TimeOfDay _timeclose = TimeOfDay(hour: 23, minute: 0);
   String? groupTypeBarber;
   Map<String, bool> groupDayOpen = {};
   bool su = false,
@@ -152,9 +147,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
         _animation,
       ]);
     }
-
     double size = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Contants.myBackgroundColordark,
@@ -179,15 +172,15 @@ class _RegisterBarberState extends State<RegisterBarber> {
                   radiobuttonTypeBarber(),
                   inputNameShop(size),
                   inputRecommentShop(size),
-                 Text("เวลาเปิด-ปิด",style: Contants().h3white()),
-                  showTimeOpenAndTimeClose(),
-                  inputTimeOpenAndTimeClose(),
-                 Text("วันที่เปิด",style: Contants().h3white(),),
+                  buildtimeOpen(),
+                  buildtimeClose(),
+                  Text(
+                    "วันที่เปิด",
+                    style: Contants().h3white(),
+                  ),
                   checkboxDayOpen(),
                   mapLocation(size),
                   buttonMovePosition(),
-                  // inputDistrict(),
-                  // inputSubDistrict(),
                   inputDetailLocation(size),
                   imgPhotoShop(size, context),
                   buttonChangeImgPhotoShop(context),
@@ -202,7 +195,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
                     ],
                   ),
                   albumShop(),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   buttonRegister(),
@@ -251,8 +244,11 @@ class _RegisterBarberState extends State<RegisterBarber> {
       child: InkWell(
         child: ListTile(
           tileColor: Contants.colorWhite,
-          title: const Text("My position"),
-          leading: const Icon(Icons.wrong_location),
+          title: const Text("ย้ายไปยังที่อยู่ของฉัน"),
+          leading: Icon(
+            Icons.wrong_location,
+            color: Contants.colorOxfordBlue,
+          ),
         ),
         onTap: () {
           proceedMoveLongdoMap(lat!, lng!);
@@ -305,9 +301,6 @@ class _RegisterBarberState extends State<RegisterBarber> {
             if (groupTypeBarber == null) {
               MyDialog().normalDialog(context, "กรุณาเลือกประเภทของร้าน");
             }
-            // else if (subDistrict == null) {
-            //   MyDialog().normalDialog(context, "กรุณาเลือกตำบลที่ร้านอยู่");
-            // }
             else if (photoShopFront == null) {
               MyDialog().normalDialog(context, "กรุณาเพิ่มรูปหน้าร้าน");
             } else {
@@ -331,7 +324,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
     String path =
         "https://api.longdo.com/map/services/address?lon=$lon&lat=$lat&nopostcode=0&noroad=0&noaoi=0&noelevation=0&nowater=0&key=${Contants.keyLongdomap}";
     await Dio().get(path).then((value) {
-      String dis = value.data['district'];
+      if (value.data["province"]=="จ.นนทบุรี") {
+            String dis = value.data['district'];
       String dissub = value.data['subdistrict'];
       return registerData(
         nameController.text.trim(),
@@ -351,6 +345,11 @@ class _RegisterBarberState extends State<RegisterBarber> {
         dis.toString(),
         detailLocationController.text,
       );
+      }
+      else{
+        MyDialog().normalDialog(context, "ร้านไม่ได้อยู่ในจังหวัดนนทบุรี");
+      }
+
     });
   }
 
@@ -413,9 +412,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
         ).then((value) => uploadphoto(email).then((value) {
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => IndexPage(),
-                  ),
+                  MaterialPageRoute(builder: (context) => RegisterPhoneUser(emailBarber: email,)),
                   (route) => false);
             }).catchError((value) {
               MyDialog().stDialog(context, value.message);
@@ -430,7 +427,17 @@ class _RegisterBarberState extends State<RegisterBarber> {
     final path = 'imgfront/$email';
     final file = File(photoShopFront!.path);
     final ref = FirebaseStorage.instance.ref().child(path);
-    ref.putFile(file);
+    print("อัพโหลด");
+    await ref.putFile(file).then((p0) async {
+      await ref.getDownloadURL().then((value) async {
+        print("url หน้าร้าน คือ $value");
+        await FirebaseFirestore.instance
+            .collection('Barber')
+            .doc(email)
+            .update({"url": value});
+      });
+    });
+
     if (imagefiles != null) {
       for (var i = 0; i < imagefiles!.length; i++) {
         int x = Random().nextInt(1000000);
@@ -459,11 +466,13 @@ class _RegisterBarberState extends State<RegisterBarber> {
     String subDestrict,
     String addressdetails,
   ) async {
+    var geoHasher = GeoHasher();
+    String geohashstart =
+        geoHasher.encode(double.parse(lon), double.parse(lat));
     await FirebaseFirestore.instance.collection('Barber').doc(email).set({
       "email": email,
       "name": name,
       "lastname": lastname,
-      "phone": phone,
       "typeBarber": typeBarber,
       "shopname": shopName,
       "shoprecommend": shopRecommend,
@@ -472,12 +481,21 @@ class _RegisterBarberState extends State<RegisterBarber> {
           "${timeopen.hour.toString().padLeft(2, "0")} : ${_timeopen.minute.toString().padLeft(2, "0")}",
       "timeclose":
           "${timeclose.hour.toString().padLeft(2, "0")} : ${_timeclose.minute.toString().padLeft(2, "0")}",
-      "lat": lat,
-      "lon": lon,
-      "district": destrict,
-      "subdistrict": subDestrict,
-      "addressdetails": addressdetails,
-      "countservice": 1,
+      "position": {
+        "addressdetails": addressdetails,
+        "district": destrict,
+        "subdistrict": subDestrict,
+        "lat": lat,
+        "lon": lon,
+        "geohash": geohashstart
+      },
+      "score": {
+        "count": 0,
+        "num": 0,
+      },
+      "phone": "",
+      "url": "",
+      // "countservice": 1,
     });
     debugPrint("บันทึกสำเร็จ");
   }
@@ -675,40 +693,226 @@ class _RegisterBarberState extends State<RegisterBarber> {
     );
   }
 
-  Row inputTimeOpenAndTimeClose() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        ElevatedButton(
+  Widget buildtimeClose() {
+    return ListTile(
+      title: Text(
+        "${_timeclose.hour.toString().padLeft(2, "0")} : ${_timeclose.minute.toString().padLeft(2, "0")}",
+        style: Contants().h3white(),
+      ),
+      subtitle: Text(
+        "เวลาปิดร้าน",
+        style: Contants().h4Grey(),
+      ),
+      leading: Icon(
+        Icons.timer_off,
+        color: Contants.colorRed,
+      ),
+      trailing: TextButton(
           onPressed: () {
-            _selectTime();
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => SimpleDialog(
+                children: [
+                  TimePickerSpinner(
+                    minutesInterval: 30,
+                    is24HourMode: true,
+                    onTimeChange: (time) {
+                      setState(() {
+                        _timeclose =
+                            TimeOfDay(hour: time.hour, minute: time.minute);
+                      });
+                    },
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(Contants.colorSpringGreen),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+
+                      if (DateTime(
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day,
+                              _timeclose.hour,
+                              _timeclose.minute)
+                          .isAfter(DateTime(
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day,
+                              23,
+                              0))) {
+                        print("ไม่อยู่");
+                        Fluttertoast.showToast(
+                          msg:
+                              "ขออภัย เราไม่อนุญาตให้ปิดร้านหลัง 5 ทุ่ม", // message
+                          toastLength: Toast.LENGTH_SHORT, // length
+                          gravity: ToastGravity.CENTER, // location
+                        );
+                        setState(() {
+                          _timeclose = TimeOfDay(hour: 23, minute: 0);
+                        });
+                      } else if (DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  _timeclose.hour,
+                                  _timeclose.minute)
+                              .isBefore(DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  _timeopen.hour,
+                                  _timeopen.minute)) ||
+                          DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  _timeclose.hour,
+                                  _timeclose.minute) ==
+                              DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  _timeopen.hour,
+                                  _timeopen.minute)) {
+                        Fluttertoast.showToast(
+                          msg: "ต้องปิดร้านหลังเวลาเปิดเท่านั้น", // message
+                          toastLength: Toast.LENGTH_SHORT, // length
+                          gravity: ToastGravity.CENTER, // location
+                        );
+                        setState(() {
+                          _timeclose =
+                              TimeOfDay(hour: _timeopen.hour + 1, minute: 0);
+                        });
+                      } else {}
+                    },
+                    child: Text(
+                      "ตกลง",
+                      style: Contants().h3OxfordBlue(),
+                    ),
+                  ),
+                ],
+              ),
+            );
           },
-          child:Text("เวลาเปิด",style: Contants().h3OxfordBlue()),
-          style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.all<Color>(Contants.colorYellow),
-    ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            _selectTime2();
-          },
-          child: Text("เวลาปิด",style: Contants().h3OxfordBlue()),  style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.all<Color>(Contants.colorYellow),
-    ),
-        ),
-      ],
+          child: Text(
+            "เปลี่ยน",
+            style: Contants().h4yellow(),
+          )),
     );
   }
 
-  Row showTimeOpenAndTimeClose() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text(
-            "${_timeopen.hour.toString().padLeft(2, "0")} : ${_timeopen.minute.toString().padLeft(2, "0")}",style: Contants().h3white()),
-        Text(
-            "${_timeclose.hour.toString().padLeft(2, "0")} : ${_timeclose.minute.toString().padLeft(2, "0")}",style: Contants().h3white())
-      ],
+  Widget buildtimeOpen() {
+    return ListTile(
+      title: Text(
+        "${_timeopen.hour.toString().padLeft(2, "0")} : ${_timeopen.minute.toString().padLeft(2, "0")}",
+        style: Contants().h3white(),
+      ),
+      subtitle: Text(
+        "เวลาเปิดร้าน",
+        style: Contants().h4Grey(),
+      ),
+      leading: Icon(
+        Icons.timer,
+        color: Contants.colorSpringGreen,
+      ),
+      trailing: TextButton(
+          onPressed: () {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => SimpleDialog(
+                children: [
+                  TimePickerSpinner(
+                    minutesInterval: 30,
+                    is24HourMode: true,
+                    onTimeChange: (time) {
+                      setState(() {
+                        _timeopen =
+                            TimeOfDay(hour: time.hour, minute: time.minute);
+                      });
+                    },
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(Contants.colorSpringGreen),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      if (DateTime(
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day,
+                              _timeopen.hour,
+                              _timeopen.minute)
+                          .isBefore(DateTime(
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day,
+                              1,
+                              0))) {
+                        print("ไม่อยู่");
+                        Fluttertoast.showToast(
+                          msg:
+                              "ขออภัย เราไม่อนุญาตให้gปิดร้านก่อนตี 1", // message
+                          toastLength: Toast.LENGTH_SHORT, // length
+                          gravity: ToastGravity.CENTER, // location
+                        );
+                        setState(() {
+                          _timeopen = const TimeOfDay(hour: 1, minute: 0);
+                        });
+                      } else if (DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  _timeopen.hour,
+                                  _timeopen.minute)
+                              .isAfter(DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  _timeclose.hour,
+                                  _timeclose.minute)) ||
+                          DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  _timeopen.hour,
+                                  _timeopen.minute) ==
+                              DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  _timeclose.hour,
+                                  _timeclose.minute)) {
+                        Fluttertoast.showToast(
+                          msg: "ต้องเปิดร้านก่อนเวลาปิดเท่านั้น", // message
+                          toastLength: Toast.LENGTH_SHORT, // length
+                          gravity: ToastGravity.CENTER, // location
+                        );
+                        setState(() {
+                          _timeopen =
+                              TimeOfDay(hour: _timeclose.hour - 1, minute: 0);
+                        });
+                      }
+                    },
+                    child: Text(
+                      "ตกลง",
+                      style: Contants().h3OxfordBlue(),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+          child: Text(
+            "เปลี่ยน",
+            style: Contants().h4yellow(),
+          )),
     );
   }
 
@@ -1016,7 +1220,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
     final TimeOfDay? newTime = await showTimePicker(
         context: context,
         initialTime: _timeopen,
-        initialEntryMode: TimePickerEntryMode.input);
+        initialEntryMode: TimePickerEntryMode.dial);
     if (newTime != null) {
       setState(() {
         _timeopen = newTime;
@@ -1028,7 +1232,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
     final TimeOfDay? newTime = await showTimePicker(
         context: context,
         initialTime: _timeclose,
-        initialEntryMode: TimePickerEntryMode.input);
+        initialEntryMode: TimePickerEntryMode.dial);
     if (newTime != null) {
       setState(() {
         _timeclose = newTime;

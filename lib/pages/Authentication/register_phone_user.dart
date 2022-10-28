@@ -1,24 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/utils/dialog.dart';
 
 class RegisterPhoneUser extends StatefulWidget {
   String? emailhairresser;
-  RegisterPhoneUser({
-    Key? key,
-    this.emailhairresser,
-  }) : super(key: key);
+  String? emailBarber;
+  RegisterPhoneUser({Key? key, this.emailhairresser, this.emailBarber})
+      : super(key: key);
 
   @override
-  State<RegisterPhoneUser> createState() =>
-      _RegisterPhoneUserState(emailhairresser: emailhairresser);
+  State<RegisterPhoneUser> createState() => _RegisterPhoneUserState(
+      emailhairresser: emailhairresser, emailBarber: emailBarber);
 }
 
 class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
@@ -30,18 +25,19 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
   TextEditingController smsController = TextEditingController();
   String? _verificationId;
   String? emailhairresser;
-  _RegisterPhoneUserState({this.emailhairresser});
+  String? emailBarber;
+  _RegisterPhoneUserState({this.emailhairresser, this.emailBarber});
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (emailhairresser ==null) {
-    print("userrrrrrrrrrr");
-    }
-    else{
+    if (emailhairresser == null) {
+      print("userrrrrrrrrrr");
+    } else {
       print("ช่าง");
     }
   }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -185,7 +181,7 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
         .then((value) async {
       if (emailhairresser != null) {
         //เป็นช่างทำผม
-       await FirebaseFirestore.instance
+        await FirebaseFirestore.instance
             .collection('Hairdresser')
             .where("email", isEqualTo: emailhairresser)
             .snapshots()
@@ -202,8 +198,18 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                       ),
                       (route) => false));
         });
+      } else if (emailBarber != null) {
+        await FirebaseFirestore.instance
+            .collection('Barber')
+            .doc(emailBarber)
+            .update({"phone": phoneController.text}).then(
+                (value) => Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => IndexPage(),
+                    ),
+                    (route) => false));
       } else {
-     
         return Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -211,6 +217,6 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
             ),
             (route) => false);
       }
-    },onError: (e)=>MyDialog().normalDialog(context, "มีข้อผิดพลาด $e"));
+    }, onError: (e) => MyDialog().normalDialog(context, "มีข้อผิดพลาด $e"));
   }
 }
