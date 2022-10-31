@@ -100,7 +100,20 @@ class _StoreBarberState extends State<StoreBarber> {
     final path = 'imgfront/$email';
     final file = File(photoShopFront!.path);
     final ref = FirebaseStorage.instance.ref().child(path);
-    await ref.putFile(file);
+    await ref.putFile(file).then((p0) async {
+      await ref.getDownloadURL().then((value) async {
+        print("url หน้าร้าน คือ $value");
+        await FirebaseFirestore.instance
+            .collection('Barber')
+            .doc(email)
+            .update({"url": value}).then((values) {
+          setState(() {
+            barberModelformanager!.url = value;
+            photoShopFront = null;
+          });
+        });
+      });
+    });
   }
 
   @override
@@ -297,8 +310,12 @@ class _StoreBarberState extends State<StoreBarber> {
         ),
         ElevatedButton(
             onPressed: () {
-              deleteImg()
-                  .then((value) => uploadphoto(barberModelformanager!.email));
+              deleteImg().then((value) =>
+                  uploadphoto(barberModelformanager!.email).then((value) {
+                    setState(() {
+                      photoShopFront = null;
+                    });
+                  }));
             },
             child: Text(
               "อัพเดตรูปภาพ",
@@ -328,16 +345,18 @@ class _StoreBarberState extends State<StoreBarber> {
       margin: const EdgeInsets.only(top: 10),
       height: 180,
       decoration: BoxDecoration(border: Border.all()),
-      child: CachedNetworkImage(
-        fit: BoxFit.cover,
-        imageUrl: barberModelformanager!.url,
-        placeholder: (context, url) => SizedBox(
-          child: LoadingAnimationWidget.waveDots(
-              color: Contants.colorSpringGreen, size: 15),
-          width: size * 0.3,
-        ),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
-      ),
+      child: photoShopFront != null
+          ? Image.file(photoShopFront!)
+          : CachedNetworkImage(
+              fit: BoxFit.cover,
+              imageUrl: barberModelformanager!.url,
+              placeholder: (context, url) => SizedBox(
+                child: LoadingAnimationWidget.waveDots(
+                    color: Contants.colorSpringGreen, size: 15),
+                width: size * 0.3,
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
     );
   }
 

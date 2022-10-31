@@ -121,9 +121,11 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
         filterend = "2022-$n";
       }
     } else {
-      filterstart = "2022-${selectedDate.month}-${selectedDate.day}";
+      filterstart =
+          "2022-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+     
       DateTime dayEnd = selectedDate.add(const Duration(days: 1));
-      filterend = "2022-${dayEnd.month}-${dayEnd.day}";
+      filterend = "2022-${dayEnd.month.toString().padLeft(2, '0')}-${dayEnd.day.toString().padLeft(2, '0')}";
     }
 
     await FirebaseFirestore.instance
@@ -139,9 +141,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
             for (var i = 0; i < value.docs.length; i++) {
               double price = 0;
               for (var n = 0; n < value.docs[i]["service"].length; n++) {
-                print("1");
                 price += value.docs[i]["service"][n]["price"];
-                print("2");
               }
               String time = dateTime(value.docs[i]["time"]["timestart"],
                   value.docs[i]["time"]["timeend"]);
@@ -156,8 +156,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
               reservation = data;
               loadingGetRes = false;
             });
-          }
-          else{
+          } else {
             setState(() {
               loadingGetRes = false;
             });
@@ -361,36 +360,48 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                 color: Contants.colorSpringGreen, size: 30)
             : reservation.isEmpty
                 ? Center(
-                    child: Text("ไม่พบประวัติคิว",style: Contants().h3Red(),),
+                    child: Text(
+                      "ไม่พบประวัติคิว",
+                      style: Contants().h3Red(),
+                    ),
                   )
                 : ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemBuilder: (context, index) => Card(
-                      child: ListTile(
-                        onTap: () => ReservationDetailBarber(id: reservation[index].idQueue,),
-                        title: Text(
-                          reservation[index].nameHairdresser,
-                          style: Contants().h4OxfordBlue(),
-                        ),
-                        subtitle: Text(
-                          reservation[index].time,
-                          style: Contants().h4Grey(),
-                        ),
-                        leading: reservation[index].status == "on"
-                            ? Text(
-                                "รอ",
-                                style: Contants().h3yellow(),
-                              )
-                            : reservation[index].status == "succeed"
-                                ? Text(
-                                    "สำเร็จ",
-                                    style: Contants().h3SpringGreen(),
-                                  )
-                                : Text("ยกเลิก", style: Contants().h3Red()),
-                        trailing: Text(
-                          "${reservation[index].price.toStringAsFixed(0)} บาท",
-                          style: Contants().h3Red(),
+                    itemBuilder: (context, index) => InkWell(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReservationDetailBarber(
+                              id: reservation[index].idQueue,
+                              time: reservation[index].time,
+                            ),
+                          )),
+                      child: Card(
+                        child: ListTile(
+                          title: Text(
+                            reservation[index].nameHairdresser,
+                            style: Contants().h4OxfordBlue(),
+                          ),
+                          subtitle: Text(
+                            reservation[index].time,
+                            style: Contants().h4Grey(),
+                          ),
+                          leading: reservation[index].status == "on"
+                              ? Text(
+                                  "รอ",
+                                  style: Contants().h3yellow(),
+                                )
+                              : reservation[index].status == "succeed"
+                                  ? Text(
+                                      "สำเร็จ",
+                                      style: Contants().h3SpringGreen(),
+                                    )
+                                  : Text("ยกเลิก", style: Contants().h3Red()),
+                          trailing: Text(
+                            "${reservation[index].price.toStringAsFixed(0)} บาท",
+                            style: Contants().h3Red(),
+                          ),
                         ),
                       ),
                     ),
