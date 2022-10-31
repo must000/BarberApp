@@ -3,24 +3,24 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class BarberModel {
-     final String email;
-  final String name;
-  final String lasiName;
-  final String phone;
-  final String typebarber;
-  final String shopname;
-  final String shoprecommend;
-  final Map<String, dynamic> dayopen;
-  final String timeopen;
-  final String timeclose;
-  final String geoHasher;
-  final String lat;
-  final String lng;
-  final String districtl;
-  final String subDistrict;
-  final String addressdetails;
-  final String url;
-  final double score;
+  final String email;
+  String name;
+  String lasiName;
+  String phone;
+  String typebarber;
+  String shopname;
+  String shoprecommend;
+  Map<String, dynamic> dayopen;
+  String timeopen;
+  String timeclose;
+  String geoHasher;
+  String lat;
+  String lng;
+  String districtl;
+  String subDistrict;
+  String addressdetails;
+  String url;
+  double score;
   BarberModel({
     required this.email,
     required this.name,
@@ -132,7 +132,8 @@ class BarberModel {
 
   String toJson() => json.encode(toMap());
 
-  factory BarberModel.fromJson(String source) => BarberModel.fromMap(json.decode(source));
+  factory BarberModel.fromJson(String source) =>
+      BarberModel.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -142,47 +143,47 @@ class BarberModel {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is BarberModel &&
-      other.email == email &&
-      other.name == name &&
-      other.lasiName == lasiName &&
-      other.phone == phone &&
-      other.typebarber == typebarber &&
-      other.shopname == shopname &&
-      other.shoprecommend == shoprecommend &&
-      mapEquals(other.dayopen, dayopen) &&
-      other.timeopen == timeopen &&
-      other.timeclose == timeclose &&
-      other.geoHasher == geoHasher &&
-      other.lat == lat &&
-      other.lng == lng &&
-      other.districtl == districtl &&
-      other.subDistrict == subDistrict &&
-      other.addressdetails == addressdetails &&
-      other.url == url &&
-      other.score == score;
+        other.email == email &&
+        other.name == name &&
+        other.lasiName == lasiName &&
+        other.phone == phone &&
+        other.typebarber == typebarber &&
+        other.shopname == shopname &&
+        other.shoprecommend == shoprecommend &&
+        mapEquals(other.dayopen, dayopen) &&
+        other.timeopen == timeopen &&
+        other.timeclose == timeclose &&
+        other.geoHasher == geoHasher &&
+        other.lat == lat &&
+        other.lng == lng &&
+        other.districtl == districtl &&
+        other.subDistrict == subDistrict &&
+        other.addressdetails == addressdetails &&
+        other.url == url &&
+        other.score == score;
   }
 
   @override
   int get hashCode {
     return email.hashCode ^
-      name.hashCode ^
-      lasiName.hashCode ^
-      phone.hashCode ^
-      typebarber.hashCode ^
-      shopname.hashCode ^
-      shoprecommend.hashCode ^
-      dayopen.hashCode ^
-      timeopen.hashCode ^
-      timeclose.hashCode ^
-      geoHasher.hashCode ^
-      lat.hashCode ^
-      lng.hashCode ^
-      districtl.hashCode ^
-      subDistrict.hashCode ^
-      addressdetails.hashCode ^
-      url.hashCode ^
-      score.hashCode;
+        name.hashCode ^
+        lasiName.hashCode ^
+        phone.hashCode ^
+        typebarber.hashCode ^
+        shopname.hashCode ^
+        shoprecommend.hashCode ^
+        dayopen.hashCode ^
+        timeopen.hashCode ^
+        timeclose.hashCode ^
+        geoHasher.hashCode ^
+        lat.hashCode ^
+        lng.hashCode ^
+        districtl.hashCode ^
+        subDistrict.hashCode ^
+        addressdetails.hashCode ^
+        url.hashCode ^
+        score.hashCode;
   }
 }

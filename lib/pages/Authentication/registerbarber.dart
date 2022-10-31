@@ -168,7 +168,6 @@ class _RegisterBarberState extends State<RegisterBarber> {
                   inputEmail(size),
                   inputPassword(size),
                   inputRePassword(size),
-                  // inputPhoneNumber(size),
                   radiobuttonTypeBarber(),
                   inputNameShop(size),
                   inputRecommentShop(size),

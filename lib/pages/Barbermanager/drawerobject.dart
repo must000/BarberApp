@@ -1,16 +1,14 @@
 import 'package:barber/main.dart';
 import 'package:barber/pages/Barbermanager/album_barber.dart';
+import 'package:barber/pages/Barbermanager/date_picker_barber.dart';
 import 'package:barber/pages/Barbermanager/member_barber.dart';
-import 'package:barber/pages/Barbermanager/setting_barber.dart';
 import 'package:barber/pages/Barbermanager/statistics_barber.dart';
+import 'package:barber/pages/Barbermanager/store_barber.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
-
 import '../../Constant/contants.dart';
 
 class DrawerObject extends StatelessWidget {
@@ -46,7 +44,11 @@ class DrawerObject extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.group,color: Contants.colorWhite,size: 34,),
+              leading: Icon(
+                Icons.group,
+                color: Contants.colorWhite,
+                size: 34,
+              ),
               title: Text('ช่างทำผมของร้าน', style: Contants().h3white()),
               onTap: () {
                 Navigator.pop(context);
@@ -57,16 +59,26 @@ class DrawerObject extends StatelessWidget {
               },
             ),
             ListTile(
-                           leading: Icon(Icons.store,color: Contants.colorWhite,size: 34,),
+              leading: Icon(
+                Icons.store,
+                color: Contants.colorWhite,
+                size: 34,
+              ),
               title: Text('ข้อมูลร้าน', style: Contants().h3white()),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const SettingBarber()));
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const StoreBarber()));
               },
             ),
             ListTile(
-                           leading: Icon(Icons.photo_library,color: Contants.colorWhite,size: 34,),
+              leading: Icon(
+                Icons.photo_library,
+                color: Contants.colorWhite,
+                size: 34,
+              ),
               title: Text('อัลบั้ม', style: Contants().h3white()),
               onTap: () {
                 Navigator.pop(context);
@@ -78,7 +90,27 @@ class DrawerObject extends StatelessWidget {
               },
             ),
             ListTile(
-                           leading: Icon(Icons.bar_chart,color: Contants.colorWhite,size: 34,),
+              leading: Icon(
+                Icons.event_busy,
+                color: Contants.colorWhite,
+                size: 34,
+              ),
+              title: Text('ปิดร้านชั่วคราว', style: Contants().h3white()),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DatePickerBarber(),
+                    ));
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.bar_chart,
+                color: Contants.colorWhite,
+                size: 34,
+              ),
               title: Text('ยอดผู้ใช้บริการ', style: Contants().h3white()),
               onTap: () {
                 Navigator.pop(context);
@@ -95,8 +127,9 @@ class DrawerObject extends StatelessWidget {
               ListTile(
                 title: Text('ออกจากระบบ', style: Contants().h3Red()),
                 onTap: () {
-                  final provider = Provider.of<MyProviders>(context, listen: false);
-          provider.logoutBB(context);
+                  final provider =
+                      Provider.of<MyProviders>(context, listen: false);
+                  provider.logoutBB(context);
                 },
               ),
             ],

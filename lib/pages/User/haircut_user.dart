@@ -10,7 +10,7 @@ import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/barbermodel.dart';
 import 'package:barber/data/sqlite_model.dart';
 import 'package:barber/pages/User/barberserch_user.dart';
-import 'package:barber/pages/search_user.dart';
+import 'package:barber/pages/User/search_user.dart';
 import 'package:barber/utils/sqlite_helper.dart';
 import 'package:barber/widgets/barbermodel3.dart';
 import 'dart:math' as math;

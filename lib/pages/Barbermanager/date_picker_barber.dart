@@ -1,28 +1,22 @@
+import 'package:barber/Constant/contants.dart';
+import 'package:barber/main.dart';
+import 'package:barber/pages/Barbermanager/drawerobject.dart';
 import 'package:barber/utils/dialog.dart';
-import 'package:barber/utils/show_progress.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class DatePickerBarber extends StatefulWidget {
-  String email;
   DatePickerBarber({
-    Key? key,
-    required this.email,
+    Key? key, 
   }) : super(key: key);
 
   @override
   State<DatePickerBarber> createState() =>
-      _DatePickerBarberState(email: email);
+      _DatePickerBarberState();
 }
 
 class _DatePickerBarberState extends State<DatePickerBarber> {
-  String? email;
-  _DatePickerBarberState({required this.email});
   DateRangePickerController datePickerController = DateRangePickerController();
 
   List<DateTime>? dateData;
@@ -33,7 +27,7 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
   Future<Null> getData() async {
     var querySnapshot = await FirebaseFirestore.instance
         .collection("Barber")
-        .doc(email)
+        .doc(barberModelformanager!.email)
         .collection("dayclose")
         .get();
     alldata = querySnapshot.docs.map((e) => e.data()).toList();
@@ -53,7 +47,7 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
   }
 
   Future<Null> getDayOpen() async {
-    final data = FirebaseFirestore.instance.collection('Barber').doc(email);
+    final data = FirebaseFirestore.instance.collection('Barber').doc(barberModelformanager!.email);
     final snapshot = await data.get();
     if (snapshot.exists) {
       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
@@ -99,8 +93,13 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+      drawer: DrawerObject(),
+        appBar: AppBar(backgroundColor: Contants.myBackgroundColordark,),
         body: SfDateRangePicker(
+          cancelText: "",
+          confirmText: "ปิดร้าน",
+          onCancel: null,
+          backgroundColor: Contants.colorGreySilver,
           selectionMode: DateRangePickerSelectionMode.single,
           showActionButtons: true,
           controller: datePickerController,
@@ -126,7 +125,7 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
                               onPressed: () {
                                 FirebaseFirestore.instance
                                     .collection('Barber')
-                                    .doc(email)
+                                    .doc(barberModelformanager!.email)
                                     .collection('dayclose')
                                     .doc(idDate![index!])
                                     .delete()
@@ -135,7 +134,7 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
                                   return getData();
                                 });
                               },
-                              child: Text("เปิดร้าน"))
+                              child: const Text("เปิดร้าน"))
                         ],
                       ));
             }
@@ -147,7 +146,7 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
           ),
           monthCellStyle: DateRangePickerMonthCellStyle(
             specialDatesDecoration: BoxDecoration(
-                color: const Color.fromARGB(255, 182, 28, 17),
+                color:  Contants.colorRed,
                 border: Border.all(color: const Color(0xFFF44436), width: 1),
                 shape: BoxShape.circle),
             weekendDatesDecoration: BoxDecoration(
@@ -179,14 +178,14 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
               }
             }
           },
-          onCancel: () {},
+         
         ));
   }
 
   Future<Null> proceedSaveData() async {
     await FirebaseFirestore.instance
         .collection('Barber')
-        .doc(email)
+        .doc(barberModelformanager!.email)
         .collection('dayclose')
         .add({"dayclosed": datePickerController.selectedDate!}).then(
             (value) => getData());

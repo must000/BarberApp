@@ -17,12 +17,12 @@ class MyDialog {
       builder: (context) => SimpleDialog(
         title: ListTile(
           title: const Text("", style: TextStyle(color: Colors.black)),
-          subtitle: Text(string),
+          subtitle: Text(string,style: Contants().h4OxfordBlue(),),
         ),
         children: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("OK"),
+            child:Text("OK",style: Contants().h2yellow(),),
           )
         ],
       ),
