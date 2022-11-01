@@ -29,13 +29,13 @@ class _RegisterBarberState extends State<RegisterBarber> {
   TimeOfDay _timeclose = TimeOfDay(hour: 23, minute: 0);
   String? groupTypeBarber;
   Map<String, bool> groupDayOpen = {};
-  bool su = false,
-      mo = false,
-      tu = false,
-      we = false,
-      th = false,
-      fr = false,
-      sa = false;
+  bool su = true,
+      mo = true,
+      tu = true,
+      we = true,
+      th = true,
+      fr = true,
+      sa = true;
   File? photoShopFront;
   List<String> listSubDistrict = District_CN.mueangNonthaburi;
   // String district = 'เมืองนนทบุรี';
@@ -485,7 +485,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
         "district": destrict,
         "subdistrict": subDestrict,
         "lat": lat,
-        "lon": lon,
+        "lng": lon,
         "geohash": geohashstart
       },
       "score": {
@@ -580,7 +580,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               child: const Text("จ"),
               style: ElevatedButton.styleFrom(
                 primary:
-                    su == false ? Contants.colorSpringGreen : Contants.colorRed,
+                    su == false ? Contants.colorRed:Contants.colorSpringGreen,
                 shape: const CircleBorder(),
               ),
             ),
@@ -598,7 +598,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    mo == false ? Contants.colorSpringGreen : Contants.colorRed,
+                    mo == false ?   Contants.colorRed:Contants.colorSpringGreen,
               ),
             ),
           ),
@@ -615,7 +615,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    tu == false ? Contants.colorSpringGreen : Contants.colorRed,
+                    tu == false ? Contants.colorRed:Contants.colorSpringGreen,
               ),
             ),
           ),
@@ -632,7 +632,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    we == false ? Contants.colorSpringGreen : Contants.colorRed,
+                    we == false ? Contants.colorRed:Contants.colorSpringGreen,
               ),
             ),
           ),
@@ -649,7 +649,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    th == false ? Contants.colorSpringGreen : Contants.colorRed,
+                    th == false ? Contants.colorRed:Contants.colorSpringGreen,
               ),
             ),
           ),
@@ -666,7 +666,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    fr == false ? Contants.colorSpringGreen : Contants.colorRed,
+                    fr == false ? Contants.colorRed:Contants.colorSpringGreen,
               ),
             ),
           ),
@@ -683,7 +683,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    sa == false ? Contants.colorSpringGreen : Contants.colorRed,
+                    sa == false ? Contants.colorRed:Contants.colorSpringGreen,
               ),
             ),
           ),

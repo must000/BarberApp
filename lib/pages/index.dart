@@ -55,12 +55,21 @@ class _IndexPageState extends State<IndexPage> {
         setState(() {
           email = event!.email;
           userID = event.uid;
+          print("1");
           if (event.displayName != null) {
+          print("2");
+
             nameUser = event.displayName!;
+          print("3");
+
           }
 
           if (event.phoneNumber != null) {
+          print("4");
+
             phoneHairdresser = event.phoneNumber!;
+          print("5");
+
           }
         });
         FirebaseFirestore.instance
@@ -105,25 +114,26 @@ class _IndexPageState extends State<IndexPage> {
                 if (average.isNaN) {
                   average = 0;
                 }
-barberModelformanager = BarberModel(
-                email:  value.data()!["email"],
-                name:  value.data()!["name"],
-                lasiName:  value.data()!["lastname"],
-                phone:  value.data()!["phone"],
-                typebarber:  value.data()!["typeBarber"],
-                shopname:  value.data()!["shopname"],
-                shoprecommend:  value.data()!["shoprecommend"],
-                dayopen:  value.data()!["dayopen"],
-                timeopen:  value.data()!["timeopen"],
-                timeclose:  value.data()!["timeclose"],
-                lat:  value.data()!["position"]["lat"],
-                lng:  value.data()!["position"]["lng"],
-                districtl:  value.data()!["position"]["district"],
-                subDistrict: value.data()!["position"]["subdistrict"],
-                addressdetails:  value.data()!["position"]["addressdetails"],
-                url:  value.data()!["url"],
-                score: average,
-                geoHasher:  value.data()!["position"]["geohash"]);
+                print(value.data());
+                barberModelformanager = BarberModel(
+                    email: value.data()!["email"],
+                    name: value.data()!["name"],
+                    lasiName: value.data()!["lastname"],
+                    phone: value.data()!["phone"],
+                    typebarber: value.data()!["typeBarber"],
+                    shopname: value.data()!["shopname"],
+                    shoprecommend: value.data()!["shoprecommend"],
+                    dayopen: value.data()!["dayopen"],
+                    timeopen: value.data()!["timeopen"],
+                    timeclose: value.data()!["timeclose"],
+                    lat: value.data()!["position"]["lat"],
+                    lng: value.data()!["position"]["lng"],
+                    districtl: value.data()!["position"]["district"],
+                    subDistrict: value.data()!["position"]["subdistrict"],
+                    addressdetails: value.data()!["position"]["addressdetails"],
+                    url: value.data()!["url"],
+                    score: average,
+                    geoHasher: value.data()!["position"]["geohash"]);
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(

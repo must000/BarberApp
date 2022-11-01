@@ -406,6 +406,7 @@ class _SearchUserState extends State<SearchUser> {
             });
           });
     } else {
+      print("11");
       var data = await FirebaseFirestore.instance
           .collection('Barber')
           .where("typeBarber", whereIn: type)

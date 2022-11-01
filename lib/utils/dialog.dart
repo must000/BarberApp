@@ -102,13 +102,13 @@ class MyDialog {
       context: context,
       builder: (context) => SimpleDialog(
         title: ListTile(
-          title: Text(title, style: const TextStyle(color: Colors.black)),
+          title: Text(title, style:  Contants().h3OxfordBlue()),
           subtitle: Text(string),
         ),
         children: [
           TextButton(
             onPressed: funcAction,
-            child: const Text("OK"),
+            child: Text("ตกลง",style: Contants().h2OxfordBlue(),),
           )
         ],
       ),

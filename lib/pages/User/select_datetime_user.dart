@@ -274,7 +274,10 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
             //เช็คว่ามีเบอร์ไหม
             if (event.phoneNumber == null) {
               // Navigator.pop(context);
-              MyDialog(funcAction: fc).hardDialogv2(context, "เราจะนำคุณไปยืนยันเบอร์มือถือ", "ยังไม่ได้ยืนยันเบอร์มือถือ");
+              MyDialog(funcAction: fc).hardDialogv2(
+                  context,
+                  "เราจะนำคุณไปยืนยันเบอร์มือถือ",
+                  "ยังไม่ได้ยืนยันเบอร์มือถือ");
             } else {
               setState(() {
                 phoneUser = event.phoneNumber;
@@ -436,7 +439,6 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                                                               (index * 30) +
                                                                   (y * 30))) ==
                                                       listQueue[ko].timestart) {
-                                                    print("1");
                                                     canReserved = false;
                                                   } else if (dateResult!
                                                       .add(Duration(
@@ -448,7 +450,6 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                                                           .parse(
                                                               '${dateResult!.year}-${dateResult!.month}-${dateResult!.day} ${timeclose.replaceAll(' ', '')}:00'))) {
                                                     canReserved = false;
-                                                    print("2");
                                                   } else if (dateResult!.add(
                                                           Duration(
                                                               minutes: (index *
@@ -459,7 +460,6 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                                                           .parse(
                                                               '${dateResult!.year}-${dateResult!.month}-${dateResult!.day} ${timeclose.replaceAll(' ', '')}:00')) {
                                                     canReserved = false;
-                                                    print("3");
                                                   }
                                                   y++;
                                                 }
@@ -477,7 +477,6 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
                                                         .parse(
                                                             '${dateResult!.year}-${dateResult!.month}-${dateResult!.day} ${timeclose.replaceAll(' ', '')}:00'))) {
                                                   canReserved = false;
-                                                  print("4");
                                                 } else if (dateResult!.add(
                                                         Duration(
                                                             minutes: (index *

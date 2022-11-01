@@ -123,9 +123,10 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
     } else {
       filterstart =
           "2022-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
-     
+
       DateTime dayEnd = selectedDate.add(const Duration(days: 1));
-      filterend = "2022-${dayEnd.month.toString().padLeft(2, '0')}-${dayEnd.day.toString().padLeft(2, '0')}";
+      filterend =
+          "2022-${dayEnd.month.toString().padLeft(2, '0')}-${dayEnd.day.toString().padLeft(2, '0')}";
     }
 
     await FirebaseFirestore.instance
@@ -315,7 +316,6 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                           loadingGetRes = true;
                           reservation.clear();
                         });
-
                         getReservation();
                       },
                     ),

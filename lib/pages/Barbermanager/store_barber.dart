@@ -188,7 +188,7 @@ class _StoreBarberState extends State<StoreBarber> {
                 ),
               ),
               const SizedBox(
-                height: 40,
+                height: 20,
               ),
               Text(
                 "รูปหน้าร้าน",
@@ -203,11 +203,118 @@ class _StoreBarberState extends State<StoreBarber> {
                 height: 10,
               ),
               topicTitle("เวลาเปิดปิดร้าน"),
+              buildSelectDaycloseButton(),
               topicTitle("ที่อยู่ร้าน")
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildSelectDaycloseButton() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          child: Container(
+            child: ElevatedButton(
+              onPressed: () {
+              },
+              child: const Text("จ"),
+              style: ElevatedButton.styleFrom(
+                primary:
+                    barberModelformanager!.dayopen["mo"]? Contants.colorSpringGreen : Contants.colorRed,
+                shape: const CircleBorder(),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            child: ElevatedButton(
+              onPressed: () {
+              },
+              child: const Text("อ"),
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                primary:
+                    barberModelformanager!.dayopen["tu"]? Contants.colorSpringGreen : Contants.colorRed,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            child: ElevatedButton(
+              onPressed: () {
+              },
+              child: const Text("พ"),
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                primary:
+                   barberModelformanager!.dayopen["we"]?  Contants.colorSpringGreen : Contants.colorRed,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            child: ElevatedButton(
+              onPressed: () {
+              },
+              child: const Text("พฤ"),
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                primary:
+                    barberModelformanager!.dayopen["th"]? Contants.colorSpringGreen : Contants.colorRed,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            child: ElevatedButton(
+              onPressed: () {
+              },
+              child: const Text("ศ"),
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                primary:
+                    barberModelformanager!.dayopen["fr"]? Contants.colorSpringGreen : Contants.colorRed,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            child: ElevatedButton(
+              onPressed: () {
+              },
+              child: const Text("ส"),
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                primary:
+                    barberModelformanager!.dayopen["sa"]? Contants.colorSpringGreen : Contants.colorRed,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            child: ElevatedButton(
+              onPressed: () {
+              },
+              child: const Text("อา"),
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                primary:
+                    barberModelformanager!.dayopen["su"]? Contants.colorSpringGreen : Contants.colorRed,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -310,12 +417,8 @@ class _StoreBarberState extends State<StoreBarber> {
         ),
         ElevatedButton(
             onPressed: () {
-              deleteImg().then((value) =>
-                  uploadphoto(barberModelformanager!.email).then((value) {
-                    setState(() {
-                      photoShopFront = null;
-                    });
-                  }));
+              deleteImg()
+                  .then((value) => uploadphoto(barberModelformanager!.email));
             },
             child: Text(
               "อัพเดตรูปภาพ",

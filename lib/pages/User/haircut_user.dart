@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:barber/main.dart';
+import 'package:barber/pages/User/reservation_detail_user.dart';
+import 'package:barber/utils/dialog.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
@@ -39,6 +41,8 @@ class _HairCutUserState extends State<HairCutUser> {
   String? dataPositionUser;
   bool loadHistory = true;
   bool loadSqlite = true;
+  bool clickshowmore = false;
+  bool haveOnStatus = false;
   void mySetState2() {
     setState(() {
       barberLike;
@@ -115,7 +119,6 @@ class _HairCutUserState extends State<HairCutUser> {
 
   List<BarberModel> barberHistory = [];
   Future<Null> getHistoryshop() async {
-    print("dqdqwe2");
     var data = await FirebaseFirestore.instance
         .collection('Queue')
         .where("user.id", isEqualTo: idUser)
@@ -123,7 +126,6 @@ class _HairCutUserState extends State<HairCutUser> {
         .then((value) async {
       var alldata = value.docs.map((e) => e.data()).toList();
       var listHistory = [];
-      print("dqdqwe3");
       if (alldata.isEmpty) {
         setState(() {
           loadHistory = false;
@@ -290,6 +292,19 @@ class _HairCutUserState extends State<HairCutUser> {
         child: Column(
           children: [
             buttonChooseAType(size),
+            builfstream(),
+            haveOnStatus
+                ? TextButton(
+                    onPressed: () {
+                      setState(() {
+                        clickshowmore = !clickshowmore;
+                      });
+                    },
+                    child: Text(
+                      clickshowmore ? 'ปิด' : 'ดูเพิ่มเติม',
+                      style: Contants().h4SpringGreen(),
+                    ))
+                : SizedBox(),
             barberHistory.isNotEmpty && loadHistory == false
                 ? sectionListview(size, "ร้านที่เคยใช้บริการ")
                 : const SizedBox(),
@@ -313,6 +328,207 @@ class _HairCutUserState extends State<HairCutUser> {
       ),
     );
   }
+
+  String dateTime(var timestart, var timeend) {
+    DateTime start = DateTime.parse(timestart);
+    DateTime end = DateTime.parse(timeend);
+    return "${start.day}/${start.month}/${start.year} ${start.hour.toString().padLeft(2, "0")}.${start.minute.toString().padLeft(2, "0")} - ${end.hour.toString().padLeft(2, "0")}.${end.minute.toString().padLeft(2, "0")}";
+  }
+
+  StreamBuilder<QuerySnapshot<Map<String, dynamic>>> builfstream() {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection("Queue")
+          .where("user.id", isEqualTo: idUser)
+          .where("status", isEqualTo: "on")
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          var data = snapshot.data.docs;
+          return ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              var time = dateTime(data[index]["time"]["timestart"],
+                  data[index]["time"]["timeend"]);
+              if (index == 0) {
+                return Card(
+                  child: ListTile(
+                    leading: Text(
+                      "รอ",
+                      style: Contants().h1yellow(),
+                    ),
+                    title: Text(
+                      data[index]["barber"]["name"],
+                      style: Contants().h3OxfordBlue(),
+                    ),
+                    subtitle: Text(time, style: Contants().h4Grey()),
+                    trailing: IconButton(
+                      iconSize: 20,
+                      color: Contants.colorRed,
+                      icon: const Icon(Icons.cancel),
+                      onPressed: () {
+                        dialogcancelQueue(
+                            DateTime.parse(data[index]["time"]["timestart"]),
+                            data[index].id);
+                      },
+                    ),
+                    onTap: () {
+                      final person = barberHistory.indexWhere(
+                        (element) =>
+                            element.email == data[index]["barber"]["id"],
+                      );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReservationDetailUser(
+                              docID: data[index].id,
+                              urlimg: barberHistory[person].url == ""
+                                  ? ""
+                                  : barberHistory[person].url,
+                              namebarber: data[index]["barber"]["name"],
+                              nameHairresser: data[index]["hairdresser"]
+                                  ["name"],
+                              timestart:
+                                  "${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")}",
+                              timeend:
+                                  "${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}",
+                              service: data[index]["service"],
+                              nameUser: nameUser,
+                              phoneBarber: data[index]["barber"]["phone"],
+                              phoneHairresser: data[index]["hairdresser"]
+                                  ["phone"],
+                              emailBarber: data[index]["barber"]["id"],
+                            ),
+                          ));
+                    },
+                  ),
+                );
+              } else {
+                haveOnStatus = true;
+                if (clickshowmore) {
+                  return Card(
+                    child: ListTile(
+                      leading: Text(
+                        "รอ",
+                        style: Contants().h1yellow(),
+                      ),
+                      title: Text(
+                        data[index]["barber"]["name"],
+                        style: Contants().h3OxfordBlue(),
+                      ),
+                      subtitle: Text(
+                        time,
+                        style: Contants().h4Grey(),
+                      ),
+                      trailing: IconButton(
+                        iconSize: 20,
+                        color: Contants.colorRed,
+                        icon: const Icon(Icons.cancel),
+                        onPressed: () {
+                          dialogcancelQueue(
+                              DateTime.parse(data[index]["time"]["timestart"]),
+                              data[index].id);
+                        },
+                      ),
+                      onTap: () {
+                        final person = barberHistory.indexWhere(
+                          (element) =>
+                              element.email == data[index]["barber"]["id"],
+                        );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReservationDetailUser(
+                                docID: data[index].id,
+                                urlimg: barberHistory[person].url == ""
+                                    ? ""
+                                    : barberHistory[person].url,
+                                namebarber: data[index]["barber"]["name"],
+                                nameHairresser: data[index]["hairdresser"]
+                                    ["name"],
+                                timestart:
+                                    "${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")}",
+                                timeend:
+                                    "${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}",
+                                service: data[index]["service"],
+                                nameUser: nameUser,
+                                phoneBarber: data[index]["barber"]["phone"],
+                                phoneHairresser: data[index]["hairdresser"]
+                                    ["phone"],
+                                emailBarber: data[index]["barber"]["id"],
+                              ),
+                            ));
+                      },
+                    ),
+                  );
+                } else {
+                  return SizedBox();
+                }
+              }
+            },
+            itemCount: data.length,
+          );
+        } else {
+          return const SizedBox();
+        }
+      },
+    );
+  }
+
+  Future<Null> dialogcancelQueue(DateTime times, String idQueue) async {
+    showDialog(
+        context: context,
+        builder: (conttext) => SimpleDialog(
+              title: const Text("ยืนยันการยกเลิกคิวใช่หรือไม่"),
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "ยกเลิก",
+                          style: Contants().h3yellow(),
+                        )),
+                    TextButton(
+                        onPressed: () async {
+                          if (times.isAfter(
+                              DateTime.now().add(Duration(hours: 2)))) {
+                            print("ยกเลิกได้");
+                            await FirebaseFirestore.instance
+                                .collection("Queue")
+                                .doc(idQueue)
+                                .update({"status": "cancel"}).then((value) =>
+                                    MyDialog(funcAction: fc3).hardDialog(
+                                        context,
+                                        "ระบบได้ทำการยกเลิกคิวของท่านแล้ว",
+                                        "ยกเลิกสำเร็จ"));
+                          } else {
+                            print("ยกเลิกไม่ได้");
+                            MyDialog(funcAction: fc3).hardDialog(
+                                context,
+                                "ต้องยกเลิกก่อนเวลานัด 2 ชม. เท่านั้น",
+                                "การยกเลิกล้มเหลว");
+                          }
+                        },
+                        child: Text(
+                          "ยืนยันการยกเลิก",
+                          style: Contants().h3Red(),
+                        ))
+                  ],
+                ),
+              ],
+            ));
+  }
+
+void fc3(){
+  Navigator.pop(context);
+  Navigator.pop(context);
+
+}
 
   Widget listStoreLike(double size) {
     return Container(
