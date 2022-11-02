@@ -857,7 +857,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
                         print("ไม่อยู่");
                         Fluttertoast.showToast(
                           msg:
-                              "ขออภัย เราไม่อนุญาตให้gปิดร้านก่อนตี 1", // message
+                              "ขออภัย เราไม่อนุญาตให้เปิดร้านก่อนตี 1", // message
                           toastLength: Toast.LENGTH_SHORT, // length
                           gravity: ToastGravity.CENTER, // location
                         );
@@ -1001,31 +1001,6 @@ class _RegisterBarberState extends State<RegisterBarber> {
       ],
     );
   }
-
-  // Container inputPhoneNumber(double size) {
-  //   return Container(
-  //     margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
-  //     child: TextFormField(
-  //       keyboardType: TextInputType.phone,
-  //       controller: phoneController,
-  //       validator: (value) {
-  //         if (value!.isEmpty) {
-  //           return "กรุณากรอกเบอร์โทร";
-  //         }
-  //       },
-  //       decoration: InputDecoration(
-  //         filled: true,
-  //         fillColor: Colors.white,
-  //         labelText: "เบอร์ ",
-  //         enabledBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.circular(10),
-  //         ),
-  //         focusedBorder:
-  //             OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Container inputRePassword(double size) {
     return Container(
