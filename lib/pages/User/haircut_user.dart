@@ -304,7 +304,7 @@ class _HairCutUserState extends State<HairCutUser> {
                       clickshowmore ? 'ปิด' : 'ดูเพิ่มเติม',
                       style: Contants().h4SpringGreen(),
                     ))
-                : SizedBox(),
+                : const SizedBox(),
             barberHistory.isNotEmpty && loadHistory == false
                 ? sectionListview(size, "ร้านที่เคยใช้บริการ")
                 : const SizedBox(),
@@ -341,6 +341,7 @@ class _HairCutUserState extends State<HairCutUser> {
           .collection("Queue")
           .where("user.id", isEqualTo: idUser)
           .where("status", isEqualTo: "on")
+          .orderBy("time.timestart")
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
@@ -353,6 +354,13 @@ class _HairCutUserState extends State<HairCutUser> {
                   data[index]["time"]["timeend"]);
               if (index == 0) {
                 return Card(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: Contants.colorBlack,
+                    ),
+                    borderRadius: BorderRadius.circular(3.0),
+                  ),
+                  color: Contants.colorOxfordBlueLight,
                   child: ListTile(
                     leading: Text(
                       "รอ",
@@ -360,7 +368,7 @@ class _HairCutUserState extends State<HairCutUser> {
                     ),
                     title: Text(
                       data[index]["barber"]["name"],
-                      style: Contants().h3OxfordBlue(),
+                      style: Contants().h3white(),
                     ),
                     subtitle: Text(time, style: Contants().h4Grey()),
                     trailing: IconButton(
@@ -408,6 +416,13 @@ class _HairCutUserState extends State<HairCutUser> {
                 haveOnStatus = true;
                 if (clickshowmore) {
                   return Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: Contants.colorBlack,
+                      ),
+                      borderRadius: BorderRadius.circular(3.0),
+                    ),
+                    color: Contants.colorOxfordBlueLight,
                     child: ListTile(
                       leading: Text(
                         "รอ",
@@ -415,7 +430,7 @@ class _HairCutUserState extends State<HairCutUser> {
                       ),
                       title: Text(
                         data[index]["barber"]["name"],
-                        style: Contants().h3OxfordBlue(),
+                        style: Contants().h3white(),
                       ),
                       subtitle: Text(
                         time,
@@ -524,16 +539,15 @@ class _HairCutUserState extends State<HairCutUser> {
             ));
   }
 
-void fc3(){
-  Navigator.pop(context);
-  Navigator.pop(context);
-
-}
+  void fc3() {
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
 
   Widget listStoreLike(double size) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
-      height: 155,
+      height: 165,
       child: Expanded(
         flex: 3,
         child: ListView.builder(
@@ -542,9 +556,8 @@ void fc3(){
           itemBuilder: (context, index) => Stack(
             children: [
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                width: 120,
-                height: 155,
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                width: 130,
                 child: BarberModel3(
                     nameUser: nameUser == "" ? "" : nameUser,
                     barberModel: barberLike[index],
@@ -552,7 +565,7 @@ void fc3(){
               ),
               Center(
                 child: Container(
-                    margin: const EdgeInsets.only(top: 120, left: 5),
+                    margin: const EdgeInsets.only(top: 130, left: 0),
                     child: IconButton(
                       icon: const Icon(Icons.favorite, color: Colors.red),
                       onPressed: () async {
@@ -574,7 +587,7 @@ void fc3(){
   Container listStoreHistory(double size) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
-      height: 155,
+      height: 165,
       child: Expanded(
         flex: 3,
         child: ListView.builder(
@@ -583,9 +596,9 @@ void fc3(){
           itemBuilder: (context, index) => Stack(
             children: [
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                width: 120,
-                height: 155,
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                width: 130,
+
                 child: BarberModel3(
                     nameUser: nameUser == "" ? "" : nameUser,
                     barberModel: barberHistory[index],
@@ -593,7 +606,7 @@ void fc3(){
               ),
               Center(
                 child: Container(
-                    margin: const EdgeInsets.only(top: 120, left: 5),
+                    margin: const EdgeInsets.only(top: 130, left: 0),
                     child: IconButton(
                       icon: Icon(Icons.favorite,
                           color: barberLike.contains(barberHistory[index])

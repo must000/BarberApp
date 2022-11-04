@@ -36,44 +36,53 @@ class BarberModel3 extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Contants.colorWhite),
-          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Contants.colorWhite, width: 0.5),
+          borderRadius: BorderRadius.circular(6),
         ),
-        child: Column(
+        child: Stack(
           children: [
-            CachedNetworkImage(
-              fit: BoxFit.cover,
-              imageUrl: url,
-              placeholder: (context, url) =>
-                  LoadingAnimationWidget.inkDrop(color: Colors.black, size: 20),
-              imageBuilder: (context, imageProvider) => Container(
-                height: 90,
-                width: 120,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image:
-                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+            Column(
+              children: [
+                CachedNetworkImage(
+                  fit: BoxFit.cover,
+                  imageUrl: url,
+                  placeholder: (context, url) => LoadingAnimationWidget.inkDrop(
+                      color: Colors.black, size: 20),
+                  imageBuilder: (context, imageProvider) => Container(
+                    height: 90,
+                    width: 130,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
+                    ),
+                  ),
                 ),
-              ),
+                Center(
+                  child: Text(
+                    "${barberModel.shopname}  ",
+                    style: Contants().h4white(),
+                  ),
+                ),
+              ],
             ),
-            Center(
-              child: Text(
-                "${barberModel.shopname}  ",
-                style: Contants().h4white(),
-              ),
-            ),
-            Row(
+            Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                  barberModel.score == 0 || barberModel.score.isNaN
-                      ? "-"
-                      : barberModel.score.toString(),
-                  style: Contants().h4white(),
-                ),
-                const Icon(
-                  Icons.star,
-                  color: Colors.amber,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      barberModel.score == 0 || barberModel.score.isNaN
+                          ? "-"
+                          : barberModel.score.toString(),
+                      style: Contants().h4yellow(),
+                    ),
+                    const Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    )
+                  ],
                 )
               ],
             )

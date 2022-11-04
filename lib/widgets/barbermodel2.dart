@@ -1,22 +1,22 @@
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/data/barbermodel.dart';
-import 'package:barber/data/sqlite_model.dart';
 import 'package:barber/pages/User/barber_user.dart';
-import 'package:barber/utils/sqlite_helper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class BarberModel2 extends StatelessWidget {
   String nameUser;
   BarberModel barberModel;
   String url;
+  double score;
+  double size;
   BarberModel2(
       {required this.nameUser,
       required this.barberModel,
       required this.url,
+      required this.score,
+      required this.size,
       Key? key,
       this.funcAction,
       this.like})
@@ -39,42 +39,73 @@ class BarberModel2 extends StatelessWidget {
         );
       },
       child: Container(
-        decoration:
-            BoxDecoration(border: Border.all(color: Contants.colorWhite)),
-        child: ListView(
+        margin: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+            border: Border.all(color: Contants.colorWhite, width: 1)),
+        child: Column(
           children: [
             CachedNetworkImage(
-              height: 110,
-              fit: BoxFit.fill,
+              height: 120,
+              width: size * 0.9,
+              fit: BoxFit.fitWidth,
               imageUrl: url,
               placeholder: (context, url) =>
-                  LoadingAnimationWidget.inkDrop(color: Colors.black, size: 20),
+                  LoadingAnimationWidget.inkDrop(color: Colors.black, size: 30),
             ),
             ListTile(
-              title: Text(
-                barberModel.shopname,
-                style: Contants().h1white(),
-              ),
-              subtitle: Text(
-                barberModel.shoprecommend,
-                style: Contants().h4white(),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(left: 15),
-              child: Row(
-                children: [
-                  Text(
-                    "คะแนน X ",
-                    style: Contants().h4white(),
-                  ),
-                  const Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                  )
-                ],
-              ),
-            )
+                title: Text(
+                  "${barberModel.shopname} ",
+                  style: Contants().h2white(),
+                ),
+                subtitle: Wrap(
+                  direction: Axis.vertical,
+                  children: [
+                    Text(
+                      barberModel.shoprecommend,
+                      style: Contants().h4Grey(),
+                    ),
+                    Text(
+                        "ร้านเปิด ${barberModel.timeopen} - ${barberModel.timeclose}",
+                        style: Contants().h4Grey()),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.pin_drop_sharp,
+                          color: Contants.colorGreySilver,
+                          size: 18,
+                        ),
+                        Text(
+                          "${barberModel.subDistrict} ${barberModel.addressdetails}",
+                          style: Contants().h4Grey(),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                trailing: Wrap(
+                  direction: Axis.horizontal,
+                  children: [
+     
+                    Column(
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                                       score == 0 || score.isNaN
+                        ? Text(
+                            "-",
+                            style: Contants().h4yellow(),
+                          )
+                        : Text(
+                            "คะแนน $score ",
+                            style: Contants().h4yellow(),
+                          ),
+                      ],
+                    ),
+                   
+                  ],
+                )),
           ],
         ),
       ),

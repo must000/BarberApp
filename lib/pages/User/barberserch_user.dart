@@ -45,7 +45,9 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     });
     // TODO: implement initState
     super.initState();
-    getDataBarber();
+    getDataBarber().then((value) {
+      setState(() {});
+    });
   }
 
   Future<Null> getDataBarber() async {
@@ -62,7 +64,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     if (lat == null || lon == null) {
       // ไม่เปิดตำแหน่ง
       print("1");
-      citiesRef
+      await citiesRef
           .where("typeBarber", isEqualTo: type)
           .limit(40)
           .get()
@@ -71,16 +73,16 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
         if (value.docs.isNotEmpty) {
           for (var i = 0; i < value.docs.length; i++) {
             print("13");
-                double average =0;
+            double average = 0;
             if (value.docs[i]["score"] != null) {
               average = value.docs[i]["score"]["num"] /
                   value.docs[i]["score"]["count"];
             } else {
               average = 0;
             }
-               if (average.isNaN) {
-           average = 0;
-          }
+            if (average.isNaN) {
+              average = 0;
+            }
             barberResult!.add(BarberModel(
                 email: value.docs[i]["email"],
                 name: value.docs[i]["name"],
@@ -103,41 +105,35 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
           }
           setState(() {
             barber = barberResult;
-            print("14");
           });
         } else {
-          print("12");
         }
-        print("11");
       });
     } else {
       print("3");
       // เปิดตำแหน่ง
       String geohashstart = geoHasher.encode(lon! - 0.03, lat! - 0.03);
       String geohashend = geoHasher.encode(lon! + 0.03, lat! + 0.03);
-      citiesRef
+      await citiesRef
           .where("typeBarber", isEqualTo: type)
           .orderBy("position.geohash")
           .startAt([(geohashstart)])
           .endAt([(geohashend)])
           .limit(40)
           .get()
-          .then((value) {
-            print("4");
+          .then((value) async {
             if (value.docs.isNotEmpty) {
               for (var i = 0; i < value.docs.length; i++) {
-                print("5");
-              double average =0;
+                double average = 0;
                 if (value.docs[i]["score"] != null) {
                   average = value.docs[i]["score"]["num"] /
                       value.docs[i]["score"]["count"];
                 } else {
                   average = 0;
                 }
-                   if (average.isNaN) {
-           average = 0;
-          }
-                print("7");
+                if (average.isNaN) {
+                  average = 0;
+                }
                 barberResult!.add(BarberModel(
                     email: value.docs[i]["email"],
                     name: value.docs[i]["name"],
@@ -159,23 +155,22 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                     geoHasher: value.docs[i]["position"]["geohash"]));
               }
             } else {
-              print("6");
-              citiesRef
+              await citiesRef
                   .where("typeBarber", isEqualTo: type)
                   .limit(40)
                   .get()
                   .then((value) {
                 for (var i = 0; i < value.docs.length; i++) {
-                      double average =0;
+                  double average = 0;
                   if (value.docs[i]["score"] != null) {
                     average = value.docs[i]["score"]["num"] /
                         value.docs[i]["score"]["count"];
                   } else {
                     average = 0;
                   }
-                     if (average.isNaN) {
-           average = 0;
-          }
+                  if (average.isNaN) {
+                    average = 0;
+                  }
                   barberResult!.add(BarberModel(
                       email: value.docs[i]["email"],
                       name: value.docs[i]["name"],
@@ -201,7 +196,6 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
             }
             setState(() {
               barber = barberResult;
-              print("9");
             });
           });
     }
@@ -218,11 +212,6 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
         backgroundColor: Contants.myBackgroundColor,
-        floatingActionButton: FloatingActionButton(onPressed: () {
-          print(barber![0]);
-          print(barberLike[0]);
-          print(barberLike.contains(barber![0]));
-        }),
         appBar: AppBar(
           backgroundColor: Contants.myBackgroundColordark,
           title: Text(typeBarber == true ? "ร้านตัดผมชาย" : "ร้านเสริมสวย"),
@@ -233,31 +222,23 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
               const SizedBox(height: 20),
               // sectionListview(size, "ร้านยอดฮิต"),
               barber == []
-                  ? Container(
-                      child: Text(""),
-                    )
+                  ? const SizedBox()
                   : Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: GridView.builder(
+                      child: ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 16.0,
-                                mainAxisSpacing: 5,
-                                childAspectRatio: 0.82),
                         itemBuilder: (context, index) {
                           return Stack(
                             children: [
                               BarberModel2(
                                   nameUser: nameUser,
                                   barberModel: barber![index],
-                                  url: barber![index].url),
+                                  url: barber![index].url, score: barber![index].score, size: size,),
                               Center(
                                 child: Container(
-                                    margin: const EdgeInsets.only(
-                                        left: 100, top: 50),
+                                    margin:  EdgeInsets.only(
+                                        left: size*0.7, top: 10),
                                     child: IconButton(
                                       icon: Icon(
                                         Icons.favorite,
@@ -265,6 +246,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                                             barberLike.contains(barber![index])
                                                 ? Colors.red
                                                 : Colors.white,
+                                                size: 30,
                                       ),
                                       onPressed: () async {
                                         if (barberLike

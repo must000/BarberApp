@@ -142,7 +142,6 @@ class _ReservationUserState extends State<ReservationUser> {
 
   Widget buildReservation(int index) {
     String status;
-    print("is an index $index");
     switch (index) {
       case 0:
         status = "on";
@@ -158,6 +157,7 @@ class _ReservationUserState extends State<ReservationUser> {
             .collection('Queue')
             .where("user.id", isEqualTo: userID)
             .where("status", isEqualTo: status)
+            .orderBy("time.timestart")
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
@@ -198,7 +198,7 @@ class _ReservationUserState extends State<ReservationUser> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 25, vertical: 4),
+                          horizontal: 20, vertical: 2),
                       child: Card(
                         shape: const RoundedRectangleBorder(
                             borderRadius:
@@ -228,7 +228,7 @@ class _ReservationUserState extends State<ReservationUser> {
                           subtitle: Row(
                             children: [
                               Text(
-                                  "${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}"),
+                                  "เวลา${DateTime.parse(data[index]["time"]["timestart"]).day.toString().padLeft(2, "0")}/${DateTime.parse(data[index]["time"]["timestart"]).month.toString().padLeft(2, "0")} ${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}"),
                               const Icon(
                                 Icons.schedule,
                                 size: 17,

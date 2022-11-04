@@ -7,6 +7,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
+import '../../data/chart_data_model.dart';
 
 class StatisticeBarber extends StatefulWidget {
   const StatisticeBarber({Key? key}) : super(key: key);
@@ -35,11 +38,138 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
     "พฤศจิกายน ",
     "ธันวาคม "
   ];
+  double income = 0;
+  List<ChartData> datas = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getReservation();
+  }
+
+  Future<Null> getReservationForChart() async {
+    if (selectedMonth != "เดือน") {
+      var filterstart = "2022";
+      var filterend = "2023";
+      String x;
+      String? n;
+      switch (selectedMonth) {
+        case "มกราคม ":
+          x = "01";
+          n = "02";
+          break;
+        case "กุมภาพันธ์ ":
+          x = "02";
+          n = "03";
+          break;
+        case "มีนาคม ":
+          x = "03";
+          n = "04";
+          break;
+        case "เมษายน ":
+          x = "04";
+          n = "05";
+          break;
+        case "พฤษภาคม ":
+          x = "05";
+          n = "06";
+          break;
+        case "มิถุนายน ":
+          x = "06";
+          n = "07";
+
+          break;
+        case "กรกฎาคม ":
+          x = "07";
+          n = "08";
+          break;
+        case "สิงหาคม ":
+          x = "08";
+          n = "09";
+          break;
+        case "กันยายน ":
+          x = "09";
+          n = "10";
+          break;
+        case "ตุลาคม ":
+          x = "10";
+          n = "11";
+          break;
+        case "พฤศจิกายน ":
+          x = "11";
+          n = "12";
+          break;
+        case "ธันวาคม ":
+          x = "12";
+          n = "13";
+
+          break;
+        default:
+          x = "13";
+      }
+      if (x == "13") {
+        filterstart = "2022-";
+        filterend = "2023-";
+      } else {
+        filterstart = "2022-$x";
+        filterend = "2022-$n";
+      }
+      await FirebaseFirestore.instance
+          .collection('Queue')
+          .where("barber.id", isEqualTo: barberModelformanager!.email)
+          .where("status", isEqualTo: "succeed")
+          .orderBy("time.timestart")
+          .startAt([filterstart])
+          .endAt([filterend])
+          .get()
+          .then((value) {
+            //           List<ChartData> datas = [];
+            // for (var i = 0; i < 32; i++) {
+            //   datas.add(ChartData("$i", i.toDouble()));
+            // }
+            List<ChartData> data = [];
+            if (value.docs.isNotEmpty) {
+              double sum1 = 0;
+              int countDay = 30;
+              if (selectedMonth.substring(
+                      selectedMonth.length - 3, selectedMonth.length - 1) ==
+                  "คม") {
+                countDay = 31;
+              }
+              print(countDay);
+              for (var n = 1; n <= countDay; n++) {
+                double sum = 0;
+                for (var i = 0; i < value.docs.length; i++) {
+                  if (value.docs[i]["time"]["timestart"]
+                          .toString()
+                          .substring(8, 10) ==
+                      n.toString().padLeft(2, '0')) {
+                    print(value.docs[i]["time"]["timestart"]
+                        .toString()
+                        .substring(8, 10));
+                    print("$n ${value.docs[i]["time"]["timestart"]}");
+                    double sumx = 0;
+                    for (var x = 0; x < value.docs[i]["service"].length; x++) {
+                      sumx += value.docs[i]["service"][x]["price"];
+                    }
+                    sum += sumx;
+                  }
+                }
+                data.add(ChartData("$n", sum));
+                sum1 += sum;
+              }
+              setState(() {
+                income = sum1;
+                datas = data;
+              });
+            } else {
+              setState(() {
+                income = 0;
+                datas.clear();
+              });
+            }
+          });
+    }
   }
 
   List<QueueModel3> reservation = [];
@@ -108,7 +238,6 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
         case "ธันวาคม ":
           x = "12";
           n = "13";
-
           break;
         default:
           x = "13";
@@ -193,7 +322,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                           });
                         },
                         child: Text(
-                          "การจอง",
+                          "ประวัติ",
                           style: clickList
                               ? Contants().h3yellow()
                               : Contants().h3Grey(),
@@ -206,6 +335,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                           setState(() {
                             clickList = false;
                           });
+                          getReservationForChart();
                         },
                         child: Text("กราฟ",
                             style: clickList == false
@@ -215,15 +345,54 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                   ),
                 ],
               ),
-              clickList
-                  ? buildListReseve()
-                  : Column(
-                      children: const [Text("กราฟ")],
-                    )
+              clickList ? buildListReseve() : buildCharts()
             ],
           ),
         ),
         drawer: DrawerObject());
+  }
+
+  Column buildCharts() {
+    return Column(
+      children: [
+        Text(
+          "รายได้ในเดือน $selectedMonth ${income.toString()} บาท",
+          style: Contants().h3white(),
+        ),
+        DropdownButtonHideUnderline(
+          child: DropdownButton2(
+            iconEnabledColor: Contants.colorWhite,
+            hint: Text(
+              selectedMonth,
+              style: Contants().h4white(),
+            ),
+            items: items
+                .map((item) => DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(item, style: Contants().h4OxfordBlue()),
+                    ))
+                .toList(),
+            onChanged: (value) {
+              selectedMonth = value as String;
+              getReservationForChart();
+            },
+          ),
+        ),
+        datas == []
+            ? const SizedBox()
+            : SfCartesianChart(
+                primaryXAxis: CategoryAxis(),
+                series: <ChartSeries>[
+                  StackedLineSeries<ChartData, String>(
+                      enableTooltip: true,
+                      dataSource: datas,
+                      color: Contants.colorSpringGreen,
+                      xValueMapper: (ChartData datas, _) => datas.x,
+                      yValueMapper: (ChartData datas, _) => datas.y)
+                ],
+              ),
+      ],
+    );
   }
 
   Column buildListReseve() {
@@ -354,7 +523,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                       )
                     ],
                   )
-            : SizedBox(),
+            : const SizedBox(),
         loadingGetRes
             ? LoadingAnimationWidget.beat(
                 color: Contants.colorSpringGreen, size: 30)

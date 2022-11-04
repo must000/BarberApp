@@ -27,16 +27,23 @@ class SettingAccount extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SettingAccount> createState() =>
-      _SettingAccountState(email: email, typebarber: this.typebarber,name:name,lastname:lastname);
+  State<SettingAccount> createState() => _SettingAccountState(
+      email: email,
+      typebarber: this.typebarber,
+      name: name,
+      lastname: lastname);
 }
 
 class _SettingAccountState extends State<SettingAccount> {
   String email;
   bool typebarber;
-   String name;
+  String name;
   String? lastname;
-  _SettingAccountState({required this.email, required this.typebarber,required this.name,required this.lastname});
+  _SettingAccountState(
+      {required this.email,
+      required this.typebarber,
+      required this.name,
+      required this.lastname});
   @override
   void initState() {
     // TODO: implement initState
@@ -45,7 +52,7 @@ class _SettingAccountState extends State<SettingAccount> {
       getAvartar();
       lastNameController.text = lastname!;
     }
-    nameController.text =name;
+    nameController.text = name;
   }
 
   final formKey = GlobalKey<FormState>();
@@ -70,7 +77,10 @@ class _SettingAccountState extends State<SettingAccount> {
 
     return Scaffold(
       backgroundColor: Contants.myBackgroundColor,
-      appBar: AppBar(title: const Text("แก้ไขโปรไฟล์ "),backgroundColor: Contants.myBackgroundColordark,),
+      appBar: AppBar(
+        title: const Text("แก้ไขโปรไฟล์ "),
+        backgroundColor: Contants.myBackgroundColordark,
+      ),
       body: SingleChildScrollView(
           child: Form(
         key: formKey,
@@ -90,10 +100,11 @@ class _SettingAccountState extends State<SettingAccount> {
                       controller: nameController,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
-                          filled: true,
+                        filled: true,
                         labelStyle: Contants().h2OxfordBlue(),
-                  fillColor: Colors.white,
-                        labelText: "Name",
+                        fillColor: Colors.white,
+                        labelText: "ชื่อ",
+                        floatingLabelStyle: Contants().floatingLabelStyle(),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -104,8 +115,8 @@ class _SettingAccountState extends State<SettingAccount> {
                   ),
             typebarber
                 ? Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: TextFormField(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: TextFormField(
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "กรุณากรอกชื่อจริง";
@@ -114,10 +125,11 @@ class _SettingAccountState extends State<SettingAccount> {
                       controller: nameController,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
-                          filled: true,
-                          labelStyle: Contants().h2OxfordBlue(),
-                    fillColor: Colors.white,
-                        labelText: "Name",
+                        filled: true,
+                        labelStyle: Contants().h2OxfordBlue(),
+                        fillColor: Colors.white,
+                        labelText: "ชื่อ",
+                        floatingLabelStyle: Contants().floatingLabelStyle(),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -125,24 +137,25 @@ class _SettingAccountState extends State<SettingAccount> {
                             borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
-                )
+                  )
                 : const SizedBox(),
             typebarber
                 ? Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: TextFormField(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: TextFormField(
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "กรุณากรอกนามสกุล";
                         } else {}
                       },
-                      controller:lastNameController,
+                      controller: lastNameController,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
-                          filled: true,
-                          labelStyle: Contants().h2OxfordBlue(),
-                    fillColor: Colors.white,
-                        labelText: "Lastname",
+                        filled: true,
+                        labelStyle: Contants().h2OxfordBlue(),
+                        fillColor: Colors.white,
+                        labelText: "นามสกุล",
+                        floatingLabelStyle: Contants().floatingLabelStyle(),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -150,15 +163,14 @@ class _SettingAccountState extends State<SettingAccount> {
                             borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
-                )
+                  )
                 : const SizedBox(),
             Container(
               width: size * 0.5,
-                    margin: const EdgeInsets.only(top: 20),
+              margin: const EdgeInsets.only(top: 20),
               height: 50,
               child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(primary: Colors.white),
-
+                  style: ElevatedButton.styleFrom(primary: Colors.white),
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
                       if (avertarIng == null) {
@@ -171,7 +183,10 @@ class _SettingAccountState extends State<SettingAccount> {
                       }
                     }
                   },
-                  child: Text("บันทึก",style: Contants().h1OxfordBlue(),)),
+                  child: Text(
+                    "บันทึก",
+                    style: Contants().h1OxfordBlue(),
+                  )),
             )
           ],
         ),

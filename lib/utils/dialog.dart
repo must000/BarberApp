@@ -35,7 +35,7 @@ class MyDialog {
         context: context,
         builder: (context) => AlertDialog(
               title: Text(
-                "ยืนยันเวลาพัก",
+                "บันทึกเวลาพัก",
                 style: Contants().h2OxfordBlue(),
               ),
               content: SingleChildScrollView(
@@ -43,34 +43,6 @@ class MyDialog {
                 width: double.maxFinite,
                 child: Column(
                   children: const [
-                    // ConstrainedBox(
-                    //   constraints: BoxConstraints(
-                    //     maxHeight: MediaQuery.of(context).size.height * 0.5,
-                    //   ),
-                    //   child: ListView.builder(
-                    //     shrinkWrap: true,
-                    //     itemBuilder: (context, index) {
-                    //       String day = list[index].substring(0, 2);
-                    //       if (day == "mo") {
-                    //         day = "จันทร์ ";
-                    //       } else if (day == "tu") {
-                    //         day = "อังคาร ";
-                    //       } else if (day == "we") {
-                    //         day = "พุธ ";
-                    //       } else if (day == "th") {
-                    //         day = "พฤหัสบดี ";
-                    //       } else if (day == "fr") {
-                    //         day = "ศุกร์ ";
-                    //       } else if (day == "sa") {
-                    //         day = "เสาร์ ";
-                    //       } else if (day == "su") {
-                    //         day = "อาทิตย์ ";
-                    //       }
-                    //       return Text("$day ${list[index].substring(3)}");
-                    //     },
-                    //     itemCount: list.length,
-                    //   ),
-                    // ),
                   ],
                 ),
               )),
@@ -136,7 +108,7 @@ class MyDialog {
       backgroundColor: MaterialStateProperty.all<Color>(Contants.colorSpringGreen),
     ),
                 onPressed: funcAction,
-                child: const Text("ยืนยัน"),
+                child: Text("ยืนยัน",style: Contants().h2OxfordBlue(),),
               ),
               ElevatedButton(
                  style: ButtonStyle(
@@ -145,7 +117,7 @@ class MyDialog {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text("ยกเลิก"),
+                child: Text("ยกเลิก",style: Contants().h2Red(),),
               )
             ],
           )
@@ -170,7 +142,7 @@ class MyDialog {
         children: [
           TextButton(
             onPressed: funcAction,
-            child: const Text("OK"),
+            child: Text("ยืนยัน",style: Contants().h2OxfordBlue(),),
           )
         ],
       ),
@@ -195,13 +167,13 @@ class MyDialog {
             children: [
               TextButton(
                 onPressed: funcAction,
-                child: const Text("ยืนยัน"),
+                child:  Text("ยืนยัน",style: Contants().h2OxfordBlue(),),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text("ยกเลิก"),
+                child:  Text("ยกเลิก",style: Contants().h2Red()),
               ),
             ],
           ),
@@ -262,14 +234,14 @@ class MyDialog {
                 return const Login();
               },
             )),
-            child: const Text("login"),
+            child: Text("เข้าสู่ระบบ",style: Contants().h2OxfordBlue(),),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            child: const Text("ยกเลิก"),
+            child: Text("ยกเลิก",style: Contants().h2Red(),),
           )
         ],
       ),
@@ -292,7 +264,7 @@ class MyDialog {
                 builder: (context) => IndexPage(),
               );
             },
-            child: const Text("OK"),
+            child: Text("ยืนยัน",style: Contants().h2OxfordBlue(),),
           )
         ],
       ),
@@ -315,7 +287,7 @@ class MyDialog {
                     .openLocationSettings(); // ไปที่location setting
                 exit(0); //ปิดแอพ
               },
-              child: const Text("OK"))
+              child: Text("ยืนยัน",style: Contants().h2OxfordBlue(),))
         ],
       ),
     );

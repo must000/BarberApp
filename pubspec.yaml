@@ -63,7 +63,7 @@ dependencies:
   dart_geohash: ^2.0.2
   flutter_time_picker_spinner: ^2.0.0
   fluttertoast: ^8.1.1
-
+  syncfusion_flutter_charts: ^20.3.52
 dev_dependencies:
   flutter_test:
     sdk: flutter

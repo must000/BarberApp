@@ -67,7 +67,8 @@ class _SettingPasswordState extends State<SettingPassword> {
                        filled: true,
                         labelStyle: Contants().h2OxfordBlue(),
                   fillColor: Colors.white,
-                      labelText: "Old password",
+                      labelText: "รหัสผ่านเดิม",
+                       floatingLabelStyle: Contants().floatingLabelStyle(),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -86,7 +87,8 @@ class _SettingPasswordState extends State<SettingPassword> {
                          filled: true,
                         labelStyle: Contants().h2OxfordBlue(),
                   fillColor: Colors.white,
-                      labelText: "New password",
+                      labelText: "รหัสผ่านใหม่",
+                       floatingLabelStyle: Contants().floatingLabelStyle(),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -110,7 +112,8 @@ class _SettingPasswordState extends State<SettingPassword> {
                          filled: true,
                         labelStyle: Contants().h2OxfordBlue(),
                   fillColor: Colors.white,
-                      labelText: "Confirm password",
+                      labelText: "ยืนยืนรหัสผ่าน",
+                       floatingLabelStyle: Contants().floatingLabelStyle(),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),

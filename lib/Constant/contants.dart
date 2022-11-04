@@ -6,8 +6,10 @@ class Contants {
       "localhost,*,console.firebase.google.com/project/barberapp-d8c95";
 
   static Color colorOxfordBlue = const Color(0xff14213D);
+    static Color colorOxfordBlueLight = const Color.fromARGB(255, 35, 55, 99);
   static Color colorSpringGreen = const Color(0xff00FF66);
-  static Color colorYellow = const Color(0xffFCA311);
+  static Color colorYellow = Color(0xffFCA311);
+   static Color colorYellowdark = Color.fromARGB(255, 172, 106, 1);
   static Color colorBlack = const Color(0xff1C1919);
   static Color colorRed = const Color(0xffFF0000);
   static Color colorGreySilver = const Color(0xffA0A0A0);
@@ -16,6 +18,11 @@ class Contants {
   static Color myBackgroundColor = const Color(0xff14213D);
   static Color myBackgroundColordark = colorBlack;
   String font = 'Itim';
+  TextStyle floatingLabelStyle () => TextStyle(
+        fontSize: 23,
+        color: colorYellowdark,
+        fontFamily: font,
+      );
   TextStyle h1OxfordBlue() => TextStyle(
         fontSize: 30,
         color: colorOxfordBlue,
