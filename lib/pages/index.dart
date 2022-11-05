@@ -9,6 +9,7 @@ import 'package:barber/pages/Hairdresser/queue_Hairdresser.dart';
 import 'package:barber/pages/Hairdresser/service_barber.dart';
 import 'package:barber/pages/User/haircut_user.dart';
 import 'package:barber/pages/havenophonenumber.dart';
+import 'package:barber/pages/icon_page.dart';
 import 'package:barber/utils/show_progress.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,7 +40,7 @@ class _IndexPageState extends State<IndexPage> {
   @override
   void initState() {
     super.initState();
-
+    
     findEmail().then((value) {
       setState(() {
         load = false;
@@ -126,12 +127,17 @@ class _IndexPageState extends State<IndexPage> {
                     url: value.data()!["url"],
                     score: average,
                     geoHasher: value.data()!["position"]["geohash"]);
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MemberBarberPage(),
-                    ),
-                    (route) => false);
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                  builder: (context) {
+                    print("oopppp $phoneHairdresser");
+                    if (phoneHairdresser == "") {
+                      // phonefff เปิดระบบลงทะเบียนเบอร์ = "" ไม่เปิด != ""
+                      return const HaveNoPhoneNumbar();
+                    } else {
+                      return MemberBarberPage();
+                    }
+                  },
+                ), (route) => false);
               }
             });
           }
@@ -143,24 +149,84 @@ class _IndexPageState extends State<IndexPage> {
   _IndexPageState({this.isbarber});
   @override
   Widget build(BuildContext context) {
-    return  load == true
-            ? Image.asset("images/iconapp.png")
-            : isbarber == null
-                ? DefaultTabController(
+    return load == true
+        ? Image.asset("images/iconapp.png")
+        : isbarber == null
+            ? DefaultTabController(
+                length: 3,
+                child: Scaffold(
+                  body: TabBarView(children: [
+                    HairCutUser(
+                      idUser: userID == "" ? "" : userID,
+                      nameUser: nameUser == "" ? "" : nameUser,
+                      stream2: streamController2.stream,
+                    ),
+                    ReservationUser(
+                      userID: userID,
+                      nameUser: nameUser,
+                    ),
+                    const OtherUser(),
+                  ]),
+                  bottomNavigationBar: Container(
+                    color: Contants.colorBlack,
+                    child: TabBar(
+                      indicatorColor: Contants.colorSpringGreen,
+                      labelColor: Contants.colorSpringGreen,
+                      unselectedLabelColor: Colors.white,
+                      labelStyle: Contants().h3SpringGreen(),
+                      tabs: const [
+                        Tab(
+                          text: "ตัดผม",
+                          icon: Icon(
+                            Icons.cut,
+                            size: 30,
+                          ),
+                        ),
+                        Tab(
+                          text: "การจอง",
+                          icon: Icon(
+                            Icons.format_list_bulleted,
+                            size: 30,
+                          ),
+                        ),
+                        Tab(
+                          text: "อื่นๆ",
+                          icon: Icon(
+                            Icons.account_box,
+                            size: 30,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : phoneHairdresser ==
+                    "" // phonefff เปิดระบบลงทะเบียนเบอร์ = "" ไม่เปิด != ""
+                ? const DefaultTabController(
+                    length: 1, child: HaveNoPhoneNumbar())
+                : DefaultTabController(
                     length: 3,
                     child: Scaffold(
-                      body: TabBarView(children: [
-                        HairCutUser(
-                          idUser: userID == "" ? "" : userID,
-                          nameUser: nameUser == "" ? "" : nameUser,
-                          stream2: streamController2.stream,
-                        ),
-                        ReservationUser(
-                          userID: userID,
-                          nameUser: nameUser,
-                        ),
-                        const OtherUser(),
-                      ]),
+                      body: TabBarView(
+                        children: [
+                          QueueHairdresser(
+                            hairdresserID: hairdresserID!,
+                            barberState: dataHairresser!.barberStatus,
+                            idCode: dataHairresser!.idCode,
+                          ),
+                          ServiceBarber(
+                            serviceID: dataHairresser!.serviceID,
+                          ),
+                          OtherHairdresser(
+                            name: dataHairresser!.name,
+                            lastname: dataHairresser!.lastname,
+                            email: email!,
+                            barberState: dataHairresser!.barberStatus,
+                            idHairdresser: hairdresserID!,
+                          ),
+                        ],
+                      ),
                       bottomNavigationBar: Container(
                         color: Contants.colorBlack,
                         child: TabBar(
@@ -170,23 +236,23 @@ class _IndexPageState extends State<IndexPage> {
                           labelStyle: Contants().h3SpringGreen(),
                           tabs: const [
                             Tab(
-                              text: "ตัดผม",
+                              text: "การจอง",
                               icon: Icon(
-                                Icons.cut,
+                                Icons.table_chart_outlined,
                                 size: 30,
                               ),
                             ),
                             Tab(
-                              text: "การจอง",
+                              text: "บริการ",
                               icon: Icon(
-                                Icons.format_list_bulleted,
+                                Icons.cut_sharp,
                                 size: 30,
                               ),
                             ),
                             Tab(
                               text: "อื่นๆ",
                               icon: Icon(
-                                Icons.account_box,
+                                Icons.store,
                                 size: 30,
                               ),
                             ),
@@ -194,65 +260,6 @@ class _IndexPageState extends State<IndexPage> {
                         ),
                       ),
                     ),
-                  )
-                : phoneHairdresser == ""
-                    ? const DefaultTabController(
-                        length: 1, child: HaveNoPhoneNumbar())
-                    : DefaultTabController(
-                        length: 3,
-                        child: Scaffold(
-                          body: TabBarView(
-                            children: [
-                              QueueHairdresser(
-                                hairdresserID: hairdresserID!,
-                                barberState: dataHairresser!.barberStatus,
-                                idCode: dataHairresser!.idCode,
-                              ),
-                              ServiceBarber(
-                                serviceID: dataHairresser!.serviceID,
-                              ),
-                              OtherHairdresser(
-                                name: dataHairresser!.name,
-                                lastname: dataHairresser!.lastname,
-                                email: email!,
-                                barberState: dataHairresser!.barberStatus,
-                                idHairdresser: hairdresserID!,
-                              ),
-                            ],
-                          ),
-                          bottomNavigationBar: Container(
-                            color: Contants.colorBlack,
-                            child: TabBar(
-                              indicatorColor: Contants.colorSpringGreen,
-                              labelColor: Contants.colorSpringGreen,
-                              unselectedLabelColor: Colors.white,
-                              labelStyle: Contants().h3SpringGreen(),
-                              tabs: const [
-                                Tab(
-                                  text: "การจอง",
-                                  icon: Icon(
-                                    Icons.table_chart_outlined,
-                                    size: 30,
-                                  ),
-                                ),
-                                Tab(
-                                  text: "บริการ",
-                                  icon: Icon(
-                                    Icons.cut_sharp,
-                                    size: 30,
-                                  ),
-                                ),
-                                Tab(
-                                  text: "อื่นๆ",
-                                  icon: Icon(
-                                    Icons.store,
-                                    size: 30,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
+                  );
   }
 }

@@ -141,6 +141,8 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
                       verifyPhone();
+                      // trickFunction();
+                      // phonefff เปิดระบบเบอร์ = verifyPhone(); ไม่เปิด = trickFunction();
                     }
                   },
                   child: Text(
@@ -152,6 +154,47 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
         ),
       ),
     );
+  }
+
+  Future trickFunction() async {
+    if (emailhairresser != null) {
+      //เป็นช่างทำผม
+      await FirebaseFirestore.instance
+          .collection('Hairdresser')
+          .where("email", isEqualTo: emailhairresser)
+          .snapshots()
+          .listen((event) async {
+        var doc = event.docs;
+        await FirebaseFirestore.instance
+            .collection('Hairdresser')
+            .doc(doc[0].id)
+            .update({"phone": phoneController.text}).then(
+                (value) => Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => IndexPage(),
+                    ),
+                    (route) => false));
+      });
+    } else if (emailBarber != null) {
+      await FirebaseFirestore.instance
+          .collection('Barber')
+          .doc(emailBarber)
+          .update({"phone": phoneController.text}).then(
+              (value) => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => IndexPage(),
+                  ),
+                  (route) => false));
+    } else {
+      return Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => IndexPage(),
+          ),
+          (route) => false);
+    }
   }
 
   requestVerifyCode() {

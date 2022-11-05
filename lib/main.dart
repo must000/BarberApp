@@ -5,12 +5,14 @@ import 'package:barber/data/barbermodel.dart';
 import 'package:barber/pages/Authentication/registeruser.dart';
 import 'package:barber/pages/OtherPage/about_developer.dart';
 import 'package:barber/pages/OtherPage/contact_admin_user.dart';
+import 'package:barber/pages/icon_page.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/pages/Authentication/login.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 List<BarberModel> barberLike = [];
 Map<String, String> urlImgLike = {};
 BarberModel? barberModelformanager;
@@ -23,6 +25,7 @@ final Map<String, WidgetBuilder> map = {
   '/registerUser': (BuildContext context) => const RegisterUser(),
   '/contactAdminUser': (BuildContext context) => const ContactAdminUser(),
   '/aboutDevloper': (BuildContext context) => const AboutDeveloper(),
+  '/iconpage': (BuildContext context) => const IconAppPage(),
 };
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,13 +41,13 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyProviders(),
       child: MaterialApp(
-        theme: ThemeData(primaryColor: Colors.black,
-         checkboxTheme: CheckboxThemeData(
-      fillColor: MaterialStateProperty.all(Colors.white),
-    )
-        ),
+        theme: ThemeData(
+            primaryColor: Colors.black,
+            checkboxTheme: CheckboxThemeData(
+              fillColor: MaterialStateProperty.all(Colors.white),
+            )),
         routes: map,
-        initialRoute: Rount_CN.routeIndex,
+        initialRoute: '/iconpage',
       ),
     );
   }

@@ -154,6 +154,7 @@ class _StoreBarberState extends State<StoreBarber> {
                         labelText: "ชื่อ",
                         fillColor: Contants.colorWhite,
                         filled: true,
+                        floatingLabelStyle: Contants().floatingLabelStyle(),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -170,6 +171,7 @@ class _StoreBarberState extends State<StoreBarber> {
                         labelText: "นามสกุล",
                         fillColor: Contants.colorWhite,
                         filled: true,
+                        floatingLabelStyle: Contants().floatingLabelStyle(),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -186,8 +188,15 @@ class _StoreBarberState extends State<StoreBarber> {
               radiobuttonTypeBarber(),
               ElevatedButton(
                 onPressed: () {
-                  MyDialog(funcAction: fc)
-                      .superDialog(context, "", "บันทึกข้อมูล");
+                  if (nameController.text == "" ||
+                      lastNameController.text == "" ||
+                      shopNameController.text == "" ||
+                      recommendController.text == "") {
+                    MyDialog().normalDialog(context, "กรุณาใส่ข้อมูลให้ครบ");
+                  } else {
+                    MyDialog(funcAction: fc)
+                        .superDialog(context, "", "บันทึกข้อมูล");
+                  }
                 },
                 child: Text(
                   "บันทึก",
@@ -888,6 +897,7 @@ class _StoreBarberState extends State<StoreBarber> {
           labelText: "คำแนะนำร้าน",
           fillColor: Contants.colorWhite,
           labelStyle: Contants().h3yellow(),
+          floatingLabelStyle: Contants().floatingLabelStyle(),
           filled: true,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -906,7 +916,7 @@ class _StoreBarberState extends State<StoreBarber> {
         controller: shopNameController,
         decoration: InputDecoration(
           labelText: "ชื่อร้าน",
-          labelStyle: Contants().h3yellow(),
+          floatingLabelStyle: Contants().floatingLabelStyle(),
           fillColor: Contants.colorWhite,
           filled: true,
           enabledBorder: OutlineInputBorder(
