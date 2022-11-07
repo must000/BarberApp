@@ -316,7 +316,7 @@ class _LoginState extends State<Login> {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(
-              email: emailController.text, password: passwordController.text)
+              email: emailController.text.toLowerCase(), password: passwordController.text)
           .then((value) => Navigator.pushNamedAndRemoveUntil(
               context, Rount_CN.routeIndex, (route) => false))
           .catchError((value) {

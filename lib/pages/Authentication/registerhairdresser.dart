@@ -296,7 +296,7 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: emailController.text, password: passwordController.text)
+              email: emailController.text.toLowerCase(), password: passwordController.text)
           .then((value) async {
         proceedsaveData().then((value) => uploadAvarter().then((value) {
               Navigator.pop(context);
@@ -304,7 +304,7 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => RegisterPhoneUser(
-                    emailhairresser: emailController.text,
+                    emailhairresser: emailController.text.toLowerCase(),
                   ),
                 ),
               );
@@ -317,7 +317,7 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
   }
 
   Future<Null> uploadAvarter() async {
-    final path = 'avatar/${emailController.text}';
+    final path = 'avatar/${emailController.text.toLowerCase()}';
     final file = File(avertarIng!.path);
     final ref = FirebaseStorage.instance.ref().child(path);
     ref.putFile(file).then((p0) {});
@@ -325,7 +325,7 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
 
   proceedsaveData() async {
     await FirebaseFirestore.instance.collection('Hairdresser').add({
-      "email": emailController.text,
+      "email": emailController.text.toLowerCase(),
       "name": nameController.text,
       "lastname": lastnameController.text,
       "barberState": "no",

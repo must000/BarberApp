@@ -12,6 +12,8 @@
         <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
         <meta-data android:name="longdo.map.key"
             android:value="192d687fea50c69265ac0c95e88f2599" />
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBnVqzRVEO9v49dIAGbwsE8mbjZ5PitBr0"/>
 
  <activity android:name="com.facebook.FacebookActivity"
      android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

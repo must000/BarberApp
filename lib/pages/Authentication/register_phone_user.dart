@@ -140,8 +140,8 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                   style: ElevatedButton.styleFrom(primary: Colors.white),
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      verifyPhone();
-                      // trickFunction();
+                      // verifyPhone();
+                      trickFunction();
                       // phonefff เปิดระบบเบอร์ = verifyPhone(); ไม่เปิด = trickFunction();
                     }
                   },

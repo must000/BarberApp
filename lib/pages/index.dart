@@ -54,6 +54,7 @@ class _IndexPageState extends State<IndexPage> {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance.authStateChanges().listen((event) async {
+        print("eventemail is ${event!.email}");
         setState(() {
           email = event!.email;
           userID = event.uid;
@@ -69,7 +70,7 @@ class _IndexPageState extends State<IndexPage> {
             .collection('Hairdresser')
             .where("email", isEqualTo: "$email")
             .snapshots()
-            .listen((event) {
+            .listen((event) async {
           var doc = event.docs;
           if (doc.isNotEmpty) {
             setState(() {
@@ -87,7 +88,8 @@ class _IndexPageState extends State<IndexPage> {
               load = false;
             });
           } else {
-            FirebaseFirestore.instance
+            print("email is $email");
+          await  FirebaseFirestore.instance
                 .collection('Barber')
                 .doc(email)
                 .get()
@@ -130,7 +132,7 @@ class _IndexPageState extends State<IndexPage> {
                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                   builder: (context) {
                     print("oopppp $phoneHairdresser");
-                    if (phoneHairdresser == "") {
+                    if (phoneHairdresser == "phone") {
                       // phonefff เปิดระบบลงทะเบียนเบอร์ = "" ไม่เปิด != ""
                       return const HaveNoPhoneNumbar();
                     } else {
@@ -202,7 +204,7 @@ class _IndexPageState extends State<IndexPage> {
                 ),
               )
             : phoneHairdresser ==
-                    "" // phonefff เปิดระบบลงทะเบียนเบอร์ = "" ไม่เปิด != ""
+                    "phone" // phonefff เปิดระบบลงทะเบียนเบอร์ = "" ไม่เปิด != ""
                 ? const DefaultTabController(
                     length: 1, child: HaveNoPhoneNumbar())
                 : DefaultTabController(

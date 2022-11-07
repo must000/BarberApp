@@ -4,14 +4,17 @@ import 'package:barber/Constant/contants.dart';
 import 'package:barber/main.dart';
 import 'package:barber/pages/Barbermanager/drawerobject.dart';
 import 'package:barber/utils/dialog.dart';
+import 'package:barber/utils/show_progress.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:longdo_maps_api3_flutter/view.dart';
 
 class StoreBarber extends StatefulWidget {
   const StoreBarber({
@@ -39,6 +42,21 @@ class _StoreBarberState extends State<StoreBarber> {
     // TODO: implement initState
     super.initState();
     setdata();
+  }
+
+  double lat = double.parse(barberModelformanager!.lat);
+  double lng = double.parse(barberModelformanager!.lng);
+
+  proceedMoveLongdoMap(double lat, double lng) async {
+    await map.currentState?.call(
+      "location",
+      [
+        {
+          "lon": lng,
+          "lat": lat,
+        },
+      ],
+    );
   }
 
   setdata() {
@@ -106,6 +124,24 @@ class _StoreBarberState extends State<StoreBarber> {
       });
     } catch (e) {}
   }
+    Widget buttonMovePosition() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: InkWell(
+        child: ListTile(
+          tileColor: Contants.colorWhite,
+          title: const Text("ย้ายไปยังที่อยู่ของฉัน"),
+          leading: Icon(
+            Icons.wrong_location,
+            color: Contants.colorOxfordBlue,
+          ),
+        ),
+        onTap: () {
+          proceedMoveLongdoMap(lat, lng);
+        },
+      ),
+    );
+  }
 
   Future<Null> uploadphoto(String email) async {
     final path = 'imgfront/$email';
@@ -127,9 +163,11 @@ class _StoreBarberState extends State<StoreBarber> {
     });
   }
 
+  final map = GlobalKey<LongdoMapState>();
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
+
     return Scaffold(
       drawer: DrawerObject(),
       appBar: AppBar(
@@ -251,11 +289,25 @@ class _StoreBarberState extends State<StoreBarber> {
                       MaterialStateProperty.all(Contants.colorYellow),
                 ),
               ),
-              topicTitle("ที่อยู่ร้าน")
+              topicTitle("ที่อยู่ร้าน"),
+              buildMap(size),
+              buttonMovePosition()
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildMap(double size) {
+    return SizedBox(
+      child: LongdoMapWidget(
+        apiKey: Contants.keyLongdomap,
+        key: map,
+        bundleId: Contants.bundleID,
+      ),
+      width: size * 0.9,
+      height: 400,
     );
   }
 

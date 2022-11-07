@@ -169,7 +169,7 @@ class _RegisterUserState extends State<RegisterUser> {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: userController.text, password: passwordController.text)
+              email: userController.text.toLowerCase(), password: passwordController.text)
           .then((value) async {
         await value.user!.updateDisplayName(nameController.text).then(
               (value) => MyDialog(funcAction: fc).hardDialog(

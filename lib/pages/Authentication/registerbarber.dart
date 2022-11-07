@@ -329,7 +329,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
       return registerData(
         nameController.text.trim(),
         lastnameController.text.trim(),
-        emailController.text.trim(),
+        emailController.text.trim().toLowerCase(),
         passwordController.text,
         phoneController.text,
         groupTypeBarber!,
@@ -389,11 +389,11 @@ class _RegisterBarberState extends State<RegisterBarber> {
     );
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password)
+          .createUserWithEmailAndPassword(email: email.toLowerCase(), password: password)
           .then((value) {
         print("สมัครสำเร็จ");
         proceedSaveDataBarber(
-          email,
+          email.toLowerCase(),
           name,
           lastname,
           phone,
@@ -408,10 +408,10 @@ class _RegisterBarberState extends State<RegisterBarber> {
           destrict,
           subDestrict,
           detaillocation,
-        ).then((value) => uploadphoto(email).then((value) {
+        ).then((value) => uploadphoto(email.toLowerCase()).then((value) {
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => RegisterPhoneUser(emailBarber: email,)),
+                  MaterialPageRoute(builder: (context) => RegisterPhoneUser(emailBarber: email.toLowerCase(),)),
                   (route) => false);
             }).catchError((value) {
               MyDialog().stDialog(context, value.message);
@@ -423,7 +423,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
   }
 
   Future<Null> uploadphoto(String email) async {
-    final path = 'imgfront/$email';
+    final path = 'imgfront/${email.toLowerCase()}';
     final file = File(photoShopFront!.path);
     final ref = FirebaseStorage.instance.ref().child(path);
     print("อัพโหลด");
@@ -432,7 +432,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
         print("url หน้าร้าน คือ $value");
         await FirebaseFirestore.instance
             .collection('Barber')
-            .doc(email)
+            .doc(email.toLowerCase())
             .update({"url": value});
       });
     });
@@ -440,7 +440,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
     if (imagefiles != null) {
       for (var i = 0; i < imagefiles!.length; i++) {
         int x = Random().nextInt(1000000);
-        final path2 = 'album/$email/$x';
+        final path2 = 'album/${email.toLowerCase()}/$x';
         final file2 = File(imagefiles![i].path);
         final ref = FirebaseStorage.instance.ref().child(path2);
         ref.putFile(file2);
@@ -469,7 +469,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
     String geohashstart =
         geoHasher.encode(double.parse(lon), double.parse(lat));
     await FirebaseFirestore.instance.collection('Barber').doc(email).set({
-      "email": email,
+      "email": email.toLowerCase(),
       "name": name,
       "lastname": lastname,
       "typeBarber": typeBarber,

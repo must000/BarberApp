@@ -117,7 +117,7 @@ class MyDialog {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text("ยกเลิก",style: Contants().h2Red(),),
+                child: Text("ยกเลิก",style: Contants().h2white(),),
               )
             ],
           )

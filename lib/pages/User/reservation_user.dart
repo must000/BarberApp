@@ -228,10 +228,10 @@ class _ReservationUserState extends State<ReservationUser> {
                           subtitle: Row(
                             children: [
                               Text(
-                                  "เวลา${DateTime.parse(data[index]["time"]["timestart"]).day.toString().padLeft(2, "0")}/${DateTime.parse(data[index]["time"]["timestart"]).month.toString().padLeft(2, "0")} ${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}"),
+                                  "เวลา${DateTime.parse(data[index]["time"]["timestart"]).day.toString().padLeft(2, "0")}/${DateTime.parse(data[index]["time"]["timestart"]).month.toString().padLeft(2, "0")} ${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}",style: Contants().h4Grey(),),
                               const Icon(
                                 Icons.schedule,
-                                size: 17,
+                                size: 15,
                               ),
                             ],
                           ),
