@@ -96,20 +96,29 @@ class _OtherUserState extends State<OtherUser> {
                               ),
                               user!.emailVerified == false
                                   ? TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SettingAccount(
-                                                      email: user!.email!,
-                                                      typebarber: false,
-                                                      name: user!.displayName!,
-                                                    )));
-                                      },
-                                      child: Text("ตั้งค่าข้อมูลผู้ใช้ ",
-                                          style: Contants().h3white()),
-                                    )
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SettingAccount(
+                                                    email: user!.email!,
+                                                    typebarber: false,
+                                                    name: user!
+                                                        .displayName!,
+                                                  )));
+                                    },
+                                    child: Row(
+                                      children: [
+                                         Icon(
+                                          Icons.account_circle,
+                                          color: Contants.colorSpringGreen,
+                                        ),
+                                        Text("ตั้งค่าข้อมูลผู้ใช้ ",
+                                            style: Contants().h3white()),
+                                      ],
+                                    ),
+                                  )
                                   : const SizedBox(),
                               user!.emailVerified == false
                                   ? Divider(
@@ -120,43 +129,60 @@ class _OtherUserState extends State<OtherUser> {
                                   : const SizedBox(),
                               user!.emailVerified == false
                                   ? TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SettingPassword(
-                                                email: user!.email!,
-                                                typebarber: false,
-                                              ),
-                                            ));
-                                      },
-                                      child: Text("เปลี่ยนรหัสผ่าน ",
-                                          style: Contants().h3white()),
-                                    )
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                SettingPassword(
+                                              email: user!.email!,
+                                              typebarber: false,
+                                            ),
+                                          ));
+                                    },
+                                    child: Row(
+                                      children: [
+                                         Icon(
+                                          Icons.lock,
+                                          color: Contants.colorSpringGreen,
+                                        ),
+                                        Text("เปลี่ยนรหัสผ่าน ",
+                                            style: Contants().h3white()),
+                                      ],
+                                    ),
+                                  )
                                   : const SizedBox(),
-                                  user!.emailVerified == false
-                  ? const SizedBox()
-                  : Divider(
-                      height: 5,
-                      indent: 1,
-                      color: Contants.colorWhite,
-                    ),
-                 user!.emailVerified == false
-                  ? const SizedBox()
-                  : TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RegisterPhoneUser(),
-                            ));
-                      },
-                      child: Text(
-                        "เปลี่ยนเบอร์มือถือ",
-                        style: Contants().h3white(),
-                      ),
-                    ),
+                              user!.emailVerified == false
+                                  ? const SizedBox()
+                                  : Divider(
+                                      height: 5,
+                                      indent: 1,
+                                      color: Contants.colorWhite,
+                                    ),
+                              user!.emailVerified == false
+                                  ? const SizedBox()
+                                  : TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                RegisterPhoneUser(),
+                                          ));
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.phone_android,
+                                          color: Contants.colorSpringGreen,
+                                        ),
+                                        Text(
+                                          "เปลี่ยนเบอร์มือถือ",
+                                          style: Contants().h3white(),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                             ],
                           );
                   } else if (snapshot.hasError) {
@@ -166,20 +192,27 @@ class _OtherUserState extends State<OtherUser> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(""),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, Rount_CN.routeLogin);
-                            },
-                            child: Text(
-                              "Login",
-                              style: Contants().h3SpringGreen(),
-                            )),
+                        Row(
+                          children: [
+                             Icon(
+                    Icons.login_rounded,
+                    color: Contants.colorSpringGreen,
+                  ),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, Rount_CN.routeLogin);
+                                },
+                                child: Text(
+                                  "เข้าสู่ระบบ",
+                                  style: Contants().h3SpringGreen(),
+                                )),
+                          ],
+                        ),
                       ],
                     );
                   }
                 },
               ),
-                  
               Divider(
                 height: 5,
                 indent: 1,
@@ -187,9 +220,18 @@ class _OtherUserState extends State<OtherUser> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, Rount_CN.routeContactAdminUser);
+                  Navigator.pushNamed(
+                      context, Rount_CN.routeContactAdminUser);
                 },
-                child: Text("ขอความช่วยเหลือ", style: Contants().h3white()),
+                child: Row(
+                  children: [
+                      Icon(
+                    Icons.contact_support,
+                    color: Contants.colorSpringGreen,
+                  ),
+                    Text("ขอความช่วยเหลือ", style: Contants().h3white()),
+                  ],
+                ),
               ),
               Divider(
                 height: 5,
@@ -198,9 +240,18 @@ class _OtherUserState extends State<OtherUser> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, Rount_CN.routeAboutDeveloper);
+                  Navigator.pushNamed(
+                      context, Rount_CN.routeAboutDeveloper);
                 },
-                child: Text("เกี่ยวกับเรา", style: Contants().h3white()),
+                child: Row(
+                  children: [
+                    Icon(
+                    Icons.code,
+                    color: Contants.colorSpringGreen,
+                  ),
+                    Text("เกี่ยวกับเรา", style: Contants().h3white()),
+                  ],
+                ),
               ),
               Divider(
                 indent: 1,
@@ -215,14 +266,22 @@ class _OtherUserState extends State<OtherUser> {
   }
 
   logout(BuildContext context) {
-    return TextButton(
-        onPressed: () {
-          final provider = Provider.of<MyProviders>(context, listen: false);
-          provider.logout(context);
-        },
-        child: Text(
-          "logout",
-          style: Contants().h3Red(),
-        ));
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              final provider = Provider.of<MyProviders>(context, listen: false);
+              provider.logout(context);
+            },
+            child: Text(
+              "ออกจากระบบ",
+              style: Contants().h3Red(),
+            )),
+        Icon(
+          Icons.logout,
+          color: Contants.colorRed,
+        ),
+      ],
+    );
   }
 }

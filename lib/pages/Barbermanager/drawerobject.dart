@@ -126,6 +126,7 @@ class DrawerObject extends StatelessWidget {
             children: [
               ListTile(
                 title: Text('ออกจากระบบ', style: Contants().h3Red()),
+                leading: Icon(Icons.logout,color: Contants.colorRed,),
                 onTap: () {
                   final provider =
                       Provider.of<MyProviders>(context, listen: false);

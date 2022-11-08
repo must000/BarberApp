@@ -119,14 +119,13 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
           }
         } else {
           Navigator.pop(context);
-          MyDialog().normalDialog(
-                context, "ไม่เจอช่างทำผม");
+          MyDialog().normalDialog(context, "ไม่เจอช่างทำผม");
         }
       });
     }
   }
 
- fc(String docid, String email, String idCode, String name, String lastname,
+  fc(String docid, String email, String idCode, String name, String lastname,
       String serviceID, String phone) async {
     print("เพิ่มมมม");
     await FirebaseFirestore.instance
@@ -147,7 +146,6 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
         context, "คุณต้องการจะลบช่างทำผมคนนี้ออกจากร้านหรือไม่ ?", "ลบ $name");
   }
 
-
   fc2(String docid) async {
     // member[0].
     await FirebaseFirestore.instance
@@ -166,9 +164,10 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
           .doc(barberModelformanager!.email)
           .collection("hairdresserMember")
           .doc(value.docs[0].id)
-          .delete().then((value) {
-            getMember();
-          });
+          .delete()
+          .then((value) {
+        getMember();
+      });
     });
   }
 
@@ -188,6 +187,16 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
           behavior: HitTestBehavior.opaque,
           child: Column(
             children: [
+              SizedBox(
+                height: 15,
+              ),
+              Text(
+                "ช่างทำผมของร้าน",
+                style: Contants().h2white(),
+              ),
+              SizedBox(
+                height: 15,
+              ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 5),
                 child: Row(
@@ -237,7 +246,13 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
                 ),
               ),
               member.isEmpty
-                  ? const SizedBox()
+                  ? Container(
+                    margin: EdgeInsets.only(top: 30),
+                    child: Text(
+                    "ไม่มีช่างทำผมภายในร้าน",
+                    style: Contants().h3white(),
+                      ),
+                  )
                   : Flexible(
                       child: ListView(children: [
                         ListView.builder(

@@ -275,15 +275,23 @@ class _BarberUserState extends State<BarberUser> {
                 ],
               ),
               Container(
-                child: Text(
-                  barberModel.shoprecommend,
-                  style: Contants().h3white(),
+                child: Row(
+                  children: [
+                    Icon(Icons.recommend,color: Contants.colorSpringGreen,),
+                    Text(
+                      "แนะนำร้าน ${barberModel.shoprecommend}",
+                      style: Contants().h3white(),
+                    ),
+                  ],
                 ),
                 margin: const EdgeInsets.symmetric(horizontal: 15),
               ),
               const SizedBox(
                 height: 30,
               ),
+               loadingHairdresser
+                  ? const SizedBox()
+                  : Center(child: Text("เลือกช่างทำผม",style: Contants().h3white(),)) ,
               loadingHairdresser
                   ? const SizedBox()
                   : SizedBox(
@@ -347,6 +355,12 @@ class _BarberUserState extends State<BarberUser> {
                         ),
                       ),
                     ),
+                   loadingHairdresser ? const SizedBox() :  Center(
+                     child: Text(
+                                    "เลือกบริการ",
+                                    style: Contants().h3white(),
+                                  ),
+                   ),
               loadingHairdresser ? const SizedBox() : serviceList(),
             ],
           ),

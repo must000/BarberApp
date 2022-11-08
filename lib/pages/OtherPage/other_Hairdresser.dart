@@ -12,7 +12,7 @@ import 'package:barber/provider/myproviders.dart';
 
 class OtherHairdresser extends StatefulWidget {
   String email;
-  String name,lastname;
+  String name, lastname;
   String barberState;
   String idHairdresser;
   OtherHairdresser(
@@ -20,7 +20,8 @@ class OtherHairdresser extends StatefulWidget {
       required this.email,
       required this.name,
       required this.barberState,
-      required this.idHairdresser,required this.lastname})
+      required this.idHairdresser,
+      required this.lastname})
       : super(key: key);
 
   @override
@@ -28,19 +29,21 @@ class OtherHairdresser extends StatefulWidget {
       email: this.email,
       name: this.name,
       barberState: this.barberState,
-      idHairdresser: idHairdresser,lastname:lastname);
+      idHairdresser: idHairdresser,
+      lastname: lastname);
 }
 
 class _OtherHairdresserState extends State<OtherHairdresser> {
   String? email;
-  String? name,lastname;
+  String? name, lastname;
   String? barberState;
   String? idHairdresser;
   _OtherHairdresserState(
       {required this.email,
       required this.name,
       required this.barberState,
-      required this.idHairdresser,required this.lastname});
+      required this.idHairdresser,
+      required this.lastname});
 
   @override
   void initState() {
@@ -50,7 +53,7 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-    
+
     return Scaffold(
       backgroundColor: Contants.myBackgroundColor,
       body: Container(
@@ -60,7 +63,7 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                name==null
+                name == null
                     ? const Text("")
                     : Text(
                         "ชื่อ $name",
@@ -72,112 +75,139 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
             const SizedBox(
               height: 70,
             ),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SettingAccount(
-                                email: email!, typebarber: true, name: name!,lastname: lastname,)));
-                  },
-                  child: Text(
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SettingAccount(
+                              email: email!,
+                              typebarber: true,
+                              name: name!,
+                              lastname: lastname,
+                            )));
+              },
+              child: Row(
+                children: [
+                  Icon(
+                  Icons.account_circle,
+                  color: Contants.colorSpringGreen,
+                ),
+                  Text(
                     "ตั้งค่าโปรไฟล์",
                     style: Contants().h3white(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SettingPassword(
-                                  email: email!,
-                                  typebarber: true,
-                                )));
-                  },
-                  child: Text(
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SettingPassword(
+                              email: email!,
+                              typebarber: true,
+                            )));
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.lock,
+                    color: Contants.colorSpringGreen,
+                  ),
+                  Text(
                     "เปลี่ยนรหัสผ่าน ",
                     style: Contants().h3white(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RegisterPhoneUser(
-                            emailhairresser: email,
-                          ),
-                        ));
-                  },
-                  child: Text(
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RegisterPhoneUser(
+                        emailhairresser: email,
+                      ),
+                    ));
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.phone_android,
+                    color: Contants.colorSpringGreen,
+                  ),
+                  Text(
                     "เปลี่ยนเบอร์มือถือ",
                     style: Contants().h3white(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    print(barberState);
-                    if (barberState == "no") {
-                      MyDialog().normalDialog(context, "ยังไม่มีร้านทำผม");
-                    } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BarberHairdresser(
-                              barberState: barberState!,
-                              idHairdresser: idHairdresser!,
-                            ),
-                          ));
-                    }
-                  },
-                  child: Text(
+            TextButton(
+              onPressed: () {
+                print(barberState);
+                if (barberState == "no") {
+                  MyDialog().normalDialog(context, "ยังไม่มีร้านทำผม");
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BarberHairdresser(
+                          barberState: barberState!,
+                          idHairdresser: idHairdresser!,
+                        ),
+                      ));
+                }
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.store,
+                    color: Contants.colorSpringGreen,
+                  ),
+                  Text(
                     "ร้านทำผมที่สังกัด",
                     style: Contants().h3white(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(
-                        context, Rount_CN.routeContactAdminUser);
-                  },
-                  child: Text(
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Rount_CN.routeContactAdminUser);
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.contact_support,
+                    color: Contants.colorSpringGreen,
+                  ),
+                  Text(
                     "ขอความช่วยเหลือ",
                     style: Contants().h3white(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, Rount_CN.routeAboutDeveloper);
-                  },
-                  child: Text(
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Rount_CN.routeAboutDeveloper);
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.code,
+                    color: Contants.colorSpringGreen,
+                  ),
+                  Text(
                     "เกี่ยวกับเรา",
                     style: Contants().h3white(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -186,14 +216,22 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
   }
 
   logout(BuildContext context) {
-    return TextButton(
-        onPressed: () {
-          final provider = Provider.of<MyProviders>(context, listen: false);
-          provider.logoutBB(context);
-        },
-        child: Text(
-          "ออกจากระบบ",
-          style: Contants().h4Red(),
-        ));
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              final provider = Provider.of<MyProviders>(context, listen: false);
+              provider.logoutBB(context);
+            },
+            child: Text(
+              "ออกจากระบบ",
+              style: Contants().h4Red(),
+            )),
+        Icon(
+          Icons.logout,
+          color: Contants.colorRed,
+        ),
+      ],
+    );
   }
 }

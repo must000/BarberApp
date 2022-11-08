@@ -96,6 +96,7 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
       drawer: DrawerObject(),
         appBar: AppBar(backgroundColor: Contants.myBackgroundColordark,),
         body: SfDateRangePicker(
+          selectionColor: Contants.colorRed,
           cancelText: "",
           confirmText: "ปิดร้าน",
           onCancel: null,
@@ -147,10 +148,10 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
           monthCellStyle: DateRangePickerMonthCellStyle(
             specialDatesDecoration: BoxDecoration(
                 color:  Contants.colorRed,
-                border: Border.all(color: const Color(0xFFF44436), width: 1),
+               
                 shape: BoxShape.circle),
             weekendDatesDecoration: BoxDecoration(
-                color: Color.fromARGB(255, 149, 149, 150),
+                color: Contants.colorBlack,
                 border: Border.all(color: const Color(0xFFB6B6B6), width: 1),
                 shape: BoxShape.circle),
           ),

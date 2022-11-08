@@ -54,7 +54,6 @@ class _IndexPageState extends State<IndexPage> {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance.authStateChanges().listen((event) async {
-        print("eventemail is ${event!.email}");
         setState(() {
           email = event!.email;
           userID = event.uid;

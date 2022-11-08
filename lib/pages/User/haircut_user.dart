@@ -268,7 +268,12 @@ class _HairCutUserState extends State<HairCutUser> {
           },
         ),
         title:
-            dataPositionUser == null ? const Text('') : Text(dataPositionUser!),
+            dataPositionUser == null ? const Text('') : Row(
+              children: [
+                Icon(Icons.pin_drop_outlined,color: Contants.colorSpringGreen,),
+                Text(dataPositionUser!,style: Contants().h3white(),),
+              ],
+            ),
         actions: [
           nameUser == ""
               ? TextButton(
@@ -306,7 +311,11 @@ class _HairCutUserState extends State<HairCutUser> {
                     ))
                 : const SizedBox(),
             barberHistory.isNotEmpty && loadHistory == false
-                ? sectionListview(size, "ร้านที่เคยใช้บริการ")
+                ? sectionListview(size, "ร้านที่เคยใช้บริการ",  Icon(
+                      Icons.shop,
+                      color: Contants.colorSpringGreen,
+                      size: 30,
+                    ))
                 : const SizedBox(),
             loadHistory
                 ? LoadingAnimationWidget.waveDots(
@@ -320,7 +329,14 @@ class _HairCutUserState extends State<HairCutUser> {
                   )
                 : const SizedBox(),
             barberLike.isNotEmpty
-                ? sectionListview(size, "ร้านที่ถูกใจ")
+                ? sectionListview(
+                    size,
+                    "ร้านที่ถูกใจ",
+                    Icon(
+                      Icons.favorite,
+                      color: Contants.colorSpringGreen,
+                      size: 30,
+                    ))
                 : const SizedBox(),
             barberLike.isNotEmpty ? listStoreLike(size) : const SizedBox(),
           ],
@@ -598,7 +614,6 @@ class _HairCutUserState extends State<HairCutUser> {
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 5),
                 width: 130,
-
                 child: BarberModel3(
                     nameUser: nameUser == "" ? "" : nameUser,
                     barberModel: barberHistory[index],
@@ -638,14 +653,15 @@ class _HairCutUserState extends State<HairCutUser> {
     );
   }
 
-  Container sectionListview(double size, String title) {
-    return Container(
-      child: Text(
-        title,
-        style: Contants().h2white(),
-      ),
-      width: size,
-      padding: EdgeInsets.symmetric(horizontal: size * 0.1),
+  Row sectionListview(double size, String title, Icon icon) {
+    return Row(
+      children: [
+        icon,
+        Text(
+          title,
+          style: Contants().h2white(),
+        ),
+      ],
     );
   }
 

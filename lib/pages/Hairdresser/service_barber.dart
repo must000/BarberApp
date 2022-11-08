@@ -54,11 +54,11 @@ class _ServiceBarberState extends State<ServiceBarber> {
                     var userData = data[index];
                     return Card(
                       child: ListTile(
-                        title: Text(userData['name']),
-                        subtitle: Text(userData['detail']),
+                        title: Text("ชื่อ ${userData['name']}",style: Contants().h4OxfordBlue(),),
+                        subtitle: Text("รายละเอียด ${userData['detail']}",style: Contants().h4Grey(),),
                         trailing: Wrap(children: [
                           Text(
-                              "${userData['time'].toString()} นาที / ${userData["price"].toString()} บาท"),
+                              "${userData['time'].toString()} นาที / ${userData["price"].toString()} บาท",style: Contants().h4OxfordBlue(),),
                           IconButton(
                               onPressed: () {
                                 FirebaseFirestore.instance
@@ -94,12 +94,12 @@ class _ServiceBarberState extends State<ServiceBarber> {
           child: slid == false
               ? InkWell(
                   child: Container(
-                    decoration: BoxDecoration(color: Colors.grey),
+                    decoration: BoxDecoration(color: Contants.colorSpringGreen),
                     width: size,
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         "เพิ่มบริการ",
-                        style: TextStyle(fontSize: 20),
+                        style: Contants().h1OxfordBlue(),
                       ),
                     ),
                   ),
@@ -126,10 +126,7 @@ class _ServiceBarberState extends State<ServiceBarber> {
                                   dropdownOverButton: true,
                                   hint: Text(
                                     'เวลา ${time.toInt()} นาที ',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).hintColor,
-                                    ),
+                                    style:  Contants().h3OxfordBlue()
                                   ),
                                   items: items
                                       .map((item) => DropdownMenuItem<String>(
@@ -174,12 +171,12 @@ class _ServiceBarberState extends State<ServiceBarber> {
                           ),
                           Row(
                             children: [
-                              const Text("ราคา"),
+                              Text("ราคา",style: Contants().h3OxfordBlue()),
                               const SizedBox(
                                 width: 20,
                               ),
                               SizedBox(
-                                height: 25,
+                                height: 40,
                                 width: size * 0.3,
                                 child: TextFormField(
                                   controller: priceServiceController,
@@ -190,6 +187,8 @@ class _ServiceBarberState extends State<ServiceBarber> {
                                     } else if (double.parse(value) <= 0) {
                                       setState(() {});
                                       return "ราคาต้องมากกว่า 0";
+                                    } else if (double.parse(value) > 10000) {
+                                    return "ราคาค่าบริการสูงเกินไป";
                                     } else {}
                                   },
                                   keyboardType: TextInputType.number,
@@ -209,12 +208,12 @@ class _ServiceBarberState extends State<ServiceBarber> {
                           ),
                           Row(
                             children: [
-                              const Text("ชื่อบริการ"),
+                              Text("ชื่อบริการ",style: Contants().h3OxfordBlue(),),
                               const SizedBox(
                                 width: 20,
                               ),
                               SizedBox(
-                                height: 25,
+                                height: 40,
                                 width: size * 0.65,
                                 child: TextFormField(
                                   validator: (value) {
@@ -239,8 +238,8 @@ class _ServiceBarberState extends State<ServiceBarber> {
                             height: 5,
                           ),
                           Row(
-                            children: const [
-                              Text("รายละเอียด"),
+                            children: [
+                              Text("รายละเอียด",style: Contants().h4OxfordBlue()),
                             ],
                           ),
                           Container(
@@ -301,7 +300,7 @@ class _ServiceBarberState extends State<ServiceBarber> {
                         ],
                       ),
                     ),
-                    height: 270,
+                    height: 300,
                     width: size,
                   ),
                 ))

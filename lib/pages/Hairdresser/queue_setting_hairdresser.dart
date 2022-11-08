@@ -212,6 +212,7 @@ class _QueueSettingHairdresserState extends State<QueueSettingHairdresser> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          title: Text("เลือกเวลาพัก",style: Contants().h3white(),),
           backgroundColor: Contants.myBackgroundColordark,
           actions: [
             IconButton(

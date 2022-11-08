@@ -112,8 +112,9 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     } else {
       print("3");
       // เปิดตำแหน่ง
-      String geohashstart = geoHasher.encode(lon! - 0.03, lat! - 0.03);
-      String geohashend = geoHasher.encode(lon! + 0.03, lat! + 0.03);
+      String geohashstart = geoHasher.encode(lon! - 0.02, lat! - 0.02);
+      String geohashend = geoHasher.encode(lon! + 0.02, lat! + 0.02);
+      print("ตำแหน่งเครื่องคือ ${geoHasher.encode(lon!,lat!).toString()}");
       await citiesRef
           .where("typeBarber", isEqualTo: type)
           .orderBy("position.geohash")
@@ -123,6 +124,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
           .get()
           .then((value) async {
             if (value.docs.isNotEmpty) {
+              print("ร้านที่อยู่ไกล้");
               for (var i = 0; i < value.docs.length; i++) {
                 double average = 0;
                 if (value.docs[i]["score"] != null) {
@@ -155,6 +157,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                     geoHasher: value.docs[i]["position"]["geohash"]));
               }
             } else {
+              print("ไม่มีร้านที่อยู่ไกล้");
               await citiesRef
                   .where("typeBarber", isEqualTo: type)
                   .limit(40)

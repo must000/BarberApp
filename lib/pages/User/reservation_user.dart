@@ -78,10 +78,19 @@ class _ReservationUserState extends State<ReservationUser> {
         ),
         body: userID == ""
             ? Center(
-                child: Text(
-                "ยังไม่ได้ Login เข้าสู่ระบบ",
-                style: Contants().h2white(),
-              ))
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                   Icon(
+                    Icons.login_rounded,size: 30,
+                    color: Contants.colorSpringGreen,
+                  ),
+                    Text(
+                    "ยังไม่ได้เข้าสู่ระบบ",
+                    style: Contants().h2white(),
+              ),
+                  ],
+                ))
             : load
                 ? Center(
                     child: LoadingAnimationWidget.waveDots(
