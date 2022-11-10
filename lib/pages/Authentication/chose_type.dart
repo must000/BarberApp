@@ -75,11 +75,17 @@ class _ChoseTypeState extends State<ChoseType> {
                       Contants.colorWhite,
                     )),
                     onPressed: () {
-                      Navigator.push(
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => const RegisterBarber(),
+                      //     ));
+                      Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RegisterBarber(),
-                          ));
+                            builder: (context) => RegisterBarber(),
+                          ),
+                          (route) => false);
                     },
                     child: Center(
                       child: Column(

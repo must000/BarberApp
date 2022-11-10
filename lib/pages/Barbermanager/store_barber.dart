@@ -3,15 +3,14 @@ import 'dart:io';
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/main.dart';
 import 'package:barber/pages/Barbermanager/drawerobject.dart';
+import 'package:barber/pages/Barbermanager/map_barber.dart';
 import 'package:barber/utils/dialog.dart';
-import 'package:barber/utils/show_progress.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:longdo_maps_api3_flutter/view.dart';
@@ -30,6 +29,8 @@ class _StoreBarberState extends State<StoreBarber> {
   TextEditingController shopNameController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
+  TextEditingController addressDetailController = TextEditingController();
+
   TimeOfDay _timeopen = TimeOfDay(hour: 1, minute: 0);
   TimeOfDay _timeclose = TimeOfDay(hour: 23, minute: 0);
   bool change = false;
@@ -44,27 +45,13 @@ class _StoreBarberState extends State<StoreBarber> {
     setdata();
   }
 
-  double lat = double.parse(barberModelformanager!.lat);
-  double lng = double.parse(barberModelformanager!.lng);
-
-  proceedMoveLongdoMap(double lat, double lng) async {
-    await map.currentState?.call(
-      "location",
-      [
-        {
-          "lon": lng,
-          "lat": lat,
-        },
-      ],
-    );
-  }
-
   setdata() {
     recommendController.text = barberModelformanager!.shoprecommend;
     shopNameController.text = barberModelformanager!.shopname;
     groupTypeBarber = barberModelformanager!.typebarber;
     nameController.text = barberModelformanager!.name;
     lastNameController.text = barberModelformanager!.lasiName;
+    addressDetailController.text = barberModelformanager!.addressdetails;
     _timeopen = TimeOfDay(
       hour: int.parse(barberModelformanager!.timeopen.split(" ")[0]),
       minute: int.parse(barberModelformanager!.timeopen.split(" ")[2]),
@@ -123,24 +110,6 @@ class _StoreBarberState extends State<StoreBarber> {
         photoShopFront = File(result!.path);
       });
     } catch (e) {}
-  }
-    Widget buttonMovePosition() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: InkWell(
-        child: ListTile(
-          tileColor: Contants.colorWhite,
-          title: const Text("ย้ายไปยังที่อยู่ของฉัน"),
-          leading: Icon(
-            Icons.wrong_location,
-            color: Contants.colorOxfordBlue,
-          ),
-        ),
-        onTap: () {
-          proceedMoveLongdoMap(lat, lng);
-        },
-      ),
-    );
   }
 
   Future<Null> uploadphoto(String email) async {
@@ -290,8 +259,62 @@ class _StoreBarberState extends State<StoreBarber> {
                 ),
               ),
               topicTitle("ที่อยู่ร้าน"),
-              buildMap(size),
-              buttonMovePosition()
+              Card(
+                color: Contants.colorOxfordBlueLight,
+                child: ListTile(
+                  title: Text(
+                    "${barberModelformanager!.subDistrict} ${barberModelformanager!.districtl}",
+                    style: Contants().h3white(),
+                  ),
+                  subtitle: Wrap(
+                    children: [
+                      Container(
+                        width: size * 0.5,
+                        child: Expanded(
+                          child: TextFormField(
+                            controller: addressDetailController,
+                            style: Contants().h4yellow(),
+                            decoration: InputDecoration(
+                                labelText: "รายละเอียดที่อยู่ร้าน",
+                                labelStyle: Contants().h4Grey()),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            saveAddressDetail();
+                          },
+                          icon: Icon(
+                            Icons.save,
+                            color: Contants.colorYellow,
+                          ))
+                    ],
+                  ),
+                  trailing: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            width: 1.0,
+                            color: Contants.colorYellowdark,
+                            style: BorderStyle.solid,
+                          ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0))),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MapBarber(
+                                lat: double.parse(barberModelformanager!.lat),
+                                lng: double.parse(barberModelformanager!.lng),
+                              ),
+                            ));
+                      },
+                      child: Text(
+                        "เปิดแผนที่",
+                        style: Contants().h4yellow(),
+                      )),
+                ),
+              ),
             ],
           ),
         ),
@@ -299,16 +322,24 @@ class _StoreBarberState extends State<StoreBarber> {
     );
   }
 
-  Widget buildMap(double size) {
-    return SizedBox(
-      child: LongdoMapWidget(
-        apiKey: Contants.keyLongdomap,
-        key: map,
-        bundleId: Contants.bundleID,
-      ),
-      width: size * 0.9,
-      height: 400,
-    );
+  Future saveAddressDetail() async {
+    FirebaseFirestore.instance
+        .collection("Barber")
+        .doc(barberModelformanager!.email)
+        .update({
+      "position": {
+        "addressdetails": addressDetailController.text,
+        "district": barberModelformanager!.districtl,
+        "subdistrict": barberModelformanager!.subDistrict,
+        "lat": barberModelformanager!.lat,
+        "lng": barberModelformanager!.lng,
+        "geohash": barberModelformanager!.geoHasher
+      }
+    }).then((value) {
+      setState(() {
+        barberModelformanager!.addressdetails = addressDetailController.text;
+      });
+    });
   }
 
   Future saveDateTime() async {

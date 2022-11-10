@@ -1,6 +1,7 @@
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/Authentication/chose_type.dart';
+import 'package:barber/pages/Authentication/insert_position_barber.dart';
 import 'package:barber/pages/Authentication/registerhairdresser.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/provider/myproviders.dart';
@@ -29,42 +30,6 @@ class _LoginState extends State<Login> {
   bool statusRedEys = true;
 
   var loading = false;
-
-  // void _loginwithfacebook() async {
-  //   setState(() {
-  //     loading = true;
-  //   });
-  //   try {
-  //     final facebookLoginResult = await FacebookAuth.instance.login();
-  //     final userData = await FacebookAuth.instance.getUserData();
-  //     final facebookAuthCredential = FacebookAuthProvider.credential(
-  //         facebookLoginResult.accessToken!.token);
-  //     await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-  //     Navigator.pushNamedAndRemoveUntil(
-  //         context, Rount_CN.routeIndex, (route) => false);
-  //   } on FirebaseAuthException catch (e) {
-  //     var title = '';
-  //     switch (e.code) {
-  //       case 'account-exists-with-different-credential':
-  //         title = 'This account exists with a different sign in provider';
-  //         break;
-  //       case 'invalid-credential':
-  //         title = 'Unknown error has occurred';
-  //         break;
-  //       case 'user-disabled':
-  //         title = 'The user you tried to log intp is disabled';
-  //         break;
-  //       case 'user-not-found':
-  //         title = 'The user you tried to log into was not found';
-  //         break;
-  //     }
-  //     // normalDialog(context, title);
-  //   } finally {
-  //     setState(() {
-  //       loading = false;
-  //     });
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -148,6 +113,16 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
+                      // ElevatedButton(
+                      //     onPressed: () {
+                      //       Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //             builder: (context) => InsertPositionBarber(
+                      //                 lat: 13.7, lng: 100.5, email: ""),
+                      //           ));
+                      //     },
+                      //     child: Text("dddd")),
                       const SizedBox(
                         height: 20,
                       ),
@@ -223,8 +198,7 @@ class _LoginState extends State<Login> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ChoseType()),
+                                      builder: (context) => const ChoseType()),
                                 );
                               },
                               child: const Text(
@@ -316,7 +290,8 @@ class _LoginState extends State<Login> {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(
-              email: emailController.text.toLowerCase(), password: passwordController.text)
+              email: emailController.text.toLowerCase(),
+              password: passwordController.text)
           .then((value) => Navigator.pushNamedAndRemoveUntil(
               context, Rount_CN.routeIndex, (route) => false))
           .catchError((value) {
@@ -330,9 +305,6 @@ class _LoginState extends State<Login> {
       loading = true;
     });
     try {
-
-
-
       final facebookLoginResult = await FacebookAuth.instance.login();
       final userData = await FacebookAuth.instance.getUserData();
       final facebookAuthCredential = FacebookAuthProvider.credential(

@@ -2,7 +2,9 @@ import 'dart:io';
 import 'dart:math';
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/Constant/district_cn.dart';
+import 'package:barber/pages/Authentication/insert_position_barber.dart';
 import 'package:barber/pages/Authentication/register_phone_user.dart';
+import 'package:barber/pages/index.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_geohash/dart_geohash.dart';
@@ -16,6 +18,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:longdo_maps_api3_flutter/longdo_maps_api3_flutter.dart';
+import 'package:provider/provider.dart';
 
 class RegisterBarber extends StatefulWidget {
   const RegisterBarber({Key? key}) : super(key: key);
@@ -40,7 +43,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
   List<String> listSubDistrict = District_CN.mueangNonthaburi;
   // String district = 'เมืองนนทบุรี';
   // String? subDistrict;
-  double? lat, lng;
+
   final ImagePicker imgpicker = ImagePicker();
   List<XFile>? imagefiles;
   bool _animation = true;
@@ -54,13 +57,14 @@ class _RegisterBarberState extends State<RegisterBarber> {
   TextEditingController nameShopController = TextEditingController();
   TextEditingController recommentShopController = TextEditingController();
   TextEditingController detailLocationController = TextEditingController();
-
+  double? lat, lng;
+  var locations;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    chechpermission();
     // proceedfinelatlng();
+    chechpermission();
   }
 
   Future<Null> chechpermission() async {
@@ -108,7 +112,6 @@ class _RegisterBarberState extends State<RegisterBarber> {
   //     findLatLng();
   //   }
   // }
-
   Future<Null> findLatLng() async {
     print("findLatlan ==> Work");
     Position position = await Geolocator.getCurrentPosition(
@@ -141,16 +144,21 @@ class _RegisterBarberState extends State<RegisterBarber> {
 
   @override
   Widget build(BuildContext context) {
-    Future<Null> proceedZoomLongdoMap() async {
-      await map.currentState?.call("zoom", [
-        double.parse("13"),
-        _animation,
-      ]);
-    }
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Contants.myBackgroundColordark,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => IndexPage(),
+                ),
+                (route) => false);
+          },
+        ),
       ),
       backgroundColor: Contants.myBackgroundColor,
       body: Padding(
@@ -178,8 +186,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
                     style: Contants().h3white(),
                   ),
                   checkboxDayOpen(),
-                  mapLocation(size),
-                  buttonMovePosition(),
+                  // mapLocation(size),
+                  buttonMovePosition(size),
                   inputDetailLocation(size),
                   imgPhotoShop(size, context),
                   buttonChangeImgPhotoShop(context),
@@ -237,53 +245,108 @@ class _RegisterBarberState extends State<RegisterBarber> {
     );
   }
 
-  Widget buttonMovePosition() {
+  Widget buttonMovePosition(double size) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: InkWell(
         child: ListTile(
           tileColor: Contants.colorWhite,
-          title: const Text("ย้ายไปยังที่อยู่ของฉัน"),
+          title: const Text("ระบุตำแหน่งของร้านทำผม"),
           leading: Icon(
             Icons.wrong_location,
             color: Contants.colorOxfordBlue,
           ),
         ),
         onTap: () {
-          proceedMoveLongdoMap(lat!, lng!);
+          dia(size);
         },
       ),
     );
   }
 
-  Widget mapLocation(double size) {
-    return Stack(
-      children: [
-        Container(
-          child: LongdoMapWidget(
-            apiKey: Contants.keyLongdomap,
-            key: map,
-            bundleId: Contants.bundleID,
+  Future<Null> dia(double size) async {
+    await showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        children: [
+          SizedBox(
+            height: size,
+            width: size,
+            child: Stack(
+              children: [
+                LongdoMapWidget(
+                  apiKey: Contants.keyLongdomap,
+                  key: map,
+                  bundleId: Contants.bundleID,
+                ),
+                Center(
+                  child: Icon(
+                    Icons.add,
+                    color: Contants.colorRed,
+                    size: 30,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          print(lat);
+                          proceedMoveLongdoMap(lat!, lng!);
+                        },
+                        icon: Icon(Icons.my_location)),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Center(
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              var lo = await map.currentState?.call("location");
+                              setState(() {
+                                locations = lo;
+                              });
+                              Navigator.pop(context);
+                            },
+                            child: Text("บันทึกตำแหน่ง"))),
+                  ],
+                )
+              ],
+            ),
           ),
-          width: size * 0.9,
-          height: 400,
-        ),
-        Container(
-          height: 400,
-          child: const Center(
-            child: Icon(Icons.pin_drop_outlined),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+
+  // Widget mapLocation(double size) {
+  //   return Stack(
+  //     children: [
+  //       Container(
+  //         child: LongdoMapWidget(
+  //           apiKey: Contants.keyLongdomap,
+  //           key: map,
+  //           bundleId: Contants.bundleID,
+  //         ),
+  //         width: size * 0.9,
+  //         height: 400,
+  //       ),
+  //       Container(
+  //         height: 400,
+  //         child: const Center(
+  //           child: Icon(Icons.pin_drop_outlined),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget buttonRegister() {
     return Container(
       height: 50,
       child: ElevatedButton(
         onPressed: () async {
-          var location = await map.currentState?.call("location");
           groupDayOpen = {
             'su': su,
             'mo': mo,
@@ -293,17 +356,20 @@ class _RegisterBarberState extends State<RegisterBarber> {
             'fr': fr,
             'sa': sa
           };
-          print("location =>> $location");
-          var latx = cutlat(location);
-          var lonx = cutlon(location);
-          if (formKey.currentState!.validate()) {
-            if (groupTypeBarber == null) {
-              MyDialog().normalDialog(context, "กรุณาเลือกประเภทของร้าน");
-            }
-            else if (photoShopFront == null) {
-              MyDialog().normalDialog(context, "กรุณาเพิ่มรูปหน้าร้าน");
-            } else {
-              apigetDataDistrict(latx, lonx);
+          if (locations == null) {
+            MyDialog().normalDialog(context, "กรุณาระบุตำแหน่งของร้าน");
+          } else {
+            print("location =>> $locations");
+            var latx = cutlat(locations);
+            var lonx = cutlon(locations);
+            if (formKey.currentState!.validate()) {
+              if (groupTypeBarber == null) {
+                MyDialog().normalDialog(context, "กรุณาเลือกประเภทของร้าน");
+              } else if (photoShopFront == null) {
+                MyDialog().normalDialog(context, "กรุณาเพิ่มรูปหน้าร้าน");
+              } else {
+                apigetDataDistrict(latx, lonx);
+              }
             }
           }
         },
@@ -323,32 +389,30 @@ class _RegisterBarberState extends State<RegisterBarber> {
     String path =
         "https://api.longdo.com/map/services/address?lon=$lon&lat=$lat&nopostcode=0&noroad=0&noaoi=0&noelevation=0&nowater=0&key=${Contants.keyLongdomap}";
     await Dio().get(path).then((value) {
-      if (value.data["province"]=="จ.นนทบุรี") {
-            String dis = value.data['district'];
-      String dissub = value.data['subdistrict'];
-      return registerData(
-        nameController.text.trim(),
-        lastnameController.text.trim(),
-        emailController.text.trim().toLowerCase(),
-        passwordController.text,
-        phoneController.text,
-        groupTypeBarber!,
-        nameShopController.text,
-        recommentShopController.text,
-        _timeopen,
-        _timeclose,
-        groupDayOpen,
-        lat,
-        lon,
-        dissub.toString(),
-        dis.toString(),
-        detailLocationController.text,
-      );
-      }
-      else{
+      if (value.data["province"] == "จ.นนทบุรี") {
+        String dis = value.data['district'];
+        String dissub = value.data['subdistrict'];
+        return registerData(
+          nameController.text.trim(),
+          lastnameController.text.trim(),
+          emailController.text.trim().toLowerCase(),
+          passwordController.text,
+          phoneController.text,
+          groupTypeBarber!,
+          nameShopController.text,
+          recommentShopController.text,
+          _timeopen,
+          _timeclose,
+          groupDayOpen,
+          lat,
+          lon,
+          dissub.toString(),
+          dis.toString(),
+          detailLocationController.text,
+        );
+      } else {
         MyDialog().normalDialog(context, "ร้านไม่ได้อยู่ในจังหวัดนนทบุรี");
       }
-
     });
   }
 
@@ -389,7 +453,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
     );
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email.toLowerCase(), password: password)
+          .createUserWithEmailAndPassword(
+              email: email.toLowerCase(), password: password)
           .then((value) {
         print("สมัครสำเร็จ");
         proceedSaveDataBarber(
@@ -408,18 +473,30 @@ class _RegisterBarberState extends State<RegisterBarber> {
           destrict,
           subDestrict,
           detaillocation,
-        ).then((value) => uploadphoto(email.toLowerCase()).then((value) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegisterPhoneUser(emailBarber: email.toLowerCase(),)),
-                  (route) => false);
-            }).catchError((value) {
-              MyDialog().stDialog(context, value.message);
-            }));
+        ).then((value) {
+          return uploadphoto(email.toLowerCase()).then((value) async {
+            print("qwdq");
+            await MyDialog(funcAction: fc).hardDialog(
+                context, "นำทางไปที่หน้าลงทะเบียนเบอร์มือถือ", "สมัครสำเร็จ");
+          }).catchError((value) {
+            MyDialog().stDialog(context, value.message);
+          });
+        });
       }).catchError((value) {
         MyDialog().normalDialog(context, value.message);
       });
     });
+  }
+
+  void fc() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RegisterPhoneUser(
+            emailBarber: emailController.text.toLowerCase(),
+          ),
+        ),
+        (route) => false);
   }
 
   Future<Null> uploadphoto(String email) async {
@@ -443,7 +520,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
         final path2 = 'album/${email.toLowerCase()}/$x';
         final file2 = File(imagefiles![i].path);
         final ref = FirebaseStorage.instance.ref().child(path2);
-        ref.putFile(file2);
+        await ref.putFile(file2);
       }
     }
   }
@@ -580,7 +657,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               child: const Text("จ"),
               style: ElevatedButton.styleFrom(
                 primary:
-                    su == false ? Contants.colorRed:Contants.colorSpringGreen,
+                    su == false ? Contants.colorRed : Contants.colorSpringGreen,
                 shape: const CircleBorder(),
               ),
             ),
@@ -598,7 +675,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    mo == false ?   Contants.colorRed:Contants.colorSpringGreen,
+                    mo == false ? Contants.colorRed : Contants.colorSpringGreen,
               ),
             ),
           ),
@@ -615,7 +692,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    tu == false ? Contants.colorRed:Contants.colorSpringGreen,
+                    tu == false ? Contants.colorRed : Contants.colorSpringGreen,
               ),
             ),
           ),
@@ -632,7 +709,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    we == false ? Contants.colorRed:Contants.colorSpringGreen,
+                    we == false ? Contants.colorRed : Contants.colorSpringGreen,
               ),
             ),
           ),
@@ -649,7 +726,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    th == false ? Contants.colorRed:Contants.colorSpringGreen,
+                    th == false ? Contants.colorRed : Contants.colorSpringGreen,
               ),
             ),
           ),
@@ -666,7 +743,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    fr == false ? Contants.colorRed:Contants.colorSpringGreen,
+                    fr == false ? Contants.colorRed : Contants.colorSpringGreen,
               ),
             ),
           ),
@@ -683,7 +760,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 primary:
-                    sa == false ? Contants.colorRed:Contants.colorSpringGreen,
+                    sa == false ? Contants.colorRed : Contants.colorSpringGreen,
               ),
             ),
           ),
