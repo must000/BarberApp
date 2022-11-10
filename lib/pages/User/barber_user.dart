@@ -2,6 +2,7 @@ import 'package:barber/data/hairdressermodel.dart';
 import 'package:barber/main.dart';
 import 'package:barber/provider/myproviders.dart';
 import 'package:barber/utils/dialog.dart';
+import 'package:barber/widgets/card_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -201,10 +202,9 @@ class _BarberUserState extends State<BarberUser> {
                           width: size * 0.33,
                           child: ElevatedButton(
                             style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Contants.colorWhite),
-                                        ),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Contants.colorWhite),
+                            ),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -222,17 +222,19 @@ class _BarberUserState extends State<BarberUser> {
                                 ),
                               );
                             },
-                            child: Text("ข้อมูลร้าน",style: Contants().h3OxfordBlue(),),
+                            child: Text(
+                              "ข้อมูลร้าน",
+                              style: Contants().h3OxfordBlue(),
+                            ),
                           ),
                         ),
                         Container(
                           width: size * 0.33,
                           child: ElevatedButton(
-                              style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Contants.colorWhite),
-                                        ),
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  Contants.colorWhite),
+                            ),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -243,17 +245,19 @@ class _BarberUserState extends State<BarberUser> {
                                 ),
                               );
                             },
-                            child:  Text("ผลงาน",style: Contants().h3OxfordBlue(),),
+                            child: Text(
+                              "ผลงาน",
+                              style: Contants().h3OxfordBlue(),
+                            ),
                           ),
                         ),
                         Container(
                           width: size * 0.33,
                           child: ElevatedButton(
-                              style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Contants.colorWhite),
-                                        ),
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  Contants.colorWhite),
+                            ),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -266,7 +270,10 @@ class _BarberUserState extends State<BarberUser> {
                                 ),
                               );
                             },
-                            child:  Text("คะแนนและรีวิว",style: Contants().h4OxfordBlue(),),
+                            child: Text(
+                              "คะแนนและรีวิว",
+                              style: Contants().h4OxfordBlue(),
+                            ),
                           ),
                         ),
                       ],
@@ -277,7 +284,10 @@ class _BarberUserState extends State<BarberUser> {
               Container(
                 child: Row(
                   children: [
-                    Icon(Icons.recommend,color: Contants.colorSpringGreen,),
+                    Icon(
+                      Icons.recommend,
+                      color: Contants.colorSpringGreen,
+                    ),
                     Text(
                       "แนะนำร้าน ${barberModel.shoprecommend}",
                       style: Contants().h3white(),
@@ -289,9 +299,16 @@ class _BarberUserState extends State<BarberUser> {
               const SizedBox(
                 height: 30,
               ),
-               loadingHairdresser
+              loadingHairdresser
                   ? const SizedBox()
-                  : Center(child: Text("เลือกช่างทำผม",style: Contants().h3white(),)) ,
+                  : Center(
+                      child: Container(
+                        margin: EdgeInsets.all(10),
+                        child: Text(
+                        "เลือกช่างทำผม",
+                        style: Contants().h3white(),
+                    ),
+                      )),
               loadingHairdresser
                   ? const SizedBox()
                   : SizedBox(
@@ -355,13 +372,17 @@ class _BarberUserState extends State<BarberUser> {
                         ),
                       ),
                     ),
-                   loadingHairdresser ? const SizedBox() :  Center(
-                     child: Text(
-                                    "เลือกบริการ",
-                                    style: Contants().h3white(),
-                                  ),
-                   ),
-              loadingHairdresser ? const SizedBox() : serviceList(),
+              loadingHairdresser
+                  ? const SizedBox()
+                  : Center(
+                      child: Container(margin: const EdgeInsets.all(10),
+                        child: Text(
+                          "เลือกบริการ",
+                          style: Contants().h3white(),
+                        ),
+                      ),
+                    ),
+              loadingHairdresser ? const SizedBox() : serviceList(size),
             ],
           ),
           showlist == false
@@ -370,9 +391,9 @@ class _BarberUserState extends State<BarberUser> {
                   child: servicemodel.isEmpty
                       ? const Text('')
                       : SingleChildScrollView(
-                        child: Container(
+                          child: Container(
                             decoration: const BoxDecoration(color: Colors.grey),
-                            height: 50 + 75 * servicemodel.length.toDouble(),
+                            height: 50 + 80 * servicemodel.length.toDouble(),
                             width: size,
                             child: Column(
                               children: [
@@ -397,78 +418,78 @@ class _BarberUserState extends State<BarberUser> {
                                 ListView.builder(
                                   physics: const ScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemBuilder: (context, index) => Card(
-                                      child: Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(25, 0, 0, 2),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                servicemodel[index].name,
-                                                style: Contants().h3OxfordBlue(),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    "${servicemodel[index].time.toString()} นาที",
-                                                    style:
-                                                        Contants().h4OxfordBlue(),
-                                                  ),
-                                                  IconButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          z = z - 1;
-                                                          price = price -
-                                                              servicemodel[index]
-                                                                  .price
-                                                                  .toInt();
-                                                          servicemodel.remove(
-                                                              servicemodel[
-                                                                  index]);
-                                                        });
-                                                      },
-                                                      icon: const Icon(
-                                                        Icons.delete,
-                                                        color: Colors.red,
-                                                        size: 25,
-                                                      ))
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
+                                  itemBuilder: (context, index) => Stack(
+                                    children: [
+                                      Card(
+                                        color: Contants.colorOxfordBlueLight,
+                                        child: ListTile(
+                                          title: Text(
+                                            servicemodel[index].name,
+                                            style: Contants().h3white(),
+                                          ),
+                                          subtitle: Wrap(
+                                            direction: Axis.vertical,
+                                            children: [
+                                              Text(
                                                 servicemodel[index].detail,
-                                                style: Contants().h4OxfordBlue(),
+                                                style: Contants().h4Grey(),
                                               ),
+                                            ],
+                                          ),
+                                          trailing: Container(
+                                            margin: EdgeInsets.only(top: 10),
+                                            child: Wrap(
+                                              direction: Axis.horizontal,
+                                              children: [
+                                                Text(
+                                                  "${servicemodel[index].time.toStringAsFixed(0)} นาที ",
+                                                  style: Contants().h3Grey(),
+                                                ),
+                                                Text(
+                                                  "/",
+                                                  style: Contants().h3white(),
+                                                ),
+                                                Text(
+                                                  "${servicemodel[index].price.toStringAsFixed(0)} บาท",
+                                                  style: Contants()
+                                                      .h3SpringGreen(),
+                                                ),
+                                              ],
                                             ),
-                                            Expanded(
-                                              child: Text(
-                                                "฿ ${servicemodel[index].price.toString()}",
-                                                style: Contants().h4OxfordBlue(),
-                                              ),
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  )),
+                                          ),
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  z = z - 1;
+                                                  price = price -
+                                                      servicemodel[index]
+                                                          .price
+                                                          .toInt();
+                                                  servicemodel.remove(
+                                                      servicemodel[index]);
+                                                });
+                                              },
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                                size: 25,
+                                              )),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                   itemCount: servicemodel.length,
                                 ),
                               ],
                             ),
                           ),
-                      ),
+                        ),
                   bottom: 4,
                 )
         ],
@@ -546,7 +567,7 @@ class _BarberUserState extends State<BarberUser> {
     );
   }
 
-  StreamBuilder<QuerySnapshot<Map<String, dynamic>>> serviceList() {
+  StreamBuilder<QuerySnapshot<Map<String, dynamic>>> serviceList(double size) {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('Service')
@@ -562,78 +583,26 @@ class _BarberUserState extends State<BarberUser> {
             itemBuilder: (_, index) {
               var userData = data[index];
               return InkWell(
-                child: Card(
-                    child: Padding(
-                  padding: const EdgeInsets.fromLTRB(25, 10, 0, 10),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              userData['name'],
-                              style: Contants().h3OxfordBlue(),
-                            ),
-                            flex: 2,
-                          ),
-                          Expanded(
-                            child: Row(
-                              children: [
-                                Text(
-                                  "${userData['time'].toStringAsFixed(0)} นาที",
-                                  style: Contants().h4OxfordBlue(),
-                                ),
-                                const Icon(Icons.add_shopping_cart)
-                              ],
-                            ),
-                            flex: 1,
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              userData['detail'],
-                              style: Contants().h3Grey(),
-                            ),
-                            flex: 2,
-                          ),
-                          Expanded(
-                            child: Text(
-                              "฿ ${userData['price'].toStringAsFixed(0)}",
-                              style: Contants().h3OxfordBlue(),
-                            ),
-                            flex: 1,
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                )),
+                child: CardService(userData: userData),
                 onTap: () {
-                  if (servicemodel.length>7) {
-                  MyDialog().normalDialog(context, "คุณไม่สามารถเลือกบริการมากกว่า 8 บริการในครั้งเดียวได้");
+                  if (servicemodel.length > 6) {
+                    MyDialog().normalDialog(context,
+                        "คุณไม่สามารถเลือกบริการมากกว่า 7 บริการในการจองครั้งเดียวได้");
+                  } else {
+                    int x = userData['price'].toInt();
+                    setState(() {
+                      z += 1;
+                      price = price + x;
+                      servicemodel.add(
+                        ServiceModel(
+                            id: userData.id,
+                            name: userData['name'],
+                            detail: userData['detail'],
+                            time: userData['time'],
+                            price: userData['price']),
+                      );
+                    });
                   }
-                  else{
-             int x = userData['price'].toInt();
-                  setState(() {
-                    z += 1;
-                    price = price + x;
-                    servicemodel.add(
-                      ServiceModel(
-                          id: userData.id,
-                          name: userData['name'],
-                          detail: userData['detail'],
-                          time: userData['time'],
-                          price: userData['price']),
-                    );
-                  });
-                  }
-     
                 },
               );
             },

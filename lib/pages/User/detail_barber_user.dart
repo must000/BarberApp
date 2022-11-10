@@ -171,28 +171,28 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
               "รายละเอียดที่อยู่ : ",
               Icon(
                 Icons.pin_drop_outlined,
-                color: Contants.colorWhite,
+                color: Contants.colorSpringGreen,
               )),
           contentDetail(addressdetails),
           headingDetail(
               "เวลาเปิด - เวลาปิด",
               Icon(
                 Icons.schedule,
-                color: Contants.colorWhite,
+                color: Contants.colorSpringGreen,
               )),
           contentDetail("$timeopen - $timeclose น."),
           headingDetail(
               "วันหยุด",
               Icon(
                 Icons.calendar_month,
-                color: Contants.colorWhite,
+                color: Contants.colorSpringGreen,
               )),
           contentDetail("$dayC"),
           headingDetail(
               "เบอร์ติดต่อ",
               Icon(
                 Icons.smartphone,
-                color: Contants.colorWhite,
+                color: Contants.colorSpringGreen,
               )),
           contentDetail(phoneNumber),
         ],

@@ -79,18 +79,19 @@ class _ReservationUserState extends State<ReservationUser> {
         body: userID == ""
             ? Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                   Icon(
-                    Icons.login_rounded,size: 30,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.login_rounded,
+                    size: 30,
                     color: Contants.colorSpringGreen,
                   ),
-                    Text(
+                  Text(
                     "ยังไม่ได้เข้าสู่ระบบ",
                     style: Contants().h2white(),
-              ),
-                  ],
-                ))
+                  ),
+                ],
+              ))
             : load
                 ? Center(
                     child: LoadingAnimationWidget.waveDots(
@@ -237,10 +238,13 @@ class _ReservationUserState extends State<ReservationUser> {
                           subtitle: Row(
                             children: [
                               Text(
-                                  "เวลา${DateTime.parse(data[index]["time"]["timestart"]).day.toString().padLeft(2, "0")}/${DateTime.parse(data[index]["time"]["timestart"]).month.toString().padLeft(2, "0")} ${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}",style: Contants().h4Grey(),),
-                              const Icon(
+                                "วันที่${DateTime.parse(data[index]["time"]["timestart"]).day.toString().padLeft(2, "0")}/${DateTime.parse(data[index]["time"]["timestart"]).month.toString().padLeft(2, "0")} \nเวลา${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}",
+                                style: Contants().h4Grey(),
+                              ),
+                              Icon(
                                 Icons.schedule,
-                                size: 15,
+                                size: 19,
+                                color: Contants.colorOxfordBlue,
                               ),
                             ],
                           ),

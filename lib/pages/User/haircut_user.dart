@@ -267,13 +267,20 @@ class _HairCutUserState extends State<HairCutUser> {
                 ));
           },
         ),
-        title:
-            dataPositionUser == null ? const Text('') : Row(
-              children: [
-                Icon(Icons.pin_drop_outlined,color: Contants.colorSpringGreen,),
-                Text(dataPositionUser!,style: Contants().h3white(),),
-              ],
-            ),
+        title: dataPositionUser == null
+            ? const Text('')
+            : Row(
+                children: [
+                  Icon(
+                    Icons.pin_drop_outlined,
+                    color: Contants.colorSpringGreen,
+                  ),
+                  Text(
+                    dataPositionUser!,
+                    style: Contants().h3white(),
+                  ),
+                ],
+              ),
         actions: [
           nameUser == ""
               ? TextButton(
@@ -311,7 +318,10 @@ class _HairCutUserState extends State<HairCutUser> {
                     ))
                 : const SizedBox(),
             barberHistory.isNotEmpty && loadHistory == false
-                ? sectionListview(size, "ร้านที่เคยใช้บริการ",  Icon(
+                ? sectionListview(
+                    size,
+                    "ร้านที่เคยใช้บริการ",
+                    Icon(
                       Icons.shop,
                       color: Contants.colorSpringGreen,
                       size: 30,
@@ -339,6 +349,11 @@ class _HairCutUserState extends State<HairCutUser> {
                     ))
                 : const SizedBox(),
             barberLike.isNotEmpty ? listStoreLike(size) : const SizedBox(),
+            barberLike.isNotEmpty
+                ? const SizedBox(
+                    height: 30,
+                  )
+                : const SizedBox()
           ],
         ),
       ),
