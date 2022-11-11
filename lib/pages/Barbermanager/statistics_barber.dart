@@ -22,8 +22,16 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
   bool clickList = true;
   int clickListIndex = 1;
   String selectedMonth = "เดือน";
+  String selectedyear = "2022";
   DateTime selectedDate = DateTime.now();
   bool loadingGetRes = true;
+  List<String> year = [
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026",
+  ];
   List<String> items = [
     "มกราคม ",
     "กุมภาพันธ์ ",
@@ -40,6 +48,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
   ];
   double income = 0;
   List<ChartData> datas = [];
+  List<double> listsum = [];
   @override
   void initState() {
     // TODO: implement initState
@@ -48,128 +57,46 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
   }
 
   Future<Null> getReservationForChart() async {
-    if (selectedMonth != "เดือน") {
-      var filterstart = "2022";
-      var filterend = "2023";
-      String x;
-      String? n;
-      switch (selectedMonth) {
-        case "มกราคม ":
-          x = "01";
-          n = "02";
-          break;
-        case "กุมภาพันธ์ ":
-          x = "02";
-          n = "03";
-          break;
-        case "มีนาคม ":
-          x = "03";
-          n = "04";
-          break;
-        case "เมษายน ":
-          x = "04";
-          n = "05";
-          break;
-        case "พฤษภาคม ":
-          x = "05";
-          n = "06";
-          break;
-        case "มิถุนายน ":
-          x = "06";
-          n = "07";
-
-          break;
-        case "กรกฎาคม ":
-          x = "07";
-          n = "08";
-          break;
-        case "สิงหาคม ":
-          x = "08";
-          n = "09";
-          break;
-        case "กันยายน ":
-          x = "09";
-          n = "10";
-          break;
-        case "ตุลาคม ":
-          x = "10";
-          n = "11";
-          break;
-        case "พฤศจิกายน ":
-          x = "11";
-          n = "12";
-          break;
-        case "ธันวาคม ":
-          x = "12";
-          n = "13";
-
-          break;
-        default:
-          x = "13";
-      }
-      if (x == "13") {
-        filterstart = "2022-";
-        filterend = "2023-";
-      } else {
-        filterstart = "2022-$x";
-        filterend = "2022-$n";
-      }
-      await FirebaseFirestore.instance
-          .collection('Queue')
-          .where("barber.id", isEqualTo: barberModelformanager!.email)
-          .where("status", isEqualTo: "succeed")
-          .orderBy("time.timestart")
-          .startAt([filterstart])
-          .endAt([filterend])
-          .get()
-          .then((value) {
-            //           List<ChartData> datas = [];
-            // for (var i = 0; i < 32; i++) {
-            //   datas.add(ChartData("$i", i.toDouble()));
-            // }
-            List<ChartData> data = [];
-            if (value.docs.isNotEmpty) {
-              double sum1 = 0;
-              int countDay = 30;
-              if (selectedMonth.substring(
-                      selectedMonth.length - 3, selectedMonth.length - 1) ==
-                  "คม") {
-                countDay = 31;
+    var filterstart = selectedyear;
+    int v = int.parse(selectedyear) + 1;
+    var filterend = "$v";
+    await FirebaseFirestore.instance
+        .collection('Queue')
+        .where("barber.id", isEqualTo: barberModelformanager!.email)
+        .where("status", isEqualTo: "succeed")
+        .orderBy("time.timestart")
+        .startAt([filterstart])
+        .endAt([filterend])
+        .get()
+        .then((value) {
+          List<ChartData> data = [];
+          List<double> sumMount = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+          if (value.docs.isNotEmpty) {
+            for (var i = 0; i < value.docs.length; i++) {
+              double sumprice = 0;
+              for (var n = 0; n < value.docs[i]["service"].length; n++) {
+                sumprice += value.docs[i]["service"][n]["price"].toDouble();
+                print("PP $sumprice");
               }
-              print(countDay);
-              for (var n = 1; n <= countDay; n++) {
-                double sum = 0;
-                for (var i = 0; i < value.docs.length; i++) {
-                  if (value.docs[i]["time"]["timestart"]
-                          .toString()
-                          .substring(8, 10) ==
-                      n.toString().padLeft(2, '0')) {
-                    print(value.docs[i]["time"]["timestart"]
-                        .toString()
-                        .substring(8, 10));
-                    print("$n ${value.docs[i]["time"]["timestart"]}");
-                    double sumx = 0;
-                    for (var x = 0; x < value.docs[i]["service"].length; x++) {
-                      sumx += value.docs[i]["service"][x]["price"];
-                    }
-                    sum += sumx;
-                  }
-                }
-                data.add(ChartData("$n", sum));
-                sum1 += sum;
-              }
-              setState(() {
-                income = sum1;
-                datas = data;
-              });
-            } else {
-              setState(() {
-                income = 0;
-                datas.clear();
-              });
+              sumMount[int.parse(
+                      value.docs[i]["time"]["timestart"].substring(5, 7))] =
+                  sumMount[int.parse(
+                          value.docs[i]["time"]["timestart"].substring(5, 7))] +
+                      sumprice;
             }
-          });
-    }
+            for (var k = 0; k <= 11; k++) {
+              data.add(ChartData(items[k], sumMount[k]));
+            }
+            setState(() {
+              datas = data;
+              listsum = sumMount;
+            });
+          } else {
+            setState(() {
+              datas.clear();
+            });
+          }
+        });
   }
 
   List<QueueModel3> reservation = [];
@@ -177,7 +104,9 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
     var filterstart = "2022";
     var filterend = "2023";
     if (clickListIndex == 1) {
-      filterstart = "2022";
+      filterstart = selectedyear;
+      int x = int.parse(selectedyear) + 1;
+      filterend = x.toString();
     } else if (clickListIndex == 2) {
       String x;
       String? n;
@@ -243,21 +172,25 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
           x = "13";
       }
       if (x == "13") {
-        filterstart = "2022-";
-        filterend = "2023-";
+        filterstart = "$selectedyear-01";
+        filterend = "$selectedyear-12";
+        print("fdwdq $selectedyear");
       } else {
-        filterstart = "2022-$x";
-        filterend = "2022-$n";
+        filterstart = "$selectedyear-$x";
+        filterend = "$selectedyear-$n";
+        print("fdwdqdqw");
+        print("fdwdq ${selectedyear}PP");
       }
     } else {
       filterstart =
-          "2022-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+          "${selectedDate.year.toString()}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
 
       DateTime dayEnd = selectedDate.add(const Duration(days: 1));
       filterend =
-          "2022-${dayEnd.month.toString().padLeft(2, '0')}-${dayEnd.day.toString().padLeft(2, '0')}";
+          "${dayEnd.year.toString()}-${dayEnd.month.toString().padLeft(2, '0')}-${dayEnd.day.toString().padLeft(2, '0')}";
     }
-
+    print(filterstart);
+    print(filterend);
     await FirebaseFirestore.instance
         .collection('Queue')
         .where("barber.id", isEqualTo: barberModelformanager!.email)
@@ -355,42 +288,52 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
   Column buildCharts() {
     return Column(
       children: [
-        Text(
-          "รายได้ในเดือน $selectedMonth ${income.toString()} บาท",
-          style: Contants().h3white(),
-        ),
-        DropdownButtonHideUnderline(
-          child: DropdownButton2(
-            iconEnabledColor: Contants.colorWhite,
-            hint: Text(
-              selectedMonth,
-              style: Contants().h4white(),
-            ),
-            items: items
-                .map((item) => DropdownMenuItem<String>(
-                      value: item,
-                      child: Text(item, style: Contants().h4OxfordBlue()),
-                    ))
-                .toList(),
-            onChanged: (value) {
-              selectedMonth = value as String;
-              getReservationForChart();
-            },
-          ),
-        ),
+        // Text(
+        //   "รายได้ในเดือน $selectedMonth ${income.toString()} บาท",
+        //   style: Contants().h3white(),
+        // ),
+        // DropdownButtonHideUnderline(
+        //   child: DropdownButton2(
+        //     iconEnabledColor: Contants.colorWhite,
+        //     hint: Text(
+        //       selectedMonth,
+        //       style: Contants().h4white(),
+        //     ),
+        //     items: items
+        //         .map((item) => DropdownMenuItem<String>(
+        //               value: item,
+        //               child: Text(item, style: Contants().h4OxfordBlue()),
+        //             ))
+        //         .toList(),
+        //     onChanged: (value) {
+        //       selectedMonth = value as String;
+        //       getReservationForChart();
+        //     },
+        //   ),
+        // ),
         datas == []
             ? const SizedBox()
             : SfCartesianChart(
                 primaryXAxis: CategoryAxis(),
-                series: <ChartSeries>[
-                  StackedLineSeries<ChartData, String>(
-                      enableTooltip: true,
-                      dataSource: datas,
-                      color: Contants.colorSpringGreen,
-                      xValueMapper: (ChartData datas, _) => datas.x,
-                      yValueMapper: (ChartData datas, _) => datas.y)
+                series: <ColumnSeries<ChartData, String>>[
+                  ColumnSeries<ChartData, String>(
+                    color: Contants.colorSpringGreen,
+                    // Binding the chartData to the dataSource of the column series.
+                    dataSource: datas,
+                    xValueMapper: (ChartData sales, _) => sales.x,
+                    yValueMapper: (ChartData sales, _) => sales.y,
+                  ),
                 ],
               ),
+        datas == []
+            ? const SizedBox()
+            : ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, index) =>
+                    Text("${items[index]} ${listsum[index].toString()}",style: Contants().h3white(),),
+                itemCount: items.length,
+              )
       ],
     );
   }
@@ -465,29 +408,63 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
         ),
         clickListIndex != 1
             ? clickListIndex == 2
-                ? DropdownButtonHideUnderline(
-                    child: DropdownButton2(
-                      iconEnabledColor: Contants.colorWhite,
-                      hint: Text(
-                        selectedMonth,
-                        style: Contants().h4white(),
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton2(
+                            iconEnabledColor: Contants.colorWhite,
+                            hint: Text(
+                              selectedyear,
+                              style: Contants().h4white(),
+                            ),
+                            items: year
+                                .map((item) => DropdownMenuItem<String>(
+                                      value: item,
+                                      child: Text(item,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Contants.colorOxfordBlue)),
+                                    ))
+                                .toList(),
+                            onChanged: (value) {
+                              selectedyear = value as String;
+                              setState(() {
+                                loadingGetRes = true;
+                                reservation.clear();
+                              });
+                              getReservation();
+                            },
+                          ),
+                        ),
                       ),
-                      items: items
-                          .map((item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(item,
-                                    style: Contants().h4OxfordBlue()),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        selectedMonth = value as String;
-                        setState(() {
-                          loadingGetRes = true;
-                          reservation.clear();
-                        });
-                        getReservation();
-                      },
-                    ),
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton2(
+                          iconEnabledColor: Contants.colorWhite,
+                          hint: Text(
+                            selectedMonth,
+                            style: Contants().h4white(),
+                          ),
+                          items: items
+                              .map((item) => DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(item,
+                                        style: Contants().h4OxfordBlue()),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            selectedMonth = value as String;
+                            setState(() {
+                              loadingGetRes = true;
+                              reservation.clear();
+                            });
+                            getReservation();
+                          },
+                        ),
+                      ),
+                    ],
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -523,7 +500,37 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                       )
                     ],
                   )
-            : const SizedBox(),
+            : Center(
+                child: SizedBox(
+                  width: 60,
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton2(
+                      iconEnabledColor: Contants.colorWhite,
+                      hint: Text(
+                        selectedyear,
+                        style: Contants().h4white(),
+                      ),
+                      items: year
+                          .map((item) => DropdownMenuItem<String>(
+                                value: item,
+                                child: Text(item,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Contants.colorOxfordBlue)),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        selectedyear = value as String;
+                        setState(() {
+                          loadingGetRes = true;
+                          reservation.clear();
+                        });
+                        getReservation();
+                      },
+                    ),
+                  ),
+                ),
+              ),
         loadingGetRes
             ? LoadingAnimationWidget.beat(
                 color: Contants.colorSpringGreen, size: 30)
@@ -538,15 +545,23 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) => InkWell(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ReservationDetailBarber(
-                              id: reservation[index].idQueue,
-                              time: reservation[index].time,
-                            ),
-                          )),
+                      onTap: () {
+                        print(reservation[index].idQueue);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReservationDetailBarber(
+                                id: reservation[index].idQueue,
+                                time: reservation[index].time,
+                              ),
+                            ));
+                      },
                       child: Card(
+                        // color: reservation[index].status == "on"
+                        //       ? Contants.colorYellow
+                        //       : reservation[index].status == "succeed"
+                        //           ? Contants.colorSpringGreen
+                        //           : Contants.colorRed,
                         child: ListTile(
                           title: Text(
                             reservation[index].nameHairdresser,

@@ -118,6 +118,7 @@ class _ReservationDetailBarberState extends State<ReservationDetailBarber> {
                     "ชื่อลูกค้า : $nameUser",
                     style: Contants().h4white(),
                   ),
+                  phoneUser == ""?Text("") :
                   Text(
                     "เบอร์โทร : 0${phoneUser!.substring(2)}",
                     style: Contants().h4white(),

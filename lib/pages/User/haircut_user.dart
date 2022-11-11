@@ -645,6 +645,7 @@ class _HairCutUserState extends State<HairCutUser> {
                       onPressed: () async {
                         if (barberLike.contains(barberHistory[index]) ==
                             false) {
+                              print(barberHistory[index].email);
                           SQLiteModel sqLiteModel =
                               SQLiteModel(email: barberHistory[index].email);
                           await SQLiteHelper().insertValueToSQlite(sqLiteModel);
@@ -652,10 +653,11 @@ class _HairCutUserState extends State<HairCutUser> {
                             barberLike.add(barberHistory[index]);
                           });
                         } else {
+                          print(barberLike[index].email);
                           await SQLiteHelper()
-                              .deleteSQLiteWhereId(barberLike[index].email);
+                              .deleteSQLiteWhereId(barberHistory[index].email);
                           setState(() {
-                            barberLike.removeAt(index);
+                            barberLike.remove(barberHistory[index]);
                           });
                         }
                       },

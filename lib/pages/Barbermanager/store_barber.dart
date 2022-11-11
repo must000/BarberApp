@@ -9,11 +9,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:longdo_maps_api3_flutter/view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 class StoreBarber extends StatefulWidget {
   const StoreBarber({
@@ -153,45 +156,13 @@ class _StoreBarberState extends State<StoreBarber> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SizedBox(
-                    width: size * 0.4,
-                    child: TextFormField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        labelText: "ชื่อ",
-                        fillColor: Contants.colorWhite,
-                        filled: true,
-                        floatingLabelStyle: Contants().floatingLabelStyle(),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: size * 0.4,
-                    child: TextFormField(
-                      controller: lastNameController,
-                      decoration: InputDecoration(
-                        labelText: "นามสกุล",
-                        fillColor: Contants.colorWhite,
-                        filled: true,
-                        floatingLabelStyle: Contants().floatingLabelStyle(),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                      ),
-                    ),
-                  ),
+                  buildInput(size * 0.4, "ชื่อ", nameController),
+                  buildInput(size * 0.4, "นามสกุล", lastNameController)
                 ],
               ),
               topicTitle("ข้อมูลร้าน"),
-              showShopName(),
-              showRecommend(),
+              buildInput(size*0.9, "ชื่อร้าน", shopNameController),
+              showRecommend(size),
               radiobuttonTypeBarber(),
               ElevatedButton(
                 onPressed: () {
@@ -316,6 +287,31 @@ class _StoreBarberState extends State<StoreBarber> {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  SizedBox buildInput(
+      double size, String title, TextEditingController controller) {
+    return SizedBox(
+      width: size,
+      child: TextFormField(
+        style: Contants().h3white(),
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: title,
+          fillColor: Contants.colorOxfordBlue,
+          labelStyle: Contants().floatingLabelStyle(),
+          filled: true,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Contants.colorGreySilver),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Contants.colorSpringGreen),
           ),
         ),
       ),
@@ -850,7 +846,7 @@ class _StoreBarberState extends State<StoreBarber> {
 
   Container topicTitle(String title) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       child: Row(
         children: [
           Text(
@@ -965,29 +961,31 @@ class _StoreBarberState extends State<StoreBarber> {
     );
   }
 
-  Widget showRecommend() {
+  Widget showRecommend(double size) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
+      width: size*0.9,
       child: TextFormField(
         controller: recommendController,
-        maxLines: 4,
+        style: Contants().h4white(),
+        maxLines: 3,
         onChanged: (value) {
           setState(() {
             change = true;
           });
         },
         decoration: InputDecoration(
-          labelText: "คำแนะนำร้าน",
-          fillColor: Contants.colorWhite,
-          labelStyle: Contants().h3yellow(),
-          floatingLabelStyle: Contants().floatingLabelStyle(),
-          filled: true,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          focusedBorder:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
+            labelText: "คำแนะนำร้าน",
+            labelStyle: Contants().floatingLabelStyle(),
+            filled: true,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Contants.colorGreySilver),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Contants.colorSpringGreen),
+            )),
       ),
     );
   }
@@ -998,16 +996,16 @@ class _StoreBarberState extends State<StoreBarber> {
       child: TextFormField(
         controller: shopNameController,
         decoration: InputDecoration(
-          labelText: "ชื่อร้าน",
-          floatingLabelStyle: Contants().floatingLabelStyle(),
-          fillColor: Contants.colorWhite,
-          filled: true,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          focusedBorder:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
+            labelText: "ชื่อร้าน",
+            fillColor: Contants.colorOxfordBlue,
+            labelStyle: Contants().floatingLabelStyle(),
+            filled: true,
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Contants.colorYellow)),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Contants.colorSpringGreen))),
       ),
     );
   }

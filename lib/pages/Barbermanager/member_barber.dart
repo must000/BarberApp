@@ -205,21 +205,22 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
                     Container(
                       width: size * 0.7,
                       child: TextFormField(
+                        style: Contants().h4white(),
                         controller: idCodeController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          fillColor: Contants.colorWhite,
+                          fillColor: Contants.colorOxfordBlue,
                           filled: true,
                           hintText: "code",
                           hintStyle: Contants().h4Grey(),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 3, color: Contants.colorOxfordBlue),
+                                  borderSide: BorderSide(color: Contants.colorGreySilver),
+
                             borderRadius: BorderRadius.circular(50.0),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 3, color: Contants.colorOxfordBlue),
+                            borderSide:
+                                BorderSide(color: Contants.colorSpringGreen),
                             borderRadius: BorderRadius.circular(50.0),
                           ),
                         ),
@@ -228,9 +229,14 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
                     Container(
                         width: size * 0.2,
                         child: ElevatedButton(
-                          child: Text(
-                            "เพิ่ม",
-                            style: Contants().h3OxfordBlue(),
+                          child: Column(
+                            children: [
+                              Icon(Icons.person_add,color: Contants.colorOxfordBlue,),
+                              Text(
+                                "เพิ่ม",
+                                style: Contants().h3OxfordBlue(),
+                              ),
+                            ],
                           ),
                           onPressed: () {
                             searchIDHairresser();
@@ -247,12 +253,12 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
               ),
               member.isEmpty
                   ? Container(
-                    margin: EdgeInsets.only(top: 30),
-                    child: Text(
-                    "ไม่มีช่างทำผมภายในร้าน",
-                    style: Contants().h3white(),
+                      margin: const EdgeInsets.only(top: 30),
+                      child: Text(
+                        "ไม่มีช่างทำผมภายในร้าน",
+                        style: Contants().h3white(),
                       ),
-                  )
+                    )
                   : Flexible(
                       child: ListView(children: [
                         ListView.builder(

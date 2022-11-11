@@ -19,8 +19,8 @@ class Contants {
   static Color myBackgroundColordark = colorBlack;
   String font = 'Itim';
   TextStyle floatingLabelStyle () => TextStyle(
-        fontSize: 23,
-        color: colorYellowdark,
+        fontSize: 25,
+        color: colorWhite,
         fontFamily: font,
       );
   TextStyle h1OxfordBlue() => TextStyle(
