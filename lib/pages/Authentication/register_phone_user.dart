@@ -61,24 +61,16 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                   margin: EdgeInsets.only(left: size * 0.08),
                   width: size * 0.6,
                   child: TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "กรุณากรอกเบอร์โทร";
-                      }
-                    },
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
-                    style: Contants().h2OxfordBlue(),
+                    style: Contants().h2white(),
                     decoration: InputDecoration(
+                      labelText: "เบอร์มือถือ",
+                      fillColor: Contants.filecolors,
+                      labelStyle: Contants().floatingLabelStyle(),
                       filled: true,
-                      fillColor: Colors.white,
-                      labelText: "Phone",
-                      labelStyle: Contants().h2Red(),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5)),
+                      enabledBorder: Contants().outlineenable(),
+                      focusedBorder: Contants().outlinefocused(),
                     ),
                   ),
                 ),
@@ -111,22 +103,16 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
               child: TextFormField(
                 controller: smsController,
                 keyboardType: TextInputType.number,
-                style: Contants().h2OxfordBlue(),
+                   style: Contants().h2white(),
                 validator: (value) {
-                  if (value!.isEmpty) {
-                    return "กรุณากรอกหมายเลขotp";
-                  }
                 },
                 decoration: InputDecoration(
+                  labelText: "โค้ด",
+                  fillColor: Contants.filecolors,
+                  labelStyle: Contants().floatingLabelStyle(),
                   filled: true,
-                  fillColor: Colors.white,
-                  labelText: "Code",
-                  labelStyle: Contants().h2Red(),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                  enabledBorder: Contants().outlineenable(),
+                  focusedBorder: Contants().outlinefocused(),
                 ),
               ),
             ),
@@ -139,11 +125,15 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(primary: Colors.white),
                   onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      // verifyPhone();
+                 if (phoneController.text == ""|| smsController.text == "") {
+                 MyDialog().normalDialog(context, "กรุณากรอกข้อมูลให้ครบ");
+                 }else{
+                     // verifyPhone();
                       trickFunction();
                       // phonefff เปิดระบบเบอร์ = verifyPhone(); ไม่เปิด = trickFunction();
-                    }
+ 
+                 }
+                  
                   },
                   child: Text(
                     "บันทึก",

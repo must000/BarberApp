@@ -6,23 +6,34 @@ class Contants {
       "localhost,*,console.firebase.google.com/project/barberapp-d8c95";
 
   static Color colorOxfordBlue = const Color(0xff14213D);
-    static Color colorOxfordBlueLight = const Color.fromARGB(255, 35, 55, 99);
+  static Color colorOxfordBlueLight = const Color.fromARGB(255, 35, 55, 99);
   static Color colorSpringGreen = const Color(0xff00FF66);
   static Color colorYellow = Color(0xffFCA311);
-   static Color colorYellowdark = Color.fromARGB(255, 172, 106, 1);
+  static Color colorYellowdark = Color.fromARGB(255, 172, 106, 1);
   static Color colorBlack = const Color(0xff1C1919);
   static Color colorRed = const Color(0xffFF0000);
   static Color colorGreySilver = const Color(0xffA0A0A0);
-    static Color colorWhite = const Color.fromARGB(255, 255, 255, 255);
+  static Color colorWhite = const Color.fromARGB(255, 255, 255, 255);
 
   static Color myBackgroundColor = const Color(0xff14213D);
   static Color myBackgroundColordark = colorBlack;
+
   String font = 'Itim';
-  TextStyle floatingLabelStyle () => TextStyle(
+  TextStyle floatingLabelStyle() => TextStyle(
         fontSize: 25,
         color: colorWhite,
         fontFamily: font,
       );
+  static Color filecolors = const Color(0xff14213D);
+   OutlineInputBorder outlineenable()=> OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: BorderSide(color: Contants.colorGreySilver),
+      );
+  OutlineInputBorder outlinefocused()=> OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: BorderSide(color: Contants.colorSpringGreen),
+      );
+
   TextStyle h1OxfordBlue() => TextStyle(
         fontSize: 30,
         color: colorOxfordBlue,
@@ -106,34 +117,34 @@ class Contants {
         color: colorRed,
         fontFamily: font,
       );
-        TextStyle h1Grey() => TextStyle(
+  TextStyle h1Grey() => TextStyle(
         fontSize: 30,
         color: colorGreySilver,
         fontFamily: font,
       );
   TextStyle h2Grey() => TextStyle(
         fontSize: 25,
-        color:  colorGreySilver,
+        color: colorGreySilver,
         fontFamily: font,
       );
   TextStyle h3Grey() => TextStyle(
         fontSize: 20,
-        color:  colorGreySilver,
+        color: colorGreySilver,
         fontFamily: font,
       );
   TextStyle h4Grey() => TextStyle(
         fontSize: 15,
-        color:  colorGreySilver,
+        color: colorGreySilver,
         fontFamily: font,
       );
-              TextStyle h1yellow() => TextStyle(
+  TextStyle h1yellow() => TextStyle(
         fontSize: 30,
         color: colorYellow,
         fontFamily: font,
       );
   TextStyle h2yellow() => TextStyle(
         fontSize: 25,
-        color:  colorYellow,
+        color: colorYellow,
         fontFamily: font,
       );
   TextStyle h3yellow() => TextStyle(
@@ -143,7 +154,7 @@ class Contants {
       );
   TextStyle h4yellow() => TextStyle(
         fontSize: 15,
-        color:  colorYellow,
+        color: colorYellow,
         fontFamily: font,
       );
 }

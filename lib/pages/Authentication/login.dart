@@ -2,6 +2,7 @@ import 'package:barber/Constant/contants.dart';
 import 'package:barber/Constant/route_cn.dart';
 import 'package:barber/pages/Authentication/chose_type.dart';
 import 'package:barber/pages/Authentication/insert_position_barber.dart';
+import 'package:barber/pages/Authentication/register_phone_user.dart';
 import 'package:barber/pages/Authentication/registerhairdresser.dart';
 import 'package:barber/pages/index.dart';
 import 'package:barber/provider/myproviders.dart';
@@ -57,6 +58,7 @@ class _LoginState extends State<Login> {
                       Container(
                         margin: const EdgeInsets.symmetric(vertical: 8),
                         child: TextFormField(
+                          style: Contants().h3white(),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "กรุณากรอกอีเมล";
@@ -64,20 +66,27 @@ class _LoginState extends State<Login> {
                           },
                           controller: emailController,
                           decoration: InputDecoration(
+                            labelText: "อีเมล",
+                            fillColor: Contants.colorOxfordBlue,
+                            labelStyle: Contants().floatingLabelStyle(),
                             filled: true,
-                            fillColor: Colors.white,
-                            labelText: "Email",
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide:
+                                  BorderSide(color: Contants.colorGreySilver),
                             ),
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30)),
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide:
+                                  BorderSide(color: Contants.colorSpringGreen),
+                            ),
                           ),
                         ),
                       ),
                       Container(
                         margin: const EdgeInsets.symmetric(vertical: 8),
                         child: TextFormField(
+                          style: Contants().h3white(),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "กรุณากรอกรหัสผ่าน";
@@ -86,8 +95,6 @@ class _LoginState extends State<Login> {
                           obscureText: statusRedEys,
                           controller: passwordController,
                           decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -104,12 +111,20 @@ class _LoginState extends State<Login> {
                                       color: Colors.black,
                                     ),
                             ),
-                            labelText: "Password",
+                            labelText: "รหัสผ่าน",
+                            fillColor: Contants.colorOxfordBlue,
+                            labelStyle: Contants().floatingLabelStyle(),
+                            filled: true,
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide:
+                                  BorderSide(color: Contants.colorGreySilver),
                             ),
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30)),
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide:
+                                  BorderSide(color: Contants.colorSpringGreen),
+                            ),
                           ),
                         ),
                       ),

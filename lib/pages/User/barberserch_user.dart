@@ -155,6 +155,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                     url: value.docs[i]["url"],
                     score: average,
                     geoHasher: value.docs[i]["position"]["geohash"]));
+                    print(value.docs[i]["email"]);
               }
             } else {
               print("ไม่มีร้านที่อยู่ไกล้");

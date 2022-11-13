@@ -3,6 +3,7 @@ import 'package:barber/pages/Hairdresser/queue_setting_hairdresser.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 
@@ -49,16 +50,22 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                       ),
                       Text(
                         idCode,
-                        style: Contants().h3white(),
+                        style: Contants().h1yellow(),
                       ),
-                      TextButton(
-                          onPressed: () {
-                            _launchUrl();
-                          },
-                          child: Text(
-                            "เข้าสู่หน้าผู้จัดการร้าน",
-                            style: TextStyle(color: Contants.colorRed),
-                          ))
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("หรือ สแกน",
+                            style: Contants().h3white(),),
+                                      Text("QRcode",
+                            style: Contants().h3yellow(),),
+                        ],
+                      ),
+                      QrImage(
+                        data: idCode,
+                        version: QrVersions.auto,
+                        size: 200.0,
+                      ),
                     ],
                   ),
                 )

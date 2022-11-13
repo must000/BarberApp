@@ -86,11 +86,12 @@ class _SettingAccountState extends State<SettingAccount> {
         key: formKey,
         child: Column(
           children: [
+            typebarber ? const SizedBox() : title(size, "ชื่อ"),
             typebarber
                 ? inputAvartar(size, context)
                 : Container(
-                    margin: EdgeInsets.only(
-                        top: 15, left: size * 0.08, right: size * 0.08),
+                    margin:
+                        EdgeInsets.only(left: size * 0.08, right: size * 0.08),
                     child: TextFormField(
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -99,11 +100,11 @@ class _SettingAccountState extends State<SettingAccount> {
                       },
                       controller: nameController,
                       keyboardType: TextInputType.name,
+                      style: Contants().h4OxfordBlue(),
                       decoration: InputDecoration(
                         filled: true,
                         labelStyle: Contants().h2OxfordBlue(),
                         fillColor: Colors.white,
-                        labelText: "ชื่อ",
                         floatingLabelStyle: Contants().floatingLabelStyle(),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -113,6 +114,7 @@ class _SettingAccountState extends State<SettingAccount> {
                       ),
                     ),
                   ),
+            typebarber ? title(size, "ชื่อ") : const SizedBox(),
             typebarber
                 ? Container(
                     margin: const EdgeInsets.only(top: 20),
@@ -124,11 +126,11 @@ class _SettingAccountState extends State<SettingAccount> {
                       },
                       controller: nameController,
                       keyboardType: TextInputType.name,
+                      style: Contants().h4OxfordBlue(),
                       decoration: InputDecoration(
                         filled: true,
                         labelStyle: Contants().h2OxfordBlue(),
                         fillColor: Colors.white,
-                        labelText: "ชื่อ",
                         floatingLabelStyle: Contants().floatingLabelStyle(),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -139,9 +141,9 @@ class _SettingAccountState extends State<SettingAccount> {
                     ),
                   )
                 : const SizedBox(),
+            typebarber ? title(size, "นามสกุล") : const SizedBox(),
             typebarber
                 ? Container(
-                    margin: const EdgeInsets.only(top: 20),
                     child: TextFormField(
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -150,11 +152,11 @@ class _SettingAccountState extends State<SettingAccount> {
                       },
                       controller: lastNameController,
                       keyboardType: TextInputType.name,
+                      style: Contants().h4OxfordBlue(),
                       decoration: InputDecoration(
                         filled: true,
                         labelStyle: Contants().h2OxfordBlue(),
                         fillColor: Colors.white,
-                        labelText: "นามสกุล",
                         floatingLabelStyle: Contants().floatingLabelStyle(),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -191,6 +193,20 @@ class _SettingAccountState extends State<SettingAccount> {
           ],
         ),
       )),
+    );
+  }
+
+  Container title(double size, String title) {
+    return Container(
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: Contants().h3white(),
+          )
+        ],
+      ),
     );
   }
 

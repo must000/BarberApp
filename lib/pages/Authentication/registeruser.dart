@@ -42,9 +42,10 @@ class _RegisterUserState extends State<RegisterUser> {
                 SizedBox(
                   height: size * 0.2,
                 ),
+                title(size, "ชื่อ "),
                 Container(
-                  margin: EdgeInsets.only(
-                      top: 15, left: size * 0.08, right: size * 0.08),
+                  margin:
+                      EdgeInsets.only(left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -53,10 +54,10 @@ class _RegisterUserState extends State<RegisterUser> {
                     },
                     controller: nameController,
                     keyboardType: TextInputType.name,
+                    style: Contants().h4OxfordBlue(),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      labelText: "Name",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -65,9 +66,11 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                   ),
                 ),
+                title(size, "นามสกุล "),
+
                 Container(
                   margin: EdgeInsets.only(
-                      top: 15, left: size * 0.08, right: size * 0.08),
+                       left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -75,11 +78,11 @@ class _RegisterUserState extends State<RegisterUser> {
                       } else {}
                     },
                     controller: userController,
+                    style: Contants().h4OxfordBlue(),
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      labelText: "Email",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -88,11 +91,12 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                   ),
                 ),
+                title(size, "รหัสผ่าน "),
                 Container(
-                  margin: EdgeInsets.only(
-                      top: 15, left: size * 0.08, right: size * 0.08),
+                  margin: EdgeInsets.only( left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
                     controller: passwordController,
+                    style: Contants().h4OxfordBlue(),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "กรุณากรอกรหัสผ่าน";
@@ -102,7 +106,6 @@ class _RegisterUserState extends State<RegisterUser> {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      labelText: "Password",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -111,11 +114,14 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                   ),
                 ),
+                title(size, "ยืนยันรหัสผ่าน "),
+
                 Container(
                   margin: EdgeInsets.symmetric(
-                      vertical: 8, horizontal: size * 0.08),
+                     horizontal: size * 0.08),
                   child: TextFormField(
                     obscureText: true,
+                    style: Contants().h4OxfordBlue(),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "กรุณากรอกรหัสผ่าน";
@@ -126,7 +132,6 @@ class _RegisterUserState extends State<RegisterUser> {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      labelText: "Confirm Password",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -165,11 +170,26 @@ class _RegisterUserState extends State<RegisterUser> {
     );
   }
 
+  Container title(double size, String title) {
+    return Container(
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: Contants().h3white(),
+          )
+        ],
+      ),
+    );
+  }
+
   Future<Null> registerFirebase() async {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: userController.text.toLowerCase(), password: passwordController.text)
+              email: userController.text.toLowerCase(),
+              password: passwordController.text)
           .then((value) async {
         await value.user!.updateDisplayName(nameController.text).then(
               (value) => MyDialog(funcAction: fc).hardDialog(

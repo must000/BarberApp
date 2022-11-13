@@ -248,6 +248,12 @@ class _HairCutUserState extends State<HairCutUser> {
 
   CarouselController buttonCarouselController = CarouselController();
   List<String> imgList = [];
+  String truncate(String text, {length: 7, omission: '...'}) {
+    if (length >= text.length) {
+      return text;
+    }
+    return text.replaceRange(length, text.length, omission);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -262,7 +268,8 @@ class _HairCutUserState extends State<HairCutUser> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SearchUser(
-                    nameUser: nameUser == "" ? "" : nameUser,
+                    nameUser:
+                        nameUser == "" ? "" : truncate(nameUser, length: 8),
                   ),
                 ));
           },
@@ -276,7 +283,7 @@ class _HairCutUserState extends State<HairCutUser> {
                     color: Contants.colorSpringGreen,
                   ),
                   Text(
-                    dataPositionUser!,
+                    truncate(dataPositionUser!, length: 20),
                     style: Contants().h3white(),
                   ),
                 ],
@@ -293,7 +300,7 @@ class _HairCutUserState extends State<HairCutUser> {
                   ))
               : Center(
                   child: Text(
-                    nameUser,
+                    truncate(nameUser, length: 8),
                     style: Contants().h3white(),
                   ),
                 )
@@ -645,7 +652,7 @@ class _HairCutUserState extends State<HairCutUser> {
                       onPressed: () async {
                         if (barberLike.contains(barberHistory[index]) ==
                             false) {
-                              print(barberHistory[index].email);
+                          print(barberHistory[index].email);
                           SQLiteModel sqLiteModel =
                               SQLiteModel(email: barberHistory[index].email);
                           await SQLiteHelper().insertValueToSQlite(sqLiteModel);

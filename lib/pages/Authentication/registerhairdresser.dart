@@ -44,25 +44,26 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  height: size * 0.2,
+                const SizedBox(
+                  height: 10
                 ),
                 inputAvartar(size, context),
+                title(size, "ชื่อ"),
                 Container(
-                  margin: EdgeInsets.only(
-                      top: 15, left: size * 0.08, right: size * 0.08),
+                  margin:
+                      EdgeInsets.only(left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "กรุณากรอกชื่อ";
                       } else {}
                     },
+                    style: Contants().h4OxfordBlue(),
                     controller: nameController,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      labelText: "Name",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -71,21 +72,22 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                     ),
                   ),
                 ),
+                title(size, "นามสกุล"),
                 Container(
-                  margin: EdgeInsets.only(
-                      top: 15, left: size * 0.08, right: size * 0.08),
+                  margin:
+                      EdgeInsets.only(left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "กรุณากรอกนามสกุล";
                       } else {}
                     },
+                    style: Contants().h4OxfordBlue(),
                     controller: lastnameController,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      labelText: "Lastname",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -94,21 +96,22 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                     ),
                   ),
                 ),
+                title(size, "อีเมล"),
                 Container(
-                  margin: EdgeInsets.only(
-                      top: 15, left: size * 0.08, right: size * 0.08),
+                  margin:
+                      EdgeInsets.only(left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "กรุณากรอกEmail";
                       } else {}
                     },
+                    style: Contants().h4OxfordBlue(),
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      labelText: "Email",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -117,9 +120,11 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                     ),
                   ),
                 ),
+                title(size, "รหัสผ่าน"),
+
                 Container(
                   margin: EdgeInsets.only(
-                      top: 15, left: size * 0.08, right: size * 0.08),
+                 left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
                     controller: passwordController,
                     validator: (value) {
@@ -127,11 +132,11 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                         return "กรุณากรอกรหัสผ่าน";
                       } else {}
                     },
+                    style: Contants().h4OxfordBlue(),
                     obscureText: true,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      labelText: "Password",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -140,10 +145,11 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                     ),
                   ),
                 ),
+                title(size, "ยืนยันรหัสผ่าน"),
                 Container(
-                  margin: EdgeInsets.symmetric(
-                      vertical: 8, horizontal: size * 0.08),
+                  margin: EdgeInsets.symmetric( horizontal: size * 0.08),
                   child: TextFormField(
+                    style: Contants().h4OxfordBlue(),
                     obscureText: true,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -155,7 +161,6 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      labelText: "Confirm Password",
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -212,6 +217,20 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
         avertarIng = File(result!.path);
       });
     } catch (e) {}
+  }
+
+  Container title(double size, String title) {
+    return Container(
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08,top: 10),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: Contants().h3white(),
+          )
+        ],
+      ),
+    );
   }
 
   Future<Null> normalDialog(BuildContext context) async {
@@ -296,7 +315,8 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
     await Firebase.initializeApp().then((value) async {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: emailController.text.toLowerCase(), password: passwordController.text)
+              email: emailController.text.toLowerCase(),
+              password: passwordController.text)
           .then((value) async {
         proceedsaveData().then((value) => uploadAvarter().then((value) {
               Navigator.pop(context);

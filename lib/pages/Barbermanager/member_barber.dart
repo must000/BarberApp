@@ -1,14 +1,21 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:barber/data/hairdressermodel.dart';
 import 'package:barber/main.dart';
 import 'package:barber/pages/Barbermanager/drawerobject.dart';
+import 'package:barber/pages/Barbermanager/scan_qrcode.dart';
 import 'package:barber/utils/dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:barber/Constant/contants.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:scan/scan.dart';
 
 class MemberBarberPage extends StatefulWidget {
   MemberBarberPage({
@@ -20,6 +27,20 @@ class MemberBarberPage extends StatefulWidget {
 }
 
 class _MemberBarberPageState extends State<MemberBarberPage> {
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  Barcode? result;
+  QRViewController? controller;
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller!.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller!.resumeCamera();
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -172,6 +193,7 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
   }
 
   String idClick = "";
+  bool openscan = false;
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -185,167 +207,221 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
             FocusNode(),
           ), //กดที่หน้าจอ แล้วคีย์อบร์ดดรอปลง
           behavior: HitTestBehavior.opaque,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                "ช่างทำผมของร้าน",
-                style: Contants().h2white(),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: size * 0.7,
-                      child: TextFormField(
-                        style: Contants().h4white(),
-                        controller: idCodeController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          fillColor: Contants.colorOxfordBlue,
-                          filled: true,
-                          hintText: "code",
-                          hintStyle: Contants().h4Grey(),
-                          enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Contants.colorGreySilver),
-
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Contants.colorSpringGreen),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                        width: size * 0.2,
-                        child: ElevatedButton(
-                          child: Column(
-                            children: [
-                              Icon(Icons.person_add,color: Contants.colorOxfordBlue,),
-                              Text(
-                                "เพิ่ม",
-                                style: Contants().h3OxfordBlue(),
-                              ),
-                            ],
-                          ),
-                          onPressed: () {
-                            searchIDHairresser();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                openscan
+                    ? SizedBox(
+                      height: 250,
+                      child: QRView(
+                        key: qrKey,
+                        onQRViewCreated: _onQRViewCreated,
+                        overlay: QrScannerOverlayShape(
+                            borderColor: Contants.colorSpringGreen,
+                            borderWidth: 10,
+                            borderRadius: 10,
+                            borderLength: 20,
                             ),
-                            primary: Contants.colorSpringGreen,
-                          ),
-                        ))
-                  ],
-                ),
-              ),
-              member.isEmpty
-                  ? Container(
-                      margin: const EdgeInsets.only(top: 30),
-                      child: Text(
-                        "ไม่มีช่างทำผมภายในร้าน",
-                        style: Contants().h3white(),
                       ),
                     )
-                  : Flexible(
-                      child: ListView(children: [
-                        ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) => GestureDetector(
-                            onTap: () {
-                              if (idClick == member[index].hairdresserID) {
-                                setState(() {
-                                  idClick = "";
-                                });
-                              } else {
-                                setState(() {
-                                  idClick = member[index].hairdresserID;
-                                });
-                              }
+                    : const SizedBox(),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ScanQRdoe(),));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      primary: Contants.colorWhite,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.qr_code_scanner,
+                          color: Contants.colorSpringGreen,
+                        ),
+                        Text(
+                          "สแกน QR code",
+                          style: Contants().h3OxfordBlue(),
+                        ),
+                      ],
+                    )),
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  "ช่างทำผมของร้าน",
+                  style: Contants().h2white(),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: size * 0.7,
+                        child: TextFormField(
+                          style: Contants().h4white(),
+                          controller: idCodeController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            fillColor: Contants.colorOxfordBlue,
+                            filled: true,
+                            hintText: "code",
+                            hintStyle: Contants().h4Grey(),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Contants.colorGreySilver),
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Contants.colorSpringGreen),
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                          width: size * 0.2,
+                          child: ElevatedButton(
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.person_add,
+                                  color: Contants.colorOxfordBlue,
+                                ),
+                                Text(
+                                  "เพิ่ม",
+                                  style: Contants().h3OxfordBlue(),
+                                ),
+                              ],
+                            ),
+                            onPressed: () {
+                              searchIDHairresser();
                             },
-                            child: idClick == member[index].hairdresserID
-                                ? Card(
-                                    child: ListTile(
-                                      leading: CachedNetworkImage(
-                                          imageUrl: urlImageMember[
-                                              member[index].email]!),
-                                      title: Text(
-                                        "${member[index].name} ${member[index].lastname}",
-                                        style: Contants().h3OxfordBlue(),
-                                      ),
-                                      subtitle: Flexible(
-                                        child: ListView(
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          children: [
-                                            Text(
-                                              "อีเมล : ${member[index].email} ",
-                                              style: Contants().h4Grey(),
-                                            ),
-                                            Text(
-                                              "เบอร์โทร ${member[index].phone} ",
-                                              style: Contants().h4Grey(),
-                                            ),
-                                            Text(
-                                              "รหัสเชิญ ${member[index].phone} ",
-                                              style: Contants().h4Grey(),
-                                            ),
-                                          ],
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              primary: Contants.colorSpringGreen,
+                            ),
+                          ))
+                    ],
+                  ),
+                ),
+                member.isEmpty
+                    ? Container(
+                        margin: const EdgeInsets.only(top: 30),
+                        child: Text(
+                          "ไม่มีช่างทำผมภายในร้าน",
+                          style: Contants().h3white(),
+                        ),
+                      )
+                    : ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) => GestureDetector(
+                        onTap: () {
+                          if (idClick == member[index].hairdresserID) {
+                            setState(() {
+                              idClick = "";
+                            });
+                          } else {
+                            setState(() {
+                              idClick = member[index].hairdresserID;
+                            });
+                          }
+                        },
+                        child: idClick == member[index].hairdresserID
+                            ? Card(
+                                child: ListTile(
+                                  leading: CachedNetworkImage(
+                                      imageUrl: urlImageMember[
+                                          member[index].email]!),
+                                  title: Text(
+                                    "${member[index].name} ${member[index].lastname}",
+                                    style: Contants().h3OxfordBlue(),
+                                  ),
+                                  subtitle: Flexible(
+                                    child: ListView(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      children: [
+                                        Text(
+                                          "อีเมล : ${member[index].email} ",
+                                          style: Contants().h4Grey(),
                                         ),
-                                      ),
-                                      trailing: IconButton(
-                                          icon: Icon(
-                                            Icons.person_remove,
-                                            color: Contants.colorRed,
-                                          ),
-                                          onPressed: () {
-                                            removeMember(member[index].name,
-                                                member[index].hairdresserID);
-                                          }),
-                                    ),
-                                  )
-                                : Card(
-                                    child: ListTile(
-                                      leading: CachedNetworkImage(
-                                          imageUrl: urlImageMember[
-                                              member[index].email]!),
-                                      title: Text(
-                                        "${member[index].name} ${member[index].lastname}",
-                                        style: Contants().h3OxfordBlue(),
-                                      ),
-                                      trailing: IconButton(
-                                          icon: Icon(
-                                            Icons.person_remove,
-                                            color: Contants.colorRed,
-                                          ),
-                                          onPressed: () {
-                                            removeMember(member[index].name,
-                                                member[index].hairdresserID);
-                                          }),
+                                        Text(
+                                          "เบอร์โทร ${member[index].phone} ",
+                                          style: Contants().h4Grey(),
+                                        ),
+                                        Text(
+                                          "รหัสเชิญ ${member[index].phone} ",
+                                          style: Contants().h4Grey(),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                          ),
-                          itemCount: member.length,
-                        ),
-                      ]),
+                                  trailing: IconButton(
+                                      icon: Icon(
+                                        Icons.person_remove,
+                                        color: Contants.colorRed,
+                                      ),
+                                      onPressed: () {
+                                        removeMember(member[index].name,
+                                            member[index].hairdresserID);
+                                      }),
+                                ),
+                              )
+                            : Card(
+                                child: ListTile(
+                                  leading: CachedNetworkImage(
+                                      imageUrl: urlImageMember[
+                                          member[index].email]!),
+                                  title: Text(
+                                    "${member[index].name} ${member[index].lastname}",
+                                    style: Contants().h3OxfordBlue(),
+                                  ),
+                                  trailing: IconButton(
+                                      icon: Icon(
+                                        Icons.person_remove,
+                                        color: Contants.colorRed,
+                                      ),
+                                      onPressed: () {
+                                        removeMember(member[index].name,
+                                            member[index].hairdresserID);
+                                      }),
+                                ),
+                              ),
+                      ),
+                      itemCount: member.length,
                     ),
-            ],
+              ],
+            ),
           ),
         ),
         drawer: DrawerObject());
+  }
+
+  void _onQRViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        result = scanData;
+        idCodeController.text = result!.code!;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
   }
 }

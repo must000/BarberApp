@@ -142,6 +142,20 @@ class _RegisterBarberState extends State<RegisterBarber> {
   final GlobalKey<ScaffoldMessengerState> messenger =
       GlobalKey<ScaffoldMessengerState>();
 
+  Container title(double size, String title) {
+    return Container(
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: Contants().h3white(),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -171,13 +185,20 @@ class _RegisterBarberState extends State<RegisterBarber> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  title(size, "ชื่อ"),
                   inputname(size),
+                  title(size, "นามสกุล"),
                   inputlastname(size),
+                  title(size, "อีเมล"),
                   inputEmail(size),
+                  title(size, "รหัสผ่าน"),
                   inputPassword(size),
+                  title(size, "ยืนยันรหัสผ่าน"),
                   inputRePassword(size),
                   radiobuttonTypeBarber(),
+                  title(size, "ชื่อร้าน"),
                   inputNameShop(size),
+                  title(size, "คำแนะนำร้าน"),
                   inputRecommentShop(size),
                   buildtimeOpen(),
                   buildtimeClose(),
@@ -188,6 +209,8 @@ class _RegisterBarberState extends State<RegisterBarber> {
                   checkboxDayOpen(),
                   // mapLocation(size),
                   buttonMovePosition(size),
+                  SizedBox(height: 20,),
+                  title(size, "รายละเอียดที่อยู่ร้าน"),
                   inputDetailLocation(size),
                   imgPhotoShop(size, context),
                   buttonChangeImgPhotoShop(context),
@@ -619,7 +642,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
   Container inputDetailLocation(double size) {
     return Container(
       width: size * 0.75,
-      margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only( left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         controller: detailLocationController,
         validator: (value) {
@@ -628,10 +651,10 @@ class _RegisterBarberState extends State<RegisterBarber> {
           }
         },
         maxLines: 4,
+        style: Contants().h4white(),
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          labelText: "รายละเอียดที่อยู่ร้าน",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -995,9 +1018,10 @@ class _RegisterBarberState extends State<RegisterBarber> {
   Container inputRecommentShop(double size) {
     return Container(
       width: size * 0.75,
-      margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only( left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         controller: recommentShopController,
+        style: Contants().h4white(),
         validator: (value) {
           if (value!.isEmpty) {
             return "กรุณาคำแนะนำร้าน";
@@ -1007,7 +1031,6 @@ class _RegisterBarberState extends State<RegisterBarber> {
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          labelText: "คำแนะนำร้าน",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -1020,9 +1043,10 @@ class _RegisterBarberState extends State<RegisterBarber> {
 
   Container inputNameShop(double size) {
     return Container(
-      margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only( left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         controller: nameShopController,
+        style: Contants().h4white(),
         validator: (value) {
           if (value!.isEmpty) {
             return "กรุณากรอกชื่อร้าน";
@@ -1031,7 +1055,6 @@ class _RegisterBarberState extends State<RegisterBarber> {
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          labelText: "ชื่อร้าน",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -1081,7 +1104,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
 
   Container inputRePassword(double size) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: size * 0.08),
+      margin: EdgeInsets.symmetric(horizontal: size * 0.08),
       child: TextFormField(
         keyboardType: TextInputType.visiblePassword,
         validator: (value) {
@@ -1091,11 +1114,11 @@ class _RegisterBarberState extends State<RegisterBarber> {
             return "กรุณากรอกรหัสผ่านให้ตรงกัน";
           }
         },
+        style: Contants().h4white(),
         obscureText: true,
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          labelText: "ยืนยันรหัสผ่าน",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -1108,7 +1131,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
 
   Container inputPassword(double size) {
     return Container(
-      margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only( left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         keyboardType: TextInputType.visiblePassword,
         controller: passwordController,
@@ -1117,11 +1140,12 @@ class _RegisterBarberState extends State<RegisterBarber> {
             return "กรุณากรอกรหัสผ่าน";
           } else {}
         },
+        style: Contants().h4white(),
+
         obscureText: true,
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          labelText: "รหัสผ่าน",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -1134,7 +1158,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
 
   Container inputEmail(double size) {
     return Container(
-      margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only( left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         validator: (value) {
           if (value!.isEmpty) {
@@ -1142,11 +1166,11 @@ class _RegisterBarberState extends State<RegisterBarber> {
           } else {}
         },
         controller: emailController,
+        style: Contants().h4white(),
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          labelText: "อีเมล",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -1159,7 +1183,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
 
   Container inputname(double size) {
     return Container(
-      margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         validator: (value) {
           if (value!.isEmpty) {
@@ -1168,10 +1192,10 @@ class _RegisterBarberState extends State<RegisterBarber> {
         },
         controller: nameController,
         keyboardType: TextInputType.name,
+        style: Contants().h4OxfordBlue(),
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          labelText: "ชื่อ",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -1184,7 +1208,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
 
   Container inputlastname(double size) {
     return Container(
-      margin: EdgeInsets.only(top: 15, left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         validator: (value) {
           if (value!.isEmpty) {
@@ -1193,10 +1217,10 @@ class _RegisterBarberState extends State<RegisterBarber> {
         },
         controller: lastnameController,
         keyboardType: TextInputType.name,
+        style: Contants().h4OxfordBlue(),
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          labelText: "นามสกุล",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),

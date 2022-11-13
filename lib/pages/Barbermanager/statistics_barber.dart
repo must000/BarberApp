@@ -46,7 +46,6 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
     "พฤศจิกายน ",
     "ธันวาคม "
   ];
-  double income = 0;
   List<ChartData> datas = [];
   List<double> listsum = [];
   @override
@@ -70,7 +69,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
         .get()
         .then((value) {
           List<ChartData> data = [];
-          List<double> sumMount = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+          List<double> sumMount = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
           if (value.docs.isNotEmpty) {
             for (var i = 0; i < value.docs.length; i++) {
               double sumprice = 0;
@@ -94,6 +93,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
           } else {
             setState(() {
               datas.clear();
+              listsum.clear();
             });
           }
         });
@@ -288,29 +288,6 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
   Column buildCharts() {
     return Column(
       children: [
-        // Text(
-        //   "รายได้ในเดือน $selectedMonth ${income.toString()} บาท",
-        //   style: Contants().h3white(),
-        // ),
-        // DropdownButtonHideUnderline(
-        //   child: DropdownButton2(
-        //     iconEnabledColor: Contants.colorWhite,
-        //     hint: Text(
-        //       selectedMonth,
-        //       style: Contants().h4white(),
-        //     ),
-        //     items: items
-        //         .map((item) => DropdownMenuItem<String>(
-        //               value: item,
-        //               child: Text(item, style: Contants().h4OxfordBlue()),
-        //             ))
-        //         .toList(),
-        //     onChanged: (value) {
-        //       selectedMonth = value as String;
-        //       getReservationForChart();
-        //     },
-        //   ),
-        // ),
         datas == []
             ? const SizedBox()
             : SfCartesianChart(
@@ -325,14 +302,64 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                   ),
                 ],
               ),
-        datas == []
+        datas == [] || listsum == []
             ? const SizedBox()
             : ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemBuilder: (context, index) =>
-                    Text("${items[index]} ${listsum[index].toString()}",style: Contants().h3white(),),
-                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  if (index == listsum.length) {
+                    double sum = 0;
+                    for ( var i = 0 ; i < listsum.length ; i++ ){
+                    sum += listsum[i];
+                    }
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(left: 20),
+                          width: 100,
+                          child: Text(
+                            "รวม",
+                            style: Contants().h3yellow()
+                            ,
+                          ),
+                        ),
+                        Container(
+                          width: 100,
+                          child: Text(
+                            sum.toStringAsFixed(2),
+                            style: Contants().h3SpringGreen(),
+                            textAlign: TextAlign.right,
+                          ),
+                        )
+                      ],
+                    );
+                  } else {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(left: 20),
+                          width: 100,
+                          child: Text(
+                            items[index],
+                            style: Contants().h3white(),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100,
+                          child: Text(
+                            listsum[index].toStringAsFixed(2),
+                            style: Contants().h3SpringGreen(),
+                            textAlign: TextAlign.right,
+                          ),
+                        )
+                      ],
+                    );
+                  }
+                },
+                itemCount: listsum.length + 1,
               )
       ],
     );
@@ -557,11 +584,6 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                             ));
                       },
                       child: Card(
-                        // color: reservation[index].status == "on"
-                        //       ? Contants.colorYellow
-                        //       : reservation[index].status == "succeed"
-                        //           ? Contants.colorSpringGreen
-                        //           : Contants.colorRed,
                         child: ListTile(
                           title: Text(
                             reservation[index].nameHairdresser,

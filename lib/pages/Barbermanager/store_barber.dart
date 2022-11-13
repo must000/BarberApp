@@ -5,18 +5,16 @@ import 'package:barber/main.dart';
 import 'package:barber/pages/Barbermanager/drawerobject.dart';
 import 'package:barber/pages/Barbermanager/map_barber.dart';
 import 'package:barber/utils/dialog.dart';
+import 'package:barber/widgets/textfieldmodeil1.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:longdo_maps_api3_flutter/view.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 class StoreBarber extends StatefulWidget {
   const StoreBarber({
@@ -156,12 +154,21 @@ class _StoreBarberState extends State<StoreBarber> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  buildInput(size * 0.4, "ชื่อ", nameController),
-                  buildInput(size * 0.4, "นามสกุล", lastNameController)
+                  TextFieldModel1(
+                      size: size * 0.4,
+                      controller: nameController,
+                      title: "ชื่อ"),
+                  TextFieldModel1(
+                      size: size * 0.4,
+                      controller: lastNameController,
+                      title: "นามสกุล"),
                 ],
               ),
               topicTitle("ข้อมูลร้าน"),
-              buildInput(size*0.9, "ชื่อร้าน", shopNameController),
+              TextFieldModel1(
+                  size: size * 0.9,
+                  controller: shopNameController,
+                  title: "ชื่อร้าน"),
               showRecommend(size),
               radiobuttonTypeBarber(),
               ElevatedButton(
@@ -964,7 +971,7 @@ class _StoreBarberState extends State<StoreBarber> {
   Widget showRecommend(double size) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
-      width: size*0.9,
+      width: size * 0.9,
       child: TextFormField(
         controller: recommendController,
         style: Contants().h4white(),
