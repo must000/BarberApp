@@ -84,7 +84,59 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                       sumprice;
             }
             for (var k = 0; k <= 11; k++) {
-              data.add(ChartData(items[k], sumMount[k]));
+              String mon = "";
+              switch (items[k]) {
+                case "มกราคม ":
+                  mon = "ม.ค.";
+
+                  break;
+                case "กุมภาพันธ์ ":
+                  mon = "ก.พ.";
+
+                  break;
+                case "มีนาคม ":
+                  mon = "มี.ค.";
+
+                  break;
+                case "เมษายน ":
+                  mon = "เม.ย.";
+                  break;
+                case "พฤษภาคม ":
+                  mon = "พ.ค.";
+
+                  break;
+                case "มิถุนายน ":
+                  mon = "มิ.ย.";
+
+                  break;
+                case "กรกฎาคม ":
+                  mon = "ก.ค.";
+                  break;
+                case "สิงหาคม ":
+                  mon = "ส.ค.";
+
+                  break;
+                case "กันยายน ":
+                  mon = "ก.ย.";
+
+                  break;
+                case "ตุลาคม ":
+                  mon = "ต.ค.";
+
+                  break;
+                case "พฤศจิกายน ":
+                  mon = "พ.ย.";
+
+                  break;
+                case "ธันวาคม ":
+                  mon = "ธ.ค.";
+
+                  break;
+
+                default:
+                  mon = "";
+              }
+              data.add(ChartData(mon, sumMount[k]));
             }
             setState(() {
               datas = data;
@@ -247,7 +299,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Container(
+                  SizedBox(
                     child: TextButton(
                         onPressed: () {
                           setState(() {
@@ -262,7 +314,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                         )),
                     width: size * 0.5,
                   ),
-                  Container(
+                  SizedBox(
                     child: TextButton(
                         onPressed: () {
                           setState(() {
@@ -291,7 +343,10 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
         datas == []
             ? const SizedBox()
             : SfCartesianChart(
-                primaryXAxis: CategoryAxis(),
+                title: ChartTitle(
+                    text: "รายได้ ในปี $selectedyear",
+                    textStyle: Contants().h3white()),
+                primaryXAxis: CategoryAxis(maximumLabelWidth: 30),
                 series: <ColumnSeries<ChartData, String>>[
                   ColumnSeries<ChartData, String>(
                     color: Contants.colorSpringGreen,
@@ -310,8 +365,8 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                 itemBuilder: (context, index) {
                   if (index == listsum.length) {
                     double sum = 0;
-                    for ( var i = 0 ; i < listsum.length ; i++ ){
-                    sum += listsum[i];
+                    for (var i = 0; i < listsum.length; i++) {
+                      sum += listsum[i];
                     }
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -321,8 +376,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                           width: 100,
                           child: Text(
                             "รวม",
-                            style: Contants().h3yellow()
-                            ,
+                            style: Contants().h3yellow(),
                           ),
                         ),
                         Container(

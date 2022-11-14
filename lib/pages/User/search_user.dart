@@ -258,6 +258,7 @@ class _SearchUserState extends State<SearchUser> {
                           margin: const EdgeInsets.symmetric(horizontal: 15),
                           child: InkWell(
                             onTap: () {
+                              print(barberModel[index].email);
                               FocusScope.of(context).requestFocus(FocusNode());
                               Navigator.push(
                                   context,

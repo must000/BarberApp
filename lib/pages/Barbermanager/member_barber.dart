@@ -210,24 +210,16 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                openscan
-                    ? SizedBox(
-                      height: 250,
-                      child: QRView(
-                        key: qrKey,
-                        onQRViewCreated: _onQRViewCreated,
-                        overlay: QrScannerOverlayShape(
-                            borderColor: Contants.colorSpringGreen,
-                            borderWidth: 10,
-                            borderRadius: 10,
-                            borderLength: 20,
-                            ),
-                      ),
-                    )
-                    : const SizedBox(),
                 ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ScanQRdoe(),));
+                    onPressed: () async {
+                    final result = await  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ScanQRdoe(),
+                          ));
+                          setState(() {
+                            idCodeController.text = result;
+                          });
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -323,85 +315,85 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
                         ),
                       )
                     : ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) => GestureDetector(
-                        onTap: () {
-                          if (idClick == member[index].hairdresserID) {
-                            setState(() {
-                              idClick = "";
-                            });
-                          } else {
-                            setState(() {
-                              idClick = member[index].hairdresserID;
-                            });
-                          }
-                        },
-                        child: idClick == member[index].hairdresserID
-                            ? Card(
-                                child: ListTile(
-                                  leading: CachedNetworkImage(
-                                      imageUrl: urlImageMember[
-                                          member[index].email]!),
-                                  title: Text(
-                                    "${member[index].name} ${member[index].lastname}",
-                                    style: Contants().h3OxfordBlue(),
-                                  ),
-                                  subtitle: Flexible(
-                                    child: ListView(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      children: [
-                                        Text(
-                                          "อีเมล : ${member[index].email} ",
-                                          style: Contants().h4Grey(),
-                                        ),
-                                        Text(
-                                          "เบอร์โทร ${member[index].phone} ",
-                                          style: Contants().h4Grey(),
-                                        ),
-                                        Text(
-                                          "รหัสเชิญ ${member[index].phone} ",
-                                          style: Contants().h4Grey(),
-                                        ),
-                                      ],
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) => GestureDetector(
+                          onTap: () {
+                            if (idClick == member[index].hairdresserID) {
+                              setState(() {
+                                idClick = "";
+                              });
+                            } else {
+                              setState(() {
+                                idClick = member[index].hairdresserID;
+                              });
+                            }
+                          },
+                          child: idClick == member[index].hairdresserID
+                              ? Card(
+                                  child: ListTile(
+                                    leading: CachedNetworkImage(
+                                        imageUrl: urlImageMember[
+                                            member[index].email]!),
+                                    title: Text(
+                                      "${member[index].name} ${member[index].lastname}",
+                                      style: Contants().h3OxfordBlue(),
                                     ),
-                                  ),
-                                  trailing: IconButton(
-                                      icon: Icon(
-                                        Icons.person_remove,
-                                        color: Contants.colorRed,
+                                    subtitle: Flexible(
+                                      child: ListView(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        children: [
+                                          Text(
+                                            "อีเมล : ${member[index].email} ",
+                                            style: Contants().h4Grey(),
+                                          ),
+                                          Text(
+                                            "เบอร์โทร ${member[index].phone} ",
+                                            style: Contants().h4Grey(),
+                                          ),
+                                          Text(
+                                            "รหัสเชิญ ${member[index].phone} ",
+                                            style: Contants().h4Grey(),
+                                          ),
+                                        ],
                                       ),
-                                      onPressed: () {
-                                        removeMember(member[index].name,
-                                            member[index].hairdresserID);
-                                      }),
-                                ),
-                              )
-                            : Card(
-                                child: ListTile(
-                                  leading: CachedNetworkImage(
-                                      imageUrl: urlImageMember[
-                                          member[index].email]!),
-                                  title: Text(
-                                    "${member[index].name} ${member[index].lastname}",
-                                    style: Contants().h3OxfordBlue(),
+                                    ),
+                                    trailing: IconButton(
+                                        icon: Icon(
+                                          Icons.person_remove,
+                                          color: Contants.colorRed,
+                                        ),
+                                        onPressed: () {
+                                          removeMember(member[index].name,
+                                              member[index].hairdresserID);
+                                        }),
                                   ),
-                                  trailing: IconButton(
-                                      icon: Icon(
-                                        Icons.person_remove,
-                                        color: Contants.colorRed,
-                                      ),
-                                      onPressed: () {
-                                        removeMember(member[index].name,
-                                            member[index].hairdresserID);
-                                      }),
+                                )
+                              : Card(
+                                  child: ListTile(
+                                    leading: CachedNetworkImage(
+                                        imageUrl: urlImageMember[
+                                            member[index].email]!),
+                                    title: Text(
+                                      "${member[index].name} ${member[index].lastname}",
+                                      style: Contants().h3OxfordBlue(),
+                                    ),
+                                    trailing: IconButton(
+                                        icon: Icon(
+                                          Icons.person_remove,
+                                          color: Contants.colorRed,
+                                        ),
+                                        onPressed: () {
+                                          removeMember(member[index].name,
+                                              member[index].hairdresserID);
+                                        }),
+                                  ),
                                 ),
-                              ),
+                        ),
+                        itemCount: member.length,
                       ),
-                      itemCount: member.length,
-                    ),
               ],
             ),
           ),

@@ -13,34 +13,53 @@ class ScanQRdoe extends StatefulWidget {
 }
 
 class _ScanQRdoeState extends State<ScanQRdoe> {
-    final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   QRViewController? controller;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Contants.myBackgroundColordark,
+      ),
       body: Column(
         children: [
           Expanded(
-                flex: 5,
-                child: QRView(
-                  key: qrKey,
-                  onQRViewCreated: _onQRViewCreated,
-                ),
-              ), Expanded(
+            flex: 5,
+            child: QRView(
+              key: qrKey,
+              onQRViewCreated: _onQRViewCreated,
+            ),
+          ),
+          Expanded(
             flex: 1,
             child: Center(
               child: (result != null)
-                  ? Text(
-                      'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                  : Text('Scan a code'),
+                  ? Column(
+                      children: [
+                        Text(
+                          'รหัสช่างทำผมคือ ${result!.code}',
+                          style: Contants().h3OxfordBlue(),
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context, result!.code);
+                            },
+                            child: Text("ยืนยัน",style: Contants().h3OxfordBlue(),))
+                      ],
+                    )
+                  : Text(
+                      'แสกน QRcode',
+                      style: Contants().h3OxfordBlue(),
+                    ),
             ),
           )
         ],
       ),
     );
   }
-    void _onQRViewCreated(QRViewController controller) {
+
+  void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
       setState(() {

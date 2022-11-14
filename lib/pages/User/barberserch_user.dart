@@ -3,6 +3,7 @@ import 'package:barber/data/sqlite_model.dart';
 import 'package:barber/main.dart';
 import 'package:barber/utils/sqlite_helper.dart';
 import 'package:barber/widgets/barbermodel2.dart';
+import 'package:barber/widgets/list_hitsmodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_geohash/dart_geohash.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
   _BarberSerchUserState(
       {required this.typeBarber, this.lat, this.lon, required this.nameUser});
   List<BarberModel>? barberResult = [];
+  List<BarberModel>? barberhits = [];
   List<BarberModel>? barber = [];
   Map<String, String>? urlImgFront;
   List<SQLiteModel> sqliteModels = [];
@@ -46,6 +48,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     // TODO: implement initState
     super.initState();
     getDataBarber().then((value) {
+      barberhits;
       setState(() {});
     });
   }
@@ -106,15 +109,14 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
           setState(() {
             barber = barberResult;
           });
-        } else {
-        }
+        } else {}
       });
     } else {
       print("3");
       // เปิดตำแหน่ง
       String geohashstart = geoHasher.encode(lon! - 0.02, lat! - 0.02);
       String geohashend = geoHasher.encode(lon! + 0.02, lat! + 0.02);
-      print("ตำแหน่งเครื่องคือ ${geoHasher.encode(lon!,lat!).toString()}");
+      print("ตำแหน่งเครื่องคือ ${geoHasher.encode(lon!, lat!).toString()}");
       await citiesRef
           .where("typeBarber", isEqualTo: type)
           .orderBy("position.geohash")
@@ -155,7 +157,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                     url: value.docs[i]["url"],
                     score: average,
                     geoHasher: value.docs[i]["position"]["geohash"]));
-                    print(value.docs[i]["email"]);
+                print(value.docs[i]["email"]);
               }
             } else {
               print("ไม่มีร้านที่อยู่ไกล้");
@@ -198,6 +200,12 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                 }
               });
             }
+            List<BarberModel>? hits = barberResult;
+
+              barberResult!.sort((first, second) {
+                              return second.email.compareTo(first.email);
+                            });
+
             setState(() {
               barber = barberResult;
             });
@@ -211,80 +219,134 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
     });
   }
 
+  bool click = false;
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
-        backgroundColor: Contants.myBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: Contants.myBackgroundColordark,
-          title: Text(typeBarber == true ? "ร้านตัดผมชาย" : "ร้านเสริมสวย"),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              // sectionListview(size, "ร้านยอดฮิต"),
-              barber == []
-                  ? const SizedBox()
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return Stack(
-                            children: [
-                              BarberModel2(
+      backgroundColor: Contants.myBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: Contants.myBackgroundColordark,
+        title: Text(typeBarber == true ? "ร้านตัดผมชาย" : "ร้านเสริมสวย"),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            // sectionListview(size, "ร้านยอดฮิต"),
+            barber == []
+                ? const SizedBox()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                                barber!.sort((first, second) {
+                              return second.email.compareTo(first.email);
+                            });
+                            setState(() {
+                              click = false;
+                            });
+                          },
+                          child: Text(
+                            "ร้านใกล้ฉัน",
+                            style: click == false
+                                ? Contants().h3yellow()
+                                : Contants().h3white(),
+                          )),
+                      TextButton(
+                          onPressed: () {
+                            barber!.sort((first, second) {
+                              return second.score.compareTo(first.score);
+                            });
+                            setState(() {
+                              click = true;
+                            });
+                          },
+                          child: Text(
+                            "ร้านยอดฮิต",
+                            style: click
+                                ? Contants().h3yellow()
+                                : Contants().h3white(),
+                          ))
+                    ],
+                  ),
+            barber == []
+                ? const SizedBox()
+                : click == false
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return Stack(
+                              children: [
+                                BarberModel2(
                                   nameUser: nameUser,
                                   barberModel: barber![index],
-                                  url: barber![index].url, score: barber![index].score, size: size,),
-                              Center(
-                                child: Container(
-                                    margin:  EdgeInsets.only(
-                                        left: size*0.7, top: 10),
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.favorite,
-                                        color:
-                                            barberLike.contains(barber![index])
-                                                ? Colors.red
-                                                : Colors.white,
-                                                size: 30,
-                                      ),
-                                      onPressed: () async {
-                                        if (barberLike
-                                                .contains(barber![index]) ==
-                                            false) {
-                                          SQLiteModel sqLiteModel = SQLiteModel(
-                                              email: barber![index].email);
-                                          await SQLiteHelper()
-                                              .insertValueToSQlite(sqLiteModel);
-                                          setState(() {
-                                            barberLike.add(barber![index]);
-                                          });
-                                          streamController2.add(barber![index]);
-                                        } else {
-                                          await SQLiteHelper()
-                                              .deleteSQLiteWhereId(
-                                                  barber![index].email);
-                                          setState(() {
-                                            barberLike.remove(barber![index]);
-                                          });
-                                          streamController2.add(barber![index]);
-                                        }
-                                      },
-                                    )),
-                              ),
-                            ],
-                          );
-                        },
-                        itemCount: barber!.length,
-                      ),
-                    )
-            ],
-          ),
-        ));
+                                  url: barber![index].url,
+                                  score: barber![index].score,
+                                  size: size,
+                                ),
+                                Center(
+                                  child: Container(
+                                      margin: EdgeInsets.only(
+                                          left: size * 0.7, top: 10),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.favorite,
+                                          color: barberLike
+                                                  .contains(barber![index])
+                                              ? Colors.red
+                                              : Colors.white,
+                                          size: 30,
+                                        ),
+                                        onPressed: () async {
+                                          if (barberLike
+                                                  .contains(barber![index]) ==
+                                              false) {
+                                            SQLiteModel sqLiteModel =
+                                                SQLiteModel(
+                                                    email:
+                                                        barber![index].email);
+                                            await SQLiteHelper()
+                                                .insertValueToSQlite(
+                                                    sqLiteModel);
+                                            setState(() {
+                                              barberLike.add(barber![index]);
+                                            });
+                                            streamController2
+                                                .add(barber![index]);
+                                          } else {
+                                            await SQLiteHelper()
+                                                .deleteSQLiteWhereId(
+                                                    barber![index].email);
+                                            setState(() {
+                                              barberLike.remove(barber![index]);
+                                            });
+                                            streamController2
+                                                .add(barber![index]);
+                                          }
+                                        },
+                                      )),
+                                ),
+                              ],
+                            );
+                          },
+                          itemCount: barber!.length,
+                        ),
+                      )
+                    : ListHitsModek(
+                        size: size,
+                        nameUser: nameUser,
+                        lists: barber!,
+                      )
+          ],
+        ),
+      ),
+    );
   }
 
   Container sectionListview(double size, String title) {

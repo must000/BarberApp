@@ -8,12 +8,11 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class DatePickerBarber extends StatefulWidget {
   DatePickerBarber({
-    Key? key, 
+    Key? key,
   }) : super(key: key);
 
   @override
-  State<DatePickerBarber> createState() =>
-      _DatePickerBarberState();
+  State<DatePickerBarber> createState() => _DatePickerBarberState();
 }
 
 class _DatePickerBarberState extends State<DatePickerBarber> {
@@ -47,7 +46,9 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
   }
 
   Future<Null> getDayOpen() async {
-    final data = FirebaseFirestore.instance.collection('Barber').doc(barberModelformanager!.email);
+    final data = FirebaseFirestore.instance
+        .collection('Barber')
+        .doc(barberModelformanager!.email);
     final snapshot = await data.get();
     if (snapshot.exists) {
       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
@@ -93,14 +94,16 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: DrawerObject(),
-        appBar: AppBar(backgroundColor: Contants.myBackgroundColordark,),
+        drawer: DrawerObject(),
+        appBar: AppBar(
+          backgroundColor: Contants.myBackgroundColordark,
+        ),
         body: SfDateRangePicker(
-          selectionColor: Contants.colorRed,
+          selectionColor: Contants.colorYellow,
           cancelText: "",
           confirmText: "ปิดร้าน",
           onCancel: null,
-          backgroundColor: Contants.colorGreySilver,
+          backgroundColor: Contants.colorWhite,
           selectionMode: DateRangePickerSelectionMode.single,
           showActionButtons: true,
           controller: datePickerController,
@@ -146,10 +149,17 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
             weekendDays: dayClose,
           ),
           monthCellStyle: DateRangePickerMonthCellStyle(
-            specialDatesDecoration: BoxDecoration(
-                color:  Contants.colorRed,
-               
+            textStyle: Contants().h4OxfordBlue(),
+            todayTextStyle: Contants().h4yellow(),
+            specialDatesTextStyle: Contants().h4white(),
+            weekendTextStyle: Contants().h4white(),
+            cellDecoration: BoxDecoration(
+                color: Contants.colorWhite,
+                border: Border.all(color: Contants.colorBlack, width: 1),
                 shape: BoxShape.circle),
+            specialDatesDecoration:
+                BoxDecoration(color: Contants.colorRed, shape: BoxShape.circle),
+         
             weekendDatesDecoration: BoxDecoration(
                 color: Contants.colorBlack,
                 border: Border.all(color: const Color(0xFFB6B6B6), width: 1),
@@ -179,7 +189,6 @@ class _DatePickerBarberState extends State<DatePickerBarber> {
               }
             }
           },
-         
         ));
   }
 

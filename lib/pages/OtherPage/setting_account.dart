@@ -117,7 +117,7 @@ class _SettingAccountState extends State<SettingAccount> {
             typebarber ? title(size, "ชื่อ") : const SizedBox(),
             typebarber
                 ? Container(
-                    margin: const EdgeInsets.only(top: 20),
+                    margin: const EdgeInsets.only(),
                     child: TextFormField(
                       validator: (value) {
                         if (value!.isEmpty) {

@@ -10,19 +10,17 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SettingPassword extends StatefulWidget {
- 
   String email;
   bool typebarber;
   SettingPassword({
     Key? key,
-  
     required this.email,
     required this.typebarber,
   }) : super(key: key);
 
   @override
-  State<SettingPassword> createState() => _SettingPasswordState(
-       email: email, typebarber: this.typebarber);
+  State<SettingPassword> createState() =>
+      _SettingPasswordState(email: email, typebarber: this.typebarber);
 }
 
 class _SettingPasswordState extends State<SettingPassword> {
@@ -33,15 +31,13 @@ class _SettingPasswordState extends State<SettingPassword> {
   final formKey = GlobalKey<FormState>();
   String email;
   bool typebarber;
-  _SettingPasswordState(
-      { required this.email, required this.typebarber});
+  _SettingPasswordState({required this.email, required this.typebarber});
 
   @override
   Widget build(BuildContext context) {
-
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Contants.myBackgroundColor,
+        backgroundColor: Contants.myBackgroundColor,
         appBar: AppBar(
           title: const Text("เปลี่ยนรหัสผ่าน"),
           backgroundColor: Contants.myBackgroundColordark,
@@ -51,24 +47,24 @@ class _SettingPasswordState extends State<SettingPassword> {
             key: formKey,
             child: Column(
               children: [
+                title(size, "รหัสผ่าน"),
                 Container(
                   margin: EdgeInsets.only(
-                      top: 15, left: size * 0.08, right: size * 0.08),
+                       left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
-                    
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "กรุณากรอกรหัสผ่านเดิม";
                       } else {}
                     },
                     controller: oldPasswordController,
+                    style: Contants().h4OxfordBlue(),
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
-                       filled: true,
-                        labelStyle: Contants().h2OxfordBlue(),
-                  fillColor: Colors.white,
-                      labelText: "รหัสผ่านเดิม",
-                       floatingLabelStyle: Contants().floatingLabelStyle(),
+                      filled: true,
+                      labelStyle: Contants().h2OxfordBlue(),
+                      fillColor: Colors.white,
+                      floatingLabelStyle: Contants().floatingLabelStyle(),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -77,18 +73,19 @@ class _SettingPasswordState extends State<SettingPassword> {
                     ),
                   ),
                 ),
+                title(size, "รหัสผ่านใหม่"),
                 Container(
                   margin: EdgeInsets.only(
-                      top: 15, left: size * 0.08, right: size * 0.08),
+                       left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
                     controller: newPasswordController,
+                    style: Contants().h4OxfordBlue(),
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
-                         filled: true,
-                        labelStyle: Contants().h2OxfordBlue(),
-                  fillColor: Colors.white,
-                      labelText: "รหัสผ่านใหม่",
-                       floatingLabelStyle: Contants().floatingLabelStyle(),
+                      filled: true,
+                      labelStyle: Contants().h2OxfordBlue(),
+                      fillColor: Colors.white,
+                      floatingLabelStyle: Contants().floatingLabelStyle(),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -97,9 +94,10 @@ class _SettingPasswordState extends State<SettingPassword> {
                     ),
                   ),
                 ),
+                title(size, "ยืนยันรหัสผ่านใหม่"),
                 Container(
                   margin: EdgeInsets.only(
-                      top: 15, left: size * 0.08, right: size * 0.08),
+                     left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
                     validator: (value) {
                       if (value != newPasswordController.text) {
@@ -108,12 +106,12 @@ class _SettingPasswordState extends State<SettingPassword> {
                     },
                     controller: confirmNewPasswordController,
                     keyboardType: TextInputType.visiblePassword,
+                    style: Contants().h4OxfordBlue(),
                     decoration: InputDecoration(
-                         filled: true,
-                        labelStyle: Contants().h2OxfordBlue(),
-                  fillColor: Colors.white,
-                      labelText: "ยืนยืนรหัสผ่าน",
-                       floatingLabelStyle: Contants().floatingLabelStyle(),
+                      filled: true,
+                      labelStyle: Contants().h2OxfordBlue(),
+                      fillColor: Colors.white,
+                      floatingLabelStyle: Contants().floatingLabelStyle(),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -122,24 +120,40 @@ class _SettingPasswordState extends State<SettingPassword> {
                     ),
                   ),
                 ),
-               Container(
-                    width: size * 0.5,
-                    margin: const EdgeInsets.only(top: 20),
-              height: 50,
+                Container(
+                  width: size * 0.5,
+                  margin: const EdgeInsets.only(top: 20),
+                  height: 50,
                   child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.white),
-
+                      style: ElevatedButton.styleFrom(primary: Colors.white),
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
                           proceedUpdatePassword();
                         }
                       },
-                      child: Text("บันทึก"  ,style: Contants().h1OxfordBlue(),)),
+                      child: Text(
+                        "บันทึก",
+                        style: Contants().h1OxfordBlue(),
+                      )),
                 )
               ],
             ),
           ),
         ));
+  }
+
+  Container title(double size, String title) {
+    return Container(
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: Contants().h3white(),
+          )
+        ],
+      ),
+    );
   }
 
   proceedUpdatePassword() async {

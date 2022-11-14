@@ -183,16 +183,16 @@ class _ServiceBarberState extends State<ServiceBarber> {
                                     child: TextFormField(
                                       controller: priceServiceController,
                                       validator: (value) {
-                                        if (value!.isEmpty) {
-                                          setState(() {});
-                                          return "กรุณากรอกข้อมูลราคา";
-                                        } else if (double.parse(value) <= 0) {
-                                          setState(() {});
-                                          return "ราคาต้องมากกว่า 0";
-                                        } else if (double.parse(value) >
-                                            10000) {
-                                          return "ราคาค่าบริการสูงเกินไป";
-                                        } else {}
+                                        // if (value!.isEmpty) {
+                                        //   setState(() {});
+                                        //   return "กรุณากรอกข้อมูลราคา";
+                                        // } else if (double.parse(value) <= 0) {
+                                        //   setState(() {});
+                                        //   return "ราคาต้องมากกว่า 0";
+                                        // } else if (double.parse(value) >
+                                        //     10000) {
+                                        //   return "ราคาค่าบริการสูงเกินไป";
+                                        // } else {}
                                       },
                                       keyboardType: TextInputType.number,
                                       decoration: const InputDecoration(
@@ -223,10 +223,10 @@ class _ServiceBarberState extends State<ServiceBarber> {
                                     width: size * 0.65,
                                     child: TextFormField(
                                       validator: (value) {
-                                        if (value!.isEmpty) {
-                                          setState(() {});
-                                          return "กรุณากรอกชื่อบริการ";
-                                        } else {}
+                                        // if (value!.isEmpty) {
+                                        //   setState(() {});
+                                        //   return "กรุณากรอกชื่อบริการ";
+                                        // } else {}
                                       },
                                       controller: nameServiceController,
                                       decoration: const InputDecoration(
@@ -272,7 +272,22 @@ class _ServiceBarberState extends State<ServiceBarber> {
                                 height: 40,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    if (formKey.currentState!.validate() &&
+                                    if (priceServiceController.text == "" ||
+                                        double.parse(
+                                                priceServiceController.text) <=
+                                            0 ||
+                                        double.parse(
+                                                priceServiceController.text) >
+                                            10000) {
+                                      // setState(() {});
+                                      MyDialog().normalDialog(context,
+                                          "ราคาต้องมากกว่า0 และไม่เกิน 10000");
+                                    } 
+                                    else if (nameServiceController.text =="") {
+                                      MyDialog().normalDialog(context,
+                                          "กรุณาใส่ชื่อบริการ");
+                                    }
+                                   else if (formKey.currentState!.validate() &&
                                         time != 0) {
                                       print(
                                           "${nameServiceController.text} ${time.toString()} ${detailServiceController.text} ${priceServiceController.text}");

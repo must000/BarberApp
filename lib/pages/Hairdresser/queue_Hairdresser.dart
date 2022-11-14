@@ -29,7 +29,7 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
   String idCode;
   String idClick = "";
   DateTime selectedDate = DateTime.now();
-  final Uri _url = Uri.parse('https://flutter.dev');
+  // final Uri _url = Uri.parse('https://flutter.dev');
   _QueueHairdresserState(
       {required this.hairdresserID,
       required this.barberState,
@@ -61,10 +61,13 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                             style: Contants().h3yellow(),),
                         ],
                       ),
-                      QrImage(
-                        data: idCode,
-                        version: QrVersions.auto,
-                        size: 200.0,
+                      Container(
+                        color: Contants.colorWhite,
+                        child: QrImage(
+                          data: idCode,
+                          version: QrVersions.auto,
+                          size: 200.0,
+                        ),
                       ),
                     ],
                   ),
@@ -371,9 +374,5 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
     }
   }
 
-  Future<void> _launchUrl() async {
-    if (!await launchUrl(_url)) {
-      throw 'Could not launch $_url';
-    }
-  }
+ 
 }

@@ -1,6 +1,9 @@
 import 'package:barber/Constant/contants.dart';
+import 'package:barber/utils/dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:longdo_maps_api3_flutter/view.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailBarberUser extends StatefulWidget {
   final String nameShop,
@@ -38,6 +41,8 @@ class DetailBarberUser extends StatefulWidget {
 class _DetailBarberUserState extends State<DetailBarberUser> {
   String nameBarber;
   String lat, lon;
+  String? mylat, mylon;
+
   String addressdetails, phoneNumber;
   Map<String, dynamic> dayopen;
   String timeopen, timeclose;
@@ -63,7 +68,7 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
     super.initState();
     dayclose();
     print(dayopen);
-    // proceedMoveLongdoMap(double.parse(lat), double.parse(lon));
+    chechpermission();
   }
 
   dayclose() {
@@ -96,16 +101,37 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
     });
   }
 
-  proceedMoveLongdoMap(double lat, double lng) async {
-    await map.currentState?.call(
-      "location",
-      [
-        {
-          "lon": lng,
-          "lat": lat,
-        },
-      ],
-    );
+  Future<Null> chechpermission() async {
+    bool locationService;
+    LocationPermission locationPermission;
+    locationService = await Geolocator.isLocationServiceEnabled();
+    if (locationService) {
+      print("location open");
+      locationPermission = await Geolocator.checkPermission();
+      if (locationPermission == LocationPermission.denied) {
+        locationPermission = await Geolocator.requestPermission();
+        if (locationPermission == LocationPermission.deniedForever) {
+          // print("LocationPermission.deniedForever");
+        } else {
+          findposition();
+        }
+      } else {
+        if (locationPermission == LocationPermission.deniedForever) {
+        } else {
+          findposition();
+        }
+      }
+    } else {}
+  }
+
+  Future<Null> findposition() async {
+    print("findLatlan ==> Work");
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      mylat = position.latitude.toString();
+      mylon = position.longitude.toString();
+    });
   }
 
   @override
@@ -119,50 +145,40 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
       ),
       body: ListView(
         children: [
-          // Center(
-          //   child: Stack(
-          //     children: [
-          //       SizedBox(
-          //         child: LongdoMapWidget(
-          //           apiKey: Contants.keyLongdomap,
-          //           key: map,
-          //           bundleId: Contants.bundleID,
-          //         ),
-          //         width: size * 0.9,
-          //         height: 250,
-          //       ),
-          //       SizedBox(
-          //         child: const Icon(Icons.pin_drop),
-          //         width: size * 0.9,
-          //         height: 250,
-          //       )
-          //     ],
-          //   ),
-          // ),
-          // ElevatedButton(
-          //     onPressed: () {
-          //       proceedMoveLongdoMap(double.parse(lat), double.parse(lon));
-          //     },
-          //     child: const Text("ย้ายไปยังตำแหน่งของร้าน")),
-
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: size * 0.04),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.pin_drop,
-                  size: 50,
-                ),
-                Text(
-                  "นำทางไปยังร้านทำผม",
-                  style: Contants().h3OxfordBlue(),
-                )
-              ],
+          ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor:
+                  MaterialStateProperty.all(Contants.colorGreySilver),
             ),
-            color: Contants.colorGreySilver,
-            width: size * 0.9,
-            height: 100,
+            onPressed: () async {
+              if (mylat == "" || mylat == null) {
+                MyDialog().normalDialog(
+                    context, "กรุณาอนุญาตให้แอปเข้าถึงตำแหน่งของคุณ");
+              } else {
+                final Uri _url = Uri.parse(
+                    "https://www.google.com/maps/dir/'$mylat,$mylon'/$lat,$lon/");
+                launchUrl(_url);
+              }
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: size * 0.04),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.pin_drop,
+                    size: 50,
+                  ),
+                  Text(
+                    "นำทางไปยังร้านทำผม",
+                    style: Contants().h3OxfordBlue(),
+                  )
+                ],
+              ),
+              color: Contants.colorGreySilver,
+              width: size * 0.9,
+              height: 100,
+            ),
           ),
           const SizedBox(
             height: 25,
