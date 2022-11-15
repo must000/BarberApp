@@ -151,6 +151,7 @@ class _DetailBarberUserState extends State<DetailBarberUser> {
                   MaterialStateProperty.all(Contants.colorGreySilver),
             ),
             onPressed: () async {
+              print(mylat);
               if (mylat == "" || mylat == null) {
                 MyDialog().normalDialog(
                     context, "กรุณาอนุญาตให้แอปเข้าถึงตำแหน่งของคุณ");

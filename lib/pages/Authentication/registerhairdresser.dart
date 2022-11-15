@@ -180,7 +180,7 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
                       if (formKey.currentState!.validate()) {
                         if (avertarIng == null) {
                           MyDialog().hardDialog(context,
-                              "กรุณาเพิ่มรูปภาพของคุณ", "ยังไม่มีรูป !!!");
+                              "กรุณาเพิ่มรูปโปรไฟล์ของคุณ", "ยังไม่มีรูปโปรไฟล์");
                         } else {
                           registerFirebase();
                         }
@@ -331,7 +331,7 @@ class _RegisterHairdresserState extends State<RegisterHairdresser> {
             }));
         print("สมัครแล้ว $value");
       }).catchError((value) {
-        MyDialog().normalDialog(context, value.message);
+        MyDialog().authenWrongDialog(context, "อีเมลนี้เคยสมัครไปแล้ว");
       });
     });
   }

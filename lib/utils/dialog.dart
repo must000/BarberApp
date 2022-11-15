@@ -29,6 +29,24 @@ class MyDialog {
     );
   }
 
+    Future<Null> authenWrongDialog(BuildContext context, String string) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: ListTile(
+          title: Text(string, style:Contants().h3Red()),
+    
+        ),
+        children: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child:Text("OK",style: Contants().h2yellow(),),
+          )
+        ],
+      ),
+    );
+  }
+
   Future<Null> confirmBreakTimeDialog(
       BuildContext context, List<String> list) async {
     showDialog(

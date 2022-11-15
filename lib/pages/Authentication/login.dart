@@ -230,36 +230,36 @@ class _LoginState extends State<Login> {
                       const SizedBox(
                         height: 20,
                       ),
-                      InkWell(
-                        onTap: () {
-                          signInWithFacebook()
-                              .then((value) => Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => IndexPage(),
-                                  ),
-                                  (route) => false));
-                        },
-                        child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                FaIcon(
-                                  FontAwesomeIcons.facebook,
-                                  size: 60,
-                                  color: Colors.blue,
-                                ),
-                                Text(
-                                  "เข้าสู่ระบบด้วย Facebook",
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
-                                )
-                              ],
-                            ),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: Colors.white)),
-                      ),
+                      // InkWell(
+                      //   onTap: () {
+                      //     signInWithFacebook()
+                      //         .then((value) => Navigator.pushAndRemoveUntil(
+                      //             context,
+                      //             MaterialPageRoute(
+                      //               builder: (context) => IndexPage(),
+                      //             ),
+                      //             (route) => false));
+                      //   },
+                      //   child: Container(
+                      //       child: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.start,
+                      //         children: const [
+                      //           FaIcon(
+                      //             FontAwesomeIcons.facebook,
+                      //             size: 60,
+                      //             color: Colors.blue,
+                      //           ),
+                      //           Text(
+                      //             "เข้าสู่ระบบด้วย Facebook",
+                      //             style: TextStyle(
+                      //                 fontSize: 20, color: Colors.black),
+                      //           )
+                      //         ],
+                      //       ),
+                      //       decoration: BoxDecoration(
+                      //           borderRadius: BorderRadius.circular(30),
+                      //           color: Colors.white)),
+                      // ),
                       const SizedBox(
                         height: 20,
                       ),

@@ -75,7 +75,7 @@ class BarberModel3 extends StatelessWidget {
                     Text(
                       barberModel.score == 0 || barberModel.score.isNaN
                           ? "-"
-                          : barberModel.score.toString(),
+                          : barberModel.score.toStringAsFixed(2),
                       style: Contants().h4yellow(),
                     ),
                     const Icon(

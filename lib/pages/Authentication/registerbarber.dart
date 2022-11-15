@@ -209,7 +209,9 @@ class _RegisterBarberState extends State<RegisterBarber> {
                   checkboxDayOpen(),
                   // mapLocation(size),
                   buttonMovePosition(size),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   title(size, "รายละเอียดที่อยู่ร้าน"),
                   inputDetailLocation(size),
                   imgPhotoShop(size, context),
@@ -500,13 +502,13 @@ class _RegisterBarberState extends State<RegisterBarber> {
           return uploadphoto(email.toLowerCase()).then((value) async {
             print("qwdq");
             await MyDialog(funcAction: fc).hardDialog(
-                context, "นำทางไปที่หน้าลงทะเบียนเบอร์มือถือ", "สมัครสำเร็จ");
+                context, "นำทางไปที่หน้าลงทะเบียนเบอร์โทรศัพท์", "สมัครสำเร็จ");
           }).catchError((value) {
-            MyDialog().stDialog(context, value.message);
+            MyDialog().authenWrongDialog(context, "เกิดข้อผิดพลาด");
           });
         });
       }).catchError((value) {
-        MyDialog().normalDialog(context, value.message);
+        MyDialog().authenWrongDialog(context, "อีเมลนี้เคยสมัครไปแล้ว");
       });
     });
   }
@@ -642,7 +644,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
   Container inputDetailLocation(double size) {
     return Container(
       width: size * 0.75,
-      margin: EdgeInsets.only( left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         controller: detailLocationController,
         validator: (value) {
@@ -1018,7 +1020,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
   Container inputRecommentShop(double size) {
     return Container(
       width: size * 0.75,
-      margin: EdgeInsets.only( left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         controller: recommentShopController,
         style: Contants().h4white(),
@@ -1043,7 +1045,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
 
   Container inputNameShop(double size) {
     return Container(
-      margin: EdgeInsets.only( left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         controller: nameShopController,
         style: Contants().h4white(),
@@ -1131,7 +1133,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
 
   Container inputPassword(double size) {
     return Container(
-      margin: EdgeInsets.only( left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         keyboardType: TextInputType.visiblePassword,
         controller: passwordController,
@@ -1141,7 +1143,6 @@ class _RegisterBarberState extends State<RegisterBarber> {
           } else {}
         },
         style: Contants().h4white(),
-
         obscureText: true,
         decoration: InputDecoration(
           filled: true,
@@ -1158,7 +1159,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
 
   Container inputEmail(double size) {
     return Container(
-      margin: EdgeInsets.only( left: size * 0.08, right: size * 0.08),
+      margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         validator: (value) {
           if (value!.isEmpty) {

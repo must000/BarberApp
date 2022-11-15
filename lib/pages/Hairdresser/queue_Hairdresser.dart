@@ -244,7 +244,7 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                             Row(
                               children: [
                                 data[index]["user"]["phone"].isEmpty
-                                    ? Text("")
+                                    ? const Text("")
                                     : Text(
                                         "เบอร์โทร 0${data[index]["user"]["phone"].toString().substring(3)}",
                                         style: Contants().h3white(),
@@ -270,7 +270,7 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                                                     "ยกเลิกคิว");
                                           },
                                           child: Text(
-                                            "Cancel",
+                                            "ยกเลิก",
                                             style: Contants().h3white(),
                                           )),
                                       const SizedBox(
@@ -297,7 +297,7 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
                                               });
                                             },
                                             child: Text(
-                                              'Finish',
+                                              'เสร็จสิ้น',
                                               style: Contants().h2OxfordBlue(),
                                             )),
                                       )

@@ -42,7 +42,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 SizedBox(
                   height: size * 0.2,
                 ),
-                title(size, "ชื่อ "),
+                title(size, "ชื่อผู้ใช้ "),
                 Container(
                   margin:
                       EdgeInsets.only(left: size * 0.08, right: size * 0.08),
@@ -66,7 +66,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                   ),
                 ),
-                title(size, "นามสกุล "),
+                title(size, "อีเมล "),
 
                 Container(
                   margin: EdgeInsets.only(
@@ -74,7 +74,7 @@ class _RegisterUserState extends State<RegisterUser> {
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return "กรุณากรอกEmail";
+                        return "กรุณากรอกอีเมล";
                       } else {}
                     },
                     controller: userController,
@@ -193,11 +193,11 @@ class _RegisterUserState extends State<RegisterUser> {
           .then((value) async {
         await value.user!.updateDisplayName(nameController.text).then(
               (value) => MyDialog(funcAction: fc).hardDialog(
-                  context, "เรากำลังนำคุณไปลงทะเบียนเบอร์", "สมัครสำเร็จ"),
+                  context, "เรากำลังนำคุณไปลงทะเบียนเบอร์โทรศัพท์", "สมัครสำเร็จ"),
             );
         print("สมัครแล้ว $value");
       }).catchError((value) {
-        MyDialog().normalDialog(context, value.message);
+        MyDialog().authenWrongDialog(context, "อีเมลนี้เคยสมัครไปแล้ว");
       });
     });
   }

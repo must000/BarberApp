@@ -98,7 +98,7 @@ class BarberModel2 extends StatelessWidget {
                             style: Contants().h4yellow(),
                           )
                         : Text(
-                            "คะแนน $score ",
+                            "คะแนน ${score.toStringAsFixed(2)} ",
                             style: Contants().h4yellow(),
                           ),
                       ],

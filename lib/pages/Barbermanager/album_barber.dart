@@ -20,6 +20,7 @@ class AlbumBarber extends StatefulWidget {
 
 class _AlbumBarberState extends State<AlbumBarber> {
   List<Map<String, dynamic>>? filess = [];
+  bool load = true;
 
   @override
   void initState() {
@@ -48,6 +49,7 @@ class _AlbumBarberState extends State<AlbumBarber> {
     });
     setState(() {
       filess = files;
+      load = false;
     });
   }
 
@@ -61,7 +63,6 @@ class _AlbumBarberState extends State<AlbumBarber> {
             stackClick > 0
                 ? IconButton(
                     onPressed: () {
-                      // deleteImage();
                       MyDialog(funcAction: fc2).superDialog(
                           context,
                           "คุณต้องการจะลบรูปภาพ ทั้ง $stackClick นี้ หรือไม่",
@@ -81,44 +82,49 @@ class _AlbumBarberState extends State<AlbumBarber> {
           ],
         ),
         backgroundColor: Contants.myBackgroundColor,
-        body: filess!.isEmpty
-            ? Center(
-                child: Text(
-                  "ไม่มีรูปภาพในอัลบั้ม",
-                  style: Contants().h2SpringGreen(),
-                ),
-              )
-            : GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: filess![index]['status'] == true
-                            ? const BorderSide(color: Colors.red, width: 5)
-                            : const BorderSide(color: Colors.black, width: 1),
-                      ),
-                      child: CachedNetworkImage(
-                          imageUrl: filess![index]['url'].toString()),
+        body: load
+            ? LoadingAnimationWidget.waveDots(
+                color: Contants.colorSpringGreen, size: 30)
+            : filess!.isEmpty
+                ? Center(
+                    child: Text(
+                      "ไม่มีรูปภาพในอัลบั้ม",
+                      style: Contants().h2SpringGreen(),
                     ),
-                    onTap: () {
-                      setState(() {
-                        if (filess![index]['status']) {
-                          filess![index]['status'] = false;
-                          stackClick--;
-                        } else {
-                          filess![index]['status'] = true;
-                          stackClick++;
-                        }
-                        print(stackClick);
-                      });
+                  )
+                : GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: filess![index]['status'] == true
+                                ? const BorderSide(color: Colors.red, width: 5)
+                                : const BorderSide(
+                                    color: Colors.black, width: 1),
+                          ),
+                          child: CachedNetworkImage(
+                              imageUrl: filess![index]['url'].toString()),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            if (filess![index]['status']) {
+                              filess![index]['status'] = false;
+                              stackClick--;
+                            } else {
+                              filess![index]['status'] = true;
+                              stackClick++;
+                            }
+                            print(stackClick);
+                          });
+                        },
+                      );
                     },
-                  );
-                },
-                itemCount: filess!.length,
-              ),
+                    itemCount: filess!.length,
+                  ),
         drawer: DrawerObject());
   }
 

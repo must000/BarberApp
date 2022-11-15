@@ -202,9 +202,9 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
             }
             List<BarberModel>? hits = barberResult;
 
-              barberResult!.sort((first, second) {
-                              return second.email.compareTo(first.email);
-                            });
+            barberResult!.sort((first, second) {
+              return second.email.compareTo(first.email);
+            });
 
             setState(() {
               barber = barberResult;
@@ -242,7 +242,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                     children: [
                       TextButton(
                           onPressed: () {
-                                barber!.sort((first, second) {
+                            barber!.sort((first, second) {
                               return second.email.compareTo(first.email);
                             });
                             setState(() {
@@ -338,13 +338,68 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
                           itemCount: barber!.length,
                         ),
                       )
-                    : ListHitsModek(
-                        size: size,
-                        nameUser: nameUser,
-                        lists: barber!,
-                      )
+                    : buildHits(size)
           ],
         ),
+      ),
+    );
+  }
+
+  Padding buildHits(double size) {
+    barber!.sort((first, second) {
+      return second.score.compareTo(first.score);
+    });
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return Stack(
+            children: [
+              BarberModel2(
+                nameUser: nameUser,
+                barberModel: barber![index],
+                url: barber![index].url,
+                score: barber![index].score,
+                size: size,
+              ),
+              Center(
+                child: Container(
+                    margin: EdgeInsets.only(left: size * 0.7, top: 10),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.favorite,
+                        color: barberLike.contains(barber![index])
+                            ? Colors.red
+                            : Colors.white,
+                        size: 30,
+                      ),
+                      onPressed: () async {
+                        if (barberLike.contains(barber![index]) == false) {
+                          SQLiteModel sqLiteModel =
+                              SQLiteModel(email: barber![index].email);
+                          await SQLiteHelper().insertValueToSQlite(sqLiteModel);
+                          setState(() {
+                            barberLike.add(barber![index]);
+                          });
+                          streamController2.add(barber![index]);
+                        } else {
+                          await SQLiteHelper()
+                              .deleteSQLiteWhereId(barber![index].email);
+                          setState(() {
+                            barberLike.remove(barber![index]);
+                          });
+                          streamController2.add(barber![index]);
+                        }
+                      },
+                    )),
+              ),
+            ],
+          );
+        },
+        itemCount: barber!.length,
       ),
     );
   }

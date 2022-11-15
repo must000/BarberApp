@@ -118,7 +118,7 @@ class _CommentBarberUserState extends State<CommentBarberUser> {
                           style: Contants().h1white(),
                         )
                       : Text(
-                          average.toString(),
+                          average!.toStringAsFixed(1),
                           style: Contants().h1white(),
                         ),
                   Icon(

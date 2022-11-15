@@ -258,7 +258,7 @@ class _SearchUserState extends State<SearchUser> {
                           margin: const EdgeInsets.symmetric(horizontal: 15),
                           child: InkWell(
                             onTap: () {
-                              print(barberModel[index].email);
+                              // print(barberModel[index].email);
                               FocusScope.of(context).requestFocus(FocusNode());
                               Navigator.push(
                                   context,
@@ -315,7 +315,7 @@ class _SearchUserState extends State<SearchUser> {
                                         barberModel[index].score == 0 ||
                                                 barberModel[index].score.isNaN
                                             ? "- "
-                                            : "${barberModel[index].score}",
+                                            : barberModel[index].score.toStringAsFixed(2),
                                         style: const TextStyle(
                                             color: Colors.yellow, fontSize: 12),
                                       ),
