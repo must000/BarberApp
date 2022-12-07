@@ -653,7 +653,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
           }
         },
         maxLines: 4,
-        style: Contants().h4white(),
+  style: Contants().h4OxfordBlue(),
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
@@ -1023,7 +1023,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
       margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         controller: recommentShopController,
-        style: Contants().h4white(),
+  style: Contants().h4OxfordBlue(),
         validator: (value) {
           if (value!.isEmpty) {
             return "กรุณาคำแนะนำร้าน";
@@ -1048,12 +1048,13 @@ class _RegisterBarberState extends State<RegisterBarber> {
       margin: EdgeInsets.only(left: size * 0.08, right: size * 0.08),
       child: TextFormField(
         controller: nameShopController,
-        style: Contants().h4white(),
+  style: Contants().h4OxfordBlue(),
         validator: (value) {
           if (value!.isEmpty) {
             return "กรุณากรอกชื่อร้าน";
           }
         },
+        
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
@@ -1116,7 +1117,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
             return "กรุณากรอกรหัสผ่านให้ตรงกัน";
           }
         },
-        style: Contants().h4white(),
+        style: Contants().h4OxfordBlue(),
         obscureText: true,
         decoration: InputDecoration(
           filled: true,
@@ -1142,7 +1143,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
             return "กรุณากรอกรหัสผ่าน";
           } else {}
         },
-        style: Contants().h4white(),
+        style: Contants().h4OxfordBlue(),
         obscureText: true,
         decoration: InputDecoration(
           filled: true,
@@ -1167,7 +1168,7 @@ class _RegisterBarberState extends State<RegisterBarber> {
           } else {}
         },
         controller: emailController,
-        style: Contants().h4white(),
+        style: Contants().h4OxfordBlue(),
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           filled: true,

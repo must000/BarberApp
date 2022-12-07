@@ -69,9 +69,16 @@ dependencies:
   qr_code_scanner: ^1.0.1
   barcode_scan2: ^4.2.1
   scan: ^1.6.0
+  flutter_launcher_icons: ^0.11.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "images/iconapp.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

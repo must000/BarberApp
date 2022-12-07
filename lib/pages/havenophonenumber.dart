@@ -28,7 +28,7 @@ class _HaveNoPhoneNumbarState extends State<HaveNoPhoneNumbar> {
           children: [
             Text(
               "ยังไม่ได้ลงทะเบียนเบอร์โทรศัพท์",
-              style: Contants().h3white(),
+              style: Contants().h3Red(),
             ),
             Text(
               "กรุณาลงทะเบียนเบอร์โทรศัพท์",
@@ -43,8 +43,8 @@ class _HaveNoPhoneNumbarState extends State<HaveNoPhoneNumbar> {
                       ));
                 },
                 child: Text(
-                  "ไปที่หน้าลงทะเบียนเบอร์โทรศัพท์ ",
-                  style: Contants().h2SpringGreen(),
+                  "ลงทะเบียนเบอร์โทรศัพท์ ",
+                  style: Contants().h1SpringGreen(),
                 ))
           ],
         ),

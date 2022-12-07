@@ -98,7 +98,6 @@ class _IndexPageState extends State<IndexPage> {
               } else {
                 print("ผู้จัดการร้าน");
                 double average = 0;
-                print(value.data()!["email"]);
                 if (value.data()!["score"] != null) {
                   average = value.data()!["score"]["num"] /
                       value.data()!["score"]["count"];
@@ -131,7 +130,7 @@ class _IndexPageState extends State<IndexPage> {
                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                   builder: (context) {
                     print("oopppp $phoneHairdresser");
-                    if (phoneHairdresser == "phone") {
+                    if (phoneHairdresser == "") {
                       // phonefff เปิดระบบลงทะเบียนเบอร์ = "" ไม่เปิด != ""
                       return const HaveNoPhoneNumbar();
                     } else {
@@ -203,7 +202,7 @@ class _IndexPageState extends State<IndexPage> {
                 ),
               )
             : phoneHairdresser ==
-                    "phone" // phonefff เปิดระบบลงทะเบียนเบอร์ = "" ไม่เปิด != ""
+                    "" // phonefff เปิดระบบลงทะเบียนเบอร์ = "" ไม่เปิด != ""
                 ? const DefaultTabController(
                     length: 1, child: HaveNoPhoneNumbar())
                 : DefaultTabController(
@@ -224,7 +223,7 @@ class _IndexPageState extends State<IndexPage> {
                             lastname: dataHairresser!.lastname,
                             email: email!,
                             barberState: dataHairresser!.barberStatus,
-                            idHairdresser: hairdresserID!,
+                            idHairdresser: hairdresserID!, phone: phoneHairdresser,
                           ),
                         ],
                       ),

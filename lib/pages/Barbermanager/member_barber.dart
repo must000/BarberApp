@@ -51,7 +51,9 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
   TextEditingController idCodeController = TextEditingController();
   List<HairdresserModel> member = [];
   Map<String, String> urlImageMember = {};
+  bool load = false;
   Future<void> getMember() async {
+    load = true;
     FirebaseFirestore.instance
         .collection('Hairdresser')
         .where("barberState", isEqualTo: barberModelformanager!.email)
@@ -93,6 +95,7 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
       print("7");
       member = data;
       urlImageMember = urlimg;
+      load = false;
     });
   }
 
@@ -212,14 +215,14 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
               children: [
                 ElevatedButton(
                     onPressed: () async {
-                    final result = await  Navigator.push(
+                      final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => ScanQRdoe(),
                           ));
-                          setState(() {
-                            idCodeController.text = result;
-                          });
+                      setState(() {
+                        idCodeController.text = result;
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -306,94 +309,101 @@ class _MemberBarberPageState extends State<MemberBarberPage> {
                     ],
                   ),
                 ),
-                member.isEmpty
-                    ? Container(
-                        margin: const EdgeInsets.only(top: 30),
-                        child: Text(
-                          "ไม่มีช่างทำผมภายในร้าน",
-                          style: Contants().h3white(),
-                        ),
-                      )
-                    : ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) => GestureDetector(
-                          onTap: () {
-                            if (idClick == member[index].hairdresserID) {
-                              setState(() {
-                                idClick = "";
-                              });
-                            } else {
-                              setState(() {
-                                idClick = member[index].hairdresserID;
-                              });
-                            }
-                          },
-                          child: idClick == member[index].hairdresserID
-                              ? Card(
-                                  child: ListTile(
-                                    leading: CachedNetworkImage(
-                                        imageUrl: urlImageMember[
-                                            member[index].email]!),
-                                    title: Text(
-                                      "${member[index].name} ${member[index].lastname}",
-                                      style: Contants().h3OxfordBlue(),
-                                    ),
-                                    subtitle: Flexible(
-                                      child: ListView(
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        children: [
-                                          Text(
-                                            "อีเมล : ${member[index].email} ",
-                                            style: Contants().h4Grey(),
+                load
+                    ? LoadingAnimationWidget.waveDots(
+                        color: Contants.colorSpringGreen, size:60)
+                    : member.isEmpty
+                        ? Container(
+                            margin: const EdgeInsets.only(top: 30),
+                            child: Text(
+                              "ไม่มีช่างทำผมภายในร้าน",
+                              style: Contants().h3white(),
+                            ),
+                          )
+                        : ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) => GestureDetector(
+                              onTap: () {
+                                if (idClick == member[index].hairdresserID) {
+                                  setState(() {
+                                    idClick = "";
+                                  });
+                                } else {
+                                  setState(() {
+                                    idClick = member[index].hairdresserID;
+                                  });
+                                }
+                              },
+                              child: idClick == member[index].hairdresserID
+                                  ? Card(
+                                      child: ListTile(
+                                        leading: CachedNetworkImage(
+                                            imageUrl: urlImageMember[
+                                                member[index].email]!,
+                                            placeholder: (context, url) =>
+                                                CircularProgressIndicator()),
+                                        title: Text(
+                                          "${member[index].name} ${member[index].lastname}",
+                                          style: Contants().h3OxfordBlue(),
+                                        ),
+                                        subtitle: Flexible(
+                                          child: ListView(
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            children: [
+                                              Text(
+                                                "อีเมล : ${member[index].email} ",
+                                                style: Contants().h4Grey(),
+                                              ),
+                                              Text(
+                                                "เบอร์โทร ${member[index].phone} ",
+                                                style: Contants().h4Grey(),
+                                              ),
+                                              Text(
+                                                "รหัสเชิญ ${member[index].idCode} ",
+                                                style: Contants().h4Grey(),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            "เบอร์โทร ${member[index].phone} ",
-                                            style: Contants().h4Grey(),
-                                          ),
-                                          Text(
-                                            "รหัสเชิญ ${member[index].phone} ",
-                                            style: Contants().h4Grey(),
-                                          ),
-                                        ],
+                                        ),
+                                        trailing: IconButton(
+                                            icon: Icon(
+                                              Icons.person_remove,
+                                              color: Contants.colorRed,
+                                            ),
+                                            onPressed: () {
+                                              removeMember(member[index].name,
+                                                  member[index].hairdresserID);
+                                            }),
+                                      ),
+                                    )
+                                  : Card(
+                                      child: ListTile(
+                                        leading: CachedNetworkImage(
+                                            imageUrl: urlImageMember[
+                                                member[index].email]!,
+                                            placeholder: (context, url) =>
+                                                LoadingAnimationWidget.staggeredDotsWave(color: Contants.colorSpringGreen,size: 30),),
+                                        title: Text(
+                                          "${member[index].name} ${member[index].lastname}",
+                                          style: Contants().h3OxfordBlue(),
+                                        ),
+                                        trailing: IconButton(
+                                            icon: Icon(
+                                              Icons.person_remove,
+                                              color: Contants.colorRed,
+                                            ),
+                                            onPressed: () {
+                                              removeMember(member[index].name,
+                                                  member[index].hairdresserID);
+                                            }),
                                       ),
                                     ),
-                                    trailing: IconButton(
-                                        icon: Icon(
-                                          Icons.person_remove,
-                                          color: Contants.colorRed,
-                                        ),
-                                        onPressed: () {
-                                          removeMember(member[index].name,
-                                              member[index].hairdresserID);
-                                        }),
-                                  ),
-                                )
-                              : Card(
-                                  child: ListTile(
-                                    leading: CachedNetworkImage(
-                                        imageUrl: urlImageMember[
-                                            member[index].email]!),
-                                    title: Text(
-                                      "${member[index].name} ${member[index].lastname}",
-                                      style: Contants().h3OxfordBlue(),
-                                    ),
-                                    trailing: IconButton(
-                                        icon: Icon(
-                                          Icons.person_remove,
-                                          color: Contants.colorRed,
-                                        ),
-                                        onPressed: () {
-                                          removeMember(member[index].name,
-                                              member[index].hairdresserID);
-                                        }),
-                                  ),
-                                ),
-                        ),
-                        itemCount: member.length,
-                      ),
+                            ),
+                            itemCount: member.length,
+                          ),
               ],
             ),
           ),

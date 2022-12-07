@@ -83,8 +83,10 @@ class _AlbumBarberState extends State<AlbumBarber> {
         ),
         backgroundColor: Contants.myBackgroundColor,
         body: load
-            ? LoadingAnimationWidget.waveDots(
-                color: Contants.colorSpringGreen, size: 30)
+            ? Center(
+              child: LoadingAnimationWidget.waveDots(
+                  color: Contants.colorSpringGreen, size: 50),
+            )
             : filess!.isEmpty
                 ? Center(
                     child: Text(

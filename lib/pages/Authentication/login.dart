@@ -51,10 +51,14 @@ class _LoginState extends State<Login> {
               behavior: HitTestBehavior.opaque,
               child: Container(
                 margin: EdgeInsets.symmetric(
-                    horizontal: size * 0.1, vertical: size * 0.10),
+                    horizontal: size * 0.1, vertical: size * 0.05),
                 child: Form(
                   child: Column(
                     children: [
+                      Container(
+                        child: Image.asset("images/iconapp.png"),
+                        width: size * 0.7,
+                      ),
                       Container(
                         margin: const EdgeInsets.symmetric(vertical: 8),
                         child: TextFormField(
@@ -128,16 +132,6 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
-                      // ElevatedButton(
-                      //     onPressed: () {
-                      //       Navigator.push(
-                      //           context,
-                      //           MaterialPageRoute(
-                      //             builder: (context) => InsertPositionBarber(
-                      //                 lat: 13.7, lng: 100.5, email: ""),
-                      //           ));
-                      //     },
-                      //     child: Text("dddd")),
                       const SizedBox(
                         height: 20,
                       ),
@@ -177,7 +171,7 @@ class _LoginState extends State<Login> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           SizedBox(
-                            width: size * 0.35,
+                            width: size * 0.37,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.white,
@@ -194,13 +188,13 @@ class _LoginState extends State<Login> {
                                 "ลูกค้า",
                                 style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 20,
+                                    fontSize: 17,
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
                           SizedBox(
-                            width: size * 0.35,
+                            width: size * 0.37,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.white,
@@ -220,7 +214,7 @@ class _LoginState extends State<Login> {
                                 "ร่วมงานกับเรา ",
                                 style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 17,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -272,19 +266,24 @@ class _LoginState extends State<Login> {
                                   Rount_CN.routeIndex, (route) => false));
                         },
                         child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                FaIcon(
-                                  FontAwesomeIcons.google,
-                                  size: 60,
-                                ),
-                                Text(
-                                  "เข้าสู่ระบบด้วย Google",
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
-                                )
-                              ],
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const FaIcon(
+                                    FontAwesomeIcons.google,
+                                    size: 50,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    "เข้าสู่ระบบด้วย Google",
+                                    style: Contants().h3OxfordBlue(),
+                                  )
+                                ],
+                              ),
                             ),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
@@ -307,10 +306,12 @@ class _LoginState extends State<Login> {
           .signInWithEmailAndPassword(
               email: emailController.text.toLowerCase(),
               password: passwordController.text)
-          .then((value) => Navigator.pushNamedAndRemoveUntil(
-              context, Rount_CN.routeIndex, (route) => false))
+          .then(
+            (value) => Navigator.pushNamedAndRemoveUntil(
+                context, Rount_CN.routeIndex, (route) => false),
+          )
           .catchError((value) {
-        MyDialog().normalDialog(context, value.message);
+        MyDialog().normalDialog(context, "อีเมลหรือรหัสผ่าน ไม่ถูกต้อง");
       });
     });
   }
@@ -342,30 +343,11 @@ class _LoginState extends State<Login> {
   }
 
   Future<Future<UserCredential>> test() async {
-    // Trigger the sign-in flow
     final LoginResult loginResult = await FacebookAuth.instance.login();
 
-    // Create a credential from the access token
     final OAuthCredential facebookAuthCredential =
         FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
-    // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
-//  Future loginWithFacebook(BuildContext context) async {
-//    final LoginResult result = await FacebookAuth.instance.login();
-//     if (result.status == LoginStatus.success) {
-//       _accessToken = result.accessToken;
-
-//       final userData = await FacebookAuth.instance.getUserData();
-//       _userData = userData;
-//     } else {
-//       print(result.status);
-//       print(result.message);
-//     }
-//     setState(() {
-//       _checking = false;
-//     });
-// }
-
 }

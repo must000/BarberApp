@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyProviders(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
             primaryColor: Colors.black,
             checkboxTheme: CheckboxThemeData(

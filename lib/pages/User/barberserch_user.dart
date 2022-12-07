@@ -27,7 +27,6 @@ class BarberSerchUser extends StatefulWidget {
   State<BarberSerchUser> createState() => _BarberSerchUserState(
       typeBarber: typeBarber, lat: lat, lon: lon, nameUser: nameUser);
 }
-
 class _BarberSerchUserState extends State<BarberSerchUser> {
   bool typeBarber;
   String nameUser;
@@ -40,6 +39,7 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
   List<BarberModel>? barber = [];
   Map<String, String>? urlImgFront;
   List<SQLiteModel> sqliteModels = [];
+
   @override
   void initState() {
     widget.stream2.listen((barberModel) {
@@ -221,6 +221,14 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
 
   bool click = false;
 
+  bool x = true;
+
+  fc(){
+    setState(() {
+      
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -233,6 +241,16 @@ class _BarberSerchUserState extends State<BarberSerchUser> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // ElevatedButton(
+            //   onPressed: () {
+            //     setState(() {
+            //       x = !x;
+            //     });
+            //   },
+            //   style: ElevatedButton.styleFrom(
+            //       primary: x ? Colors.red : Colors.yellow),
+            //   child: Text("clcik"),
+            // ),
             const SizedBox(height: 20),
             // sectionListview(size, "ร้านยอดฮิต"),
             barber == []

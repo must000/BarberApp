@@ -493,7 +493,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        width: 100,
+                        width: 120,
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton2(
                             iconEnabledColor: Contants.colorWhite,
@@ -671,7 +671,11 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
     );
   }
 
+
   Future _selectedDate(BuildContext context) async {
+
+
+
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,

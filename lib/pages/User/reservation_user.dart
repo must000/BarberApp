@@ -235,22 +235,13 @@ class _ReservationUserState extends State<ReservationUser> {
                           ),
                           title:
                               Text("ร้าน : ${data[index]["barber"]["name"]}"),
-                          subtitle: Row(
-                            children: [
-                              Text(
-                                "วันที่${DateTime.parse(data[index]["time"]["timestart"]).day.toString().padLeft(2, "0")}/${DateTime.parse(data[index]["time"]["timestart"]).month.toString().padLeft(2, "0")} \nเวลา${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")}",
-                                style: Contants().h4Grey(),
-                              ),
-                              Icon(
-                                Icons.schedule,
-                                size: 19,
-                                color: Contants.colorOxfordBlue,
-                              ),
-                            ],
+                          subtitle: Text(
+                            "วันที่${DateTime.parse(data[index]["time"]["timestart"]).day.toString().padLeft(2, "0")}/${DateTime.parse(data[index]["time"]["timestart"]).month.toString().padLeft(2, "0")} \nเวลา${DateTime.parse(data[index]["time"]["timestart"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timestart"]).minute.toString().padLeft(2, "0")} - ${DateTime.parse(data[index]["time"]["timeend"]).hour.toString().padLeft(2, "0")}.${DateTime.parse(data[index]["time"]["timeend"]).minute.toString().padLeft(2, "0")} น.",
+                            style: Contants().h4Grey(),
                           ),
                           trailing: Text(
                             "฿ ${sum.toStringAsFixed(0)}",
-                            style: Contants().h2Red(),
+                            style: Contants().h3Red(),
                           ),
                         ),
                       ),

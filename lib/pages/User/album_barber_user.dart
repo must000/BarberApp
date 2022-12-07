@@ -2,6 +2,7 @@ import 'package:barber/Constant/contants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class AlbumBarberUser extends StatefulWidget {
   String email;
@@ -25,6 +26,8 @@ class _AlbumBarberUserState extends State<AlbumBarberUser> {
     getAlbumUrl();
   }
 
+  bool load = true;
+
   Future<Null> getAlbumUrl() async {
     final ListResult result =
         await FirebaseStorage.instance.ref().child('album').child(email).list();
@@ -43,6 +46,7 @@ class _AlbumBarberUserState extends State<AlbumBarberUser> {
     });
     setState(() {
       filess = files;
+      load = false;
     });
   }
 
@@ -51,7 +55,12 @@ class _AlbumBarberUserState extends State<AlbumBarberUser> {
     return Scaffold(
       backgroundColor: Contants.myBackgroundColor,
       appBar: AppBar( backgroundColor: Contants.myBackgroundColordark,),
-      body: filess!.isEmpty
+      body:load
+            ? Center(
+              child: LoadingAnimationWidget.waveDots(
+                  color: Contants.colorSpringGreen, size: 50),
+            )
+            :  filess!.isEmpty
           ? Center(
               child: Text("ไม่มีรูปภาพในอัลบั้ม",style: Contants().h2SpringGreen(),),
             )

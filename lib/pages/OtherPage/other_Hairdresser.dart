@@ -15,13 +15,15 @@ class OtherHairdresser extends StatefulWidget {
   String name, lastname;
   String barberState;
   String idHairdresser;
+  String phone;
   OtherHairdresser(
       {Key? key,
       required this.email,
       required this.name,
       required this.barberState,
       required this.idHairdresser,
-      required this.lastname})
+      required this.lastname,
+      required this.phone})
       : super(key: key);
 
   @override
@@ -30,7 +32,8 @@ class OtherHairdresser extends StatefulWidget {
       name: this.name,
       barberState: this.barberState,
       idHairdresser: idHairdresser,
-      lastname: lastname);
+      lastname: lastname,
+      phone: this.phone);
 }
 
 class _OtherHairdresserState extends State<OtherHairdresser> {
@@ -38,12 +41,14 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
   String? name, lastname;
   String? barberState;
   String? idHairdresser;
+  String? phone;
   _OtherHairdresserState(
       {required this.email,
       required this.name,
       required this.barberState,
       required this.idHairdresser,
-      required this.lastname});
+      required this.lastname,
+      required this.phone});
 
   @override
   void initState() {
@@ -90,9 +95,9 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
               child: Row(
                 children: [
                   Icon(
-                  Icons.account_circle,
-                  color: Contants.colorSpringGreen,
-                ),
+                    Icons.account_circle,
+                    color: Contants.colorSpringGreen,
+                  ),
                   Text(
                     "ตั้งค่าโปรไฟล์",
                     style: Contants().h3white(),
@@ -100,6 +105,7 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
                 ],
               ),
             ),
+    
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -140,7 +146,7 @@ class _OtherHairdresserState extends State<OtherHairdresser> {
                     color: Contants.colorSpringGreen,
                   ),
                   Text(
-                    "เปลี่ยนเบอร์มือถือ",
+                    "เปลี่ยนเบอร์มือถือ ******${phone!.substring(phone!.length - 4)}",
                     style: Contants().h3white(),
                   ),
                 ],

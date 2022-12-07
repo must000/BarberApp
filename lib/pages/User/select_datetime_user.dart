@@ -273,7 +273,7 @@ class _SelectDateTimeUserState extends State<SelectDateTimeUser> {
             print(event);
             //เช็คว่ามีเบอร์ไหม
                       
-            if (event.phoneNumber == "phone") { // phonefff เปิดระบบเบอร์ = null; ไม่เปิด = !=null
+            if (event.phoneNumber == null) { // phonefff เปิดระบบเบอร์ = null; ไม่เปิด = !=null
               // Navigator.pop(context);
               MyDialog(funcAction: fc).hardDialogv2(
                   context,

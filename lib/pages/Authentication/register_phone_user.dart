@@ -128,8 +128,8 @@ class _RegisterPhoneUserState extends State<RegisterPhoneUser> {
                  if (phoneController.text == ""|| smsController.text == "") {
                  MyDialog().normalDialog(context, "กรุณากรอกข้อมูลให้ครบ");
                  }else{
-                     // verifyPhone();
-                      trickFunction();
+                     verifyPhone();
+                      // trickFunction();
                       // phonefff เปิดระบบเบอร์ = verifyPhone(); ไม่เปิด = trickFunction();
  
                  }

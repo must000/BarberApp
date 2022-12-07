@@ -21,6 +21,7 @@ class ListHitsModek extends StatelessWidget {
     lists.sort((first, second) {
       return second.score.compareTo(first.score);
     });
+    
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
