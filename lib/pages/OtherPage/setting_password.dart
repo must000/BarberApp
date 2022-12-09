@@ -52,6 +52,7 @@ class _SettingPasswordState extends State<SettingPassword> {
                   margin: EdgeInsets.only(
                        left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
+                     obscureText: true,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "กรุณากรอกรหัสผ่านเดิม";
@@ -78,6 +79,7 @@ class _SettingPasswordState extends State<SettingPassword> {
                   margin: EdgeInsets.only(
                        left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
+                               obscureText: true,
                     controller: newPasswordController,
                     style: Contants().h4OxfordBlue(),
                     keyboardType: TextInputType.visiblePassword,
@@ -99,6 +101,7 @@ class _SettingPasswordState extends State<SettingPassword> {
                   margin: EdgeInsets.only(
                      left: size * 0.08, right: size * 0.08),
                   child: TextFormField(
+                               obscureText: true,
                     validator: (value) {
                       if (value != newPasswordController.text) {
                         return "กรุณากรอกคอนเฟิร์มรหัสผ่านให้ตรงกับรหัสผ่านใหม่";
@@ -173,10 +176,10 @@ class _SettingPasswordState extends State<SettingPassword> {
                     ),
                     (route) => false))
                 .catchError((e) =>
-                    MyDialog().normalDialog(context, "เกิดข้อผิดพลาดขึ้น !")));
+                    MyDialog().normalDialog(context, "รหัสผ่านไม่ถูกต้อง")));
       }
     }).catchError((e) {
-      MyDialog().normalDialog(context, "เกิดข้อผิดพลาดขึ้น $e");
+      MyDialog().normalDialog(context, "รหัสผ่านไม่ถูกต้อง");
     });
   }
 }

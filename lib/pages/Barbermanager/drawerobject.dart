@@ -2,6 +2,7 @@ import 'package:barber/main.dart';
 import 'package:barber/pages/Barbermanager/album_barber.dart';
 import 'package:barber/pages/Barbermanager/date_picker_barber.dart';
 import 'package:barber/pages/Barbermanager/member_barber.dart';
+import 'package:barber/pages/Barbermanager/password_phone_setting.dart';
 import 'package:barber/pages/Barbermanager/statistics_barber.dart';
 import 'package:barber/pages/Barbermanager/store_barber.dart';
 import 'package:barber/provider/myproviders.dart';
@@ -120,13 +121,31 @@ class DrawerObject extends StatelessWidget {
                         builder: (context) => const StatisticeBarber()));
               },
             ),
+            ListTile(
+              leading: Icon(
+                Icons.more_horiz,
+                color: Contants.colorWhite,
+                size: 34,
+              ),
+              title: Text('อื่นๆ', style: Contants().h3white()),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Password_Phone_Setting()));
+              },
+            ),
           ]),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ListTile(
                 title: Text('ออกจากระบบ', style: Contants().h3Red()),
-                leading: Icon(Icons.logout,color: Contants.colorRed,),
+                leading: Icon(
+                  Icons.logout,
+                  color: Contants.colorRed,
+                ),
                 onTap: () {
                   final provider =
                       Provider.of<MyProviders>(context, listen: false);
