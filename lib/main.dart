@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
               fillColor: MaterialStateProperty.all(Colors.white),
             )),
         routes: map,
-        initialRoute: '/iconpage',
+        initialRoute: '/index',
       ),
     );
   }

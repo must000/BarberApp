@@ -583,7 +583,7 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                   )
             : Center(
                 child: SizedBox(
-                  width: 60,
+                  width: 120,
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton2(
                       iconEnabledColor: Contants.colorWhite,

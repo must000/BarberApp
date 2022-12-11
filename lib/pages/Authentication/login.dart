@@ -51,7 +51,7 @@ class _LoginState extends State<Login> {
               behavior: HitTestBehavior.opaque,
               child: Container(
                 margin: EdgeInsets.symmetric(
-                    horizontal: size * 0.1, vertical: size * 0.05),
+                    horizontal: size * 0.1, vertical: size * 0.02),
                 child: Form(
                   child: Column(
                     children: [
@@ -158,14 +158,14 @@ class _LoginState extends State<Login> {
                             )),
                       ),
                       const SizedBox(
-                        height: 50,
+                        height: 20,
                       ),
                       const Text(
                         'สมัครสมาชิก',
                         style: TextStyle(color: Colors.white, fontSize: 35),
                       ),
                       const SizedBox(
-                        height: 25,
+                        height: 2,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -221,9 +221,7 @@ class _LoginState extends State<Login> {
                           )
                         ],
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                    
                       // InkWell(
                       //   onTap: () {
                       //     signInWithFacebook()
@@ -288,6 +286,8 @@ class _LoginState extends State<Login> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
                                 color: Colors.white)),
+                      ), const SizedBox(
+                        height: 20,
                       ),
                     ],
                   ),

@@ -248,7 +248,10 @@ class _SearchUserState extends State<SearchUser> {
                 color: Colors.white,
               ),
               barberModel.isEmpty
-                  ? Text("ไม่พบร้านทำผมที่อยู่ในเงื่อนไข",style: Contants().h2Red(),)
+                  ? Text(
+                      "ไม่พบร้านทำผมที่อยู่ในเงื่อนไข",
+                      style: Contants().h2Red(),
+                    )
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -301,28 +304,38 @@ class _SearchUserState extends State<SearchUser> {
                                             barberModel[index].shopname,
                                             style: Contants().h3white(),
                                           ),
-                                          Text(
-                                            barberModel[index].shoprecommend,
-                                            style: Contants().h4white(),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                barberModel[index]
+                                                    .shoprecommend,
+                                                style: Contants().h4white(),
+                                              ),
+                                              
+                                            ],
                                           )
                                         ],
                                       )
                                     ],
                                   ),
-                                  Row(
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
+                                      const Icon(
+                                        Icons.star,
+                                        color: Colors.yellow,
+                                      ),
                                       Text(
                                         barberModel[index].score == 0 ||
                                                 barberModel[index].score.isNaN
                                             ? "- "
-                                            : barberModel[index].score.toStringAsFixed(2),
+                                            : barberModel[index]
+                                                .score
+                                                .toStringAsFixed(2),
                                         style: const TextStyle(
                                             color: Colors.yellow, fontSize: 12),
                                       ),
-                                      const Icon(
-                                        Icons.star,
-                                        color: Colors.yellow,
-                                      )
                                     ],
                                   )
                                 ],

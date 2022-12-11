@@ -70,6 +70,7 @@ dependencies:
   barcode_scan2: ^4.2.1
   scan: ^1.6.0
   flutter_launcher_icons: ^0.11.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
