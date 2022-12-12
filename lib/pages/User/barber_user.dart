@@ -626,8 +626,8 @@ class _BarberUserState extends State<BarberUser> {
               ? const Text("")
               : Center(
                   child: Text(
-                  user!.displayName!,
-                  style: const TextStyle(color: Colors.white),
+                  "${user!.displayName!} ",
+                  style:Contants().h4white(),
                 ));
         } else if (snapshot.hasError) {
           return const Text("error");

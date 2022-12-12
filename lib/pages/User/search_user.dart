@@ -285,14 +285,22 @@ class _SearchUserState extends State<SearchUser> {
                                 children: [
                                   Row(
                                     children: [
-                                      CachedNetworkImage(
-                                        imageUrl: barberModel[index].url,
-                                        width: size * 0.3,
-                                        fit: BoxFit.cover,
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(
-                                          Icons.error,
-                                          color: Colors.white,
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: const BorderSide(
+                                              color: Colors.white70, width: 1),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: CachedNetworkImage(
+                                          imageUrl: barberModel[index].url,
+                                          width: size * 0.3,
+                                          fit: BoxFit.cover,
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(
+                                            Icons.error,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
                                       SizedBox(
@@ -305,14 +313,14 @@ class _SearchUserState extends State<SearchUser> {
                                             style: Contants().h3white(),
                                           ),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
                                             children: [
                                               Text(
                                                 barberModel[index]
                                                     .shoprecommend,
                                                 style: Contants().h4white(),
                                               ),
-                                              
                                             ],
                                           )
                                         ],
