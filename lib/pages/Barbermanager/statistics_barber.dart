@@ -75,13 +75,15 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
               double sumprice = 0;
               for (var n = 0; n < value.docs[i]["service"].length; n++) {
                 sumprice += value.docs[i]["service"][n]["price"].toDouble();
-                print("PP $sumprice");
+                print("PP$n $sumprice");
               }
-              sumMount[int.parse(
-                      value.docs[i]["time"]["timestart"].substring(5, 7))] =
+              print( value.docs[i]["time"]["timestart"].substring(5, 7));
+              sumMount[(int.parse(
+                      value.docs[i]["time"]["timestart"].substring(5, 7)))-1] =
                   sumMount[int.parse(
-                          value.docs[i]["time"]["timestart"].substring(5, 7))] +
+                          value.docs[i]["time"]["timestart"].substring(5, 7))-1] +
                       sumprice;
+                      print("ddd");
             }
             for (var k = 0; k <= 11; k++) {
               String mon = "";
