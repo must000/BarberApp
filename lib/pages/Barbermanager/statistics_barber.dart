@@ -427,22 +427,22 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
+           ElevatedButton(
               onPressed: () {
                 setState(() {
-                  clickListIndex = 1;
+                  clickListIndex = 3;
                   loadingGetRes = true;
                   reservation.clear();
                 });
                 getReservation();
               },
               child: Text(
-                "ปี",
+                "วัน",
                 style: Contants().h3OxfordBlue(),
               ),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                    clickListIndex == 1
+                    clickListIndex == 3
                         ? Contants.colorSpringGreen
                         : Contants.colorGreySilver),
               ),
@@ -467,26 +467,26 @@ class _StatisticeBarberState extends State<StatisticeBarber> {
                         : Contants.colorGreySilver),
               ),
             ),
-            ElevatedButton(
+             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  clickListIndex = 3;
+                  clickListIndex = 1;
                   loadingGetRes = true;
                   reservation.clear();
                 });
                 getReservation();
               },
               child: Text(
-                "วัน",
+                "ปี",
                 style: Contants().h3OxfordBlue(),
               ),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                    clickListIndex == 3
+                    clickListIndex == 1
                         ? Contants.colorSpringGreen
                         : Contants.colorGreySilver),
               ),
-            )
+            ),
           ],
         ),
         clickListIndex != 1

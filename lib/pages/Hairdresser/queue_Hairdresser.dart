@@ -364,8 +364,8 @@ class _QueueHairdresserState extends State<QueueHairdresser> {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(const Duration(days: 5)));
+        firstDate: DateTime(2022,1,1),
+        lastDate: DateTime.now().add(const Duration(days: 10)));
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;

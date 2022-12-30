@@ -1,3 +1,4 @@
+import 'package:barber/utils/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -36,12 +37,31 @@ class _ReservationDetailBarberState extends State<ReservationDetailBarber> {
 
   String? nameHairresser;
   String? nameUser;
+  String? idUser;
   String? phoneHairresser;
   String? phoneUser;
   List<ServiceModel> servicemodel = [];
   String? status;
   String? comment;
   int? score;
+  bool ban = false;
+  Future<Null> findBanlist() async {
+    await FirebaseFirestore.instance
+        .collection('Barber')
+        .doc(barberModelformanager!.email)
+        .collection("banlist")
+        .where("id", isEqualTo: idUser)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        setState(() {
+          ban = true;
+        });
+      } else {
+        print("ไม่ได้แบน");
+      }
+    });
+  }
 
   Future<Null> getDatawhereID() async {
     await FirebaseFirestore.instance
@@ -65,11 +85,16 @@ class _ReservationDetailBarberState extends State<ReservationDetailBarber> {
         servicemodel = data;
         status = event["status"];
         nameUser = event["user"]["name"];
+        idUser = event["user"]["id"];
         if (event.data()!.containsKey("comment")) {
           comment = event["comment"]["message"];
           score = event["comment"]["score"];
         }
       });
+      if (status == "cancel") {
+        print("dddd");
+        findBanlist();
+      }
     });
   }
 
@@ -88,16 +113,20 @@ class _ReservationDetailBarberState extends State<ReservationDetailBarber> {
               padding: const EdgeInsets.all(15.0),
               child: ListView(
                 children: [
-                  status == "succeed"? 
-                    Text(
-                    "สถานะ : สำเร็จ",
-                    style: Contants().h2SpringGreen(),
-                  ): status == "on"?  Text(
-                    "สถานะ : รอ",
-                    style: Contants().h2yellow(),): Text(
-                    "สถานะ : ยกเลิก",
-                    style: Contants().h2Red(),),
-                  
+                  status == "succeed"
+                      ? Text(
+                          "สถานะ : สำเร็จ",
+                          style: Contants().h2SpringGreen(),
+                        )
+                      : status == "on"
+                          ? Text(
+                              "สถานะ : รอ",
+                              style: Contants().h2yellow(),
+                            )
+                          : Text(
+                              "สถานะ : ยกเลิก",
+                              style: Contants().h2Red(),
+                            ),
                   Text(
                     "ร้าน : $nameShop",
                     style: Contants().h2white(),
@@ -118,17 +147,17 @@ class _ReservationDetailBarberState extends State<ReservationDetailBarber> {
                     "ชื่อลูกค้า : $nameUser",
                     style: Contants().h4white(),
                   ),
-                  phoneUser == ""?Text("") :
-                  Text(
-                    "เบอร์โทร : 0${phoneUser!.substring(2)}",
-                    style: Contants().h4white(),
-                  ),
+                  phoneUser == ""
+                      ? Text("")
+                      : Text(
+                          "เบอร์โทร : 0${phoneUser!.substring(2)}",
+                          style: Contants().h4white(),
+                        ),
                   Container(
-                    
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1,color: Contants.colorYellow)
-                    ),
-                      margin: const EdgeInsets.only(top: 20,bottom: 20),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 1, color: Contants.colorYellow)),
+                      margin: const EdgeInsets.only(top: 20, bottom: 20),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(children: [
@@ -169,10 +198,18 @@ class _ReservationDetailBarberState extends State<ReservationDetailBarber> {
                   score == null
                       ? const SizedBox()
                       : Container(
-                        decoration: BoxDecoration(border: Border.all(color: Contants.colorSpringGreen)),
-                        child: ListTile(
-                            title: Text(comment!,style: Contants().h4white(),),
-                            leading: Icon(Icons.comment,color: Contants.colorSpringGreen,),
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Contants.colorSpringGreen)),
+                          child: ListTile(
+                            title: Text(
+                              comment!,
+                              style: Contants().h4white(),
+                            ),
+                            leading: Icon(
+                              Icons.comment,
+                              color: Contants.colorSpringGreen,
+                            ),
                             trailing: Wrap(
                               children: [
                                 Row(
@@ -182,7 +219,7 @@ class _ReservationDetailBarberState extends State<ReservationDetailBarber> {
                                       score.toString(),
                                       style: Contants().h3yellow(),
                                     ),
-                                  Icon(
+                                    Icon(
                                       Icons.star,
                                       color: Contants.colorYellow,
                                       size: 30,
@@ -192,10 +229,45 @@ class _ReservationDetailBarberState extends State<ReservationDetailBarber> {
                               ],
                             ),
                           ),
-                      ),
+                        ),
+                  status == "cancel"
+                      ? ban
+                          ? Text(
+                              "ผู้ใช้ถูกระงับแล้ว",
+                              style: Contants().h3Red(),
+                            )
+                          : ElevatedButton(
+                              onPressed: () {
+                                MyDialog(funcAction: proceedSaveData).superDialog(
+                                    context,
+                                    "ผู้ใช้ท่านนี้จะไม่สามารถจองคิวร้านของท่านได้อีก",
+                                    'ยืนยันการระงับ');
+                              },
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Contants.colorRed),
+                                  textStyle: MaterialStateProperty.all(
+                                      Contants().h3white())),
+                              child: Text("ระงับการให้บริการผู้ใช้ท่านนี้"))
+                      : SizedBox()
                 ],
               ),
             ),
     );
+  }
+
+  Future<Null> proceedSaveData() async {
+    await FirebaseFirestore.instance
+        .collection('Barber')
+        .doc(barberModelformanager!.email)
+        .collection('banlist')
+        .add({"id": idUser, "name": nameUser}).then((value) {
+      Navigator.pop(context);
+      setState(() {
+        ban = true;
+      });
+      return MyDialog().normalDialog(
+          context, "ระงับสำเร็จ ผู้ใช้ท่านนี้จะไม่สามารถจองคิวร้านของคุณได้");
+    });
   }
 }
