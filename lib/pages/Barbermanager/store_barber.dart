@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:barber/Constant/contants.dart';
 import 'package:barber/main.dart';
+import 'package:barber/pages/Barbermanager/banlist.dart';
 import 'package:barber/pages/Barbermanager/drawerobject.dart';
 import 'package:barber/pages/Barbermanager/map_barber.dart';
 import 'package:barber/utils/dialog.dart';
@@ -142,6 +143,21 @@ class _StoreBarberState extends State<StoreBarber> {
       drawer: DrawerObject(),
       appBar: AppBar(
         backgroundColor: Contants.myBackgroundColordark,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BanlistPage(),
+                  ));
+            },
+            icon: Icon(
+              Icons.no_accounts,
+              color: Contants.colorRed,
+            ),
+          ),
+        ],
       ),
       backgroundColor: Contants.myBackgroundColor,
       body: GestureDetector(
